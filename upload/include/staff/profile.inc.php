@@ -164,7 +164,7 @@ if ($avatar->isChangeable()) { ?>
           </th>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Maximum Page size');?>:</td>
+            <td width="180"><?php echo __('Maximum Page Size');?>:</td>
             <td>
                 <select name="max_page_size">
                     <option value="0">&mdash; <?php echo __('System Default');?> &mdash;</option>

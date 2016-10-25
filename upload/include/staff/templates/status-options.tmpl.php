@@ -11,9 +11,17 @@ $actions= array(
             'icon'  => 'icon-undo',
             'action' => 'reopen'
             ),
+		'resolved' => array(
+            'icon'  => 'icon-check-sign',
+            'action' => 'resolved'
+            ),
+		'progress' => array(
+            'icon'  => 'icon-time',
+            'action' => 'progress'
+            ),
         );
 
-$states = array('open');
+$states = array('open','progress','resolved');
 if ($thisstaff->getRole($ticket ? $ticket->getDeptId() : null)->hasPerm(TicketModel::PERM_CLOSE)
         && (!$ticket || !$ticket->getMissingRequiredFields()))
     $states = array_merge($states, array('closed'));

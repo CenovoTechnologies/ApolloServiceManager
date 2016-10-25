@@ -87,11 +87,11 @@ if ($_POST)
         </tr>
         <tr>
             <td width="160" class="required">
-                <?php echo __('Help Topic');?>:
+                <?php echo __('Request Type');?>:
             </td>
             <td>
                 <select name="topicId">
-                    <option value="" selected >&mdash; <?php echo __('Select Help Topic');?> &mdash;</option>
+                    <option value="" selected >&mdash; <?php echo __('Select Request Type');?> &mdash;</option>
                     <?php
                     if($topics=Topic::getHelpTopics()) {
                         foreach($topics as $id =>$name) {

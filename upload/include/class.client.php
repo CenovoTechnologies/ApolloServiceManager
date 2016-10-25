@@ -217,6 +217,7 @@ class  EndUser extends BaseAuthenticatedUser {
         return $this->user->getEmail();
     }
 
+
     function getUserType() {
         return $this->isOwner() ? 'owner' : 'collaborator';
     }
@@ -247,6 +248,14 @@ class  EndUser extends BaseAuthenticatedUser {
 
     function getNumOpenTickets($forMyOrg=false) {
         return $this->getNumTickets($forMyOrg, 'open') ?: 0;
+    }
+	
+	function getNumStartedTickets($forMyOrg=false) {
+        return $this->getNumTickets($forMyOrg, 'progress') ?: 0;
+    }
+
+	function getNumResolvedTickets($forMyOrg=false) {
+        return $this->getNumTickets($forMyOrg, 'resolved') ?: 0;
     }
 
     function getNumClosedTickets($forMyOrg=false) {
@@ -284,6 +293,12 @@ class  EndUser extends BaseAuthenticatedUser {
     }
     function getNumOpenOrganizationTickets() {
         return $this->getNumTickets(true, 'open');
+    }
+	function getNumStartedOrganizationTickets() {
+        return $this->getNumTickets(true, 'progress');
+    }
+	function getNumResolvedOrganizationTickets() {
+        return $this->getNumTickets(true, 'resolved');
     }
     function getNumClosedOrganizationTickets() {
         return $this->getNumTickets(true, 'closed');

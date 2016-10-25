@@ -40,7 +40,7 @@ if ($_POST) {
     Draft::deleteForNamespace('ticket.client.'.substr(session_id(), -12));
     //Ticket::create...checks for errors..
     if(($ticket=Ticket::create($vars, $errors, SOURCE))){
-        $msg=__('Support ticket request created');
+        $msg=__('Service request created');
         // Drop session-backed form data
         unset($_SESSION[':form-data']);
         //Logged in...simply view the newly created ticket.

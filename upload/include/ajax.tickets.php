@@ -556,6 +556,12 @@ class TicketsAjaxAPI extends AjaxController {
                 'close' => array(
                     'verbed' => __('closed'),
                     ),
+				'progress' => array(
+					'verbed' => __('started'),
+					),
+				'resolved' => array(
+					'verbed' => __('resolved'),
+					),
                 );
 
         if (!isset($actions[$action]))
@@ -826,6 +832,9 @@ class TicketsAjaxAPI extends AjaxController {
         $state = null;
         switch($status) {
             case 'open':
+			case 'progress':
+				$state = 'progress';
+				break;
             case 'reopen':
                 $state = 'open';
                 break;
@@ -839,6 +848,9 @@ class TicketsAjaxAPI extends AjaxController {
                     $info['warn'] =  $closeable;
 
                 break;
+			case 'resolved':
+				$state = 'resolved';
+				break;
             case 'delete':
                 if (!$role->hasPerm(TicketModel::PERM_DELETE))
                     Http::response(403, 'Access denied');
@@ -882,10 +894,21 @@ class TicketsAjaxAPI extends AjaxController {
                         $errors['err'] = sprintf(__('You do not have permission %s'),
                                 __('to reopen tickets'));
                     break;
+				case 'progress':
+					if(!$role->hasPerm(TicketModel::PERM_CLOSE)
+							&& !$role->hasPerm(TicketModel::PERM_CREATE))
+						$errors['err'] = sprintf(__('You do not have permission %s'),
+								__('to start tickets'));
+					break;
+				case 'resolved':
+					if(!$role->hasPerm(TicketModel::PERM_CLOSE))
+						$errors['err'] = sprintf(__('You do not have permission %s'),
+								__('to resolve tickets'));
+					break;
                 case 'closed':
                     if (!$role->hasPerm(TicketModel::PERM_CLOSE))
                         $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to resolve/close tickets'));
+                                __('to close tickets'));
                     break;
                 case 'deleted':
                     if (!$role->hasPerm(TicketModel::PERM_DELETE))
@@ -944,6 +967,9 @@ class TicketsAjaxAPI extends AjaxController {
         $info = array();
         switch($status) {
             case 'open':
+			case 'progress':
+				$state = 'progress';
+				break;
             case 'reopen':
                 $state = 'open';
                 break;
@@ -952,6 +978,9 @@ class TicketsAjaxAPI extends AjaxController {
                     Http::response(403, 'Access denied');
                 $state = 'closed';
                 break;
+			case 'resolved':
+				$state = 'resolved';
+				break;
             case 'delete':
                 if (!$thisstaff->hasPerm(TicketModel::PERM_DELETE, false))
                     Http::response(403, 'Access denied');
@@ -992,10 +1021,21 @@ class TicketsAjaxAPI extends AjaxController {
                         $errors['err'] = sprintf(__('You do not have permission %s'),
                                 __('to reopen tickets'));
                     break;
+				case 'progress':
+					if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false)
+                            && !$thisstaff->hasPerm(TicketModel::PERM_CREATE, false))
+                        $errors['err'] = sprintf(__('You do not have permission %s'),
+                                __('to start tickets'));
+					break;
+				case 'resolved':
+					if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false))
+                        $errors['err'] = sprintf(__('You do not have permission %s'),
+                                __('to resolve tickets'));
+					break;
                 case 'closed':
                     if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false))
                         $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to resolve/close tickets'));
+                                __('to close tickets'));
                     break;
                 case 'deleted':
                     if (!$thisstaff->hasPerm(TicketModel::PERM_DELETE, false))

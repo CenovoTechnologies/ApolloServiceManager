@@ -103,9 +103,9 @@ if ($_POST) {
                         break;
                     case 'unpublish';
                         if($faq->unpublish())
-                            $msg=sprintf(__('Successfully unpublished %s'), __('this FAQ article'));
+                            $msg=sprintf(__('Successfully unpublished %s'), __('this Knowledgebase article'));
                         else
-                            $errors['err']=sprintf(__('Unable to unpublish %s. Try editing it.'), __('this FAQ article'));
+                            $errors['err']=sprintf(__('Unable to unpublish %s. Try editing it.'), __('this Knowledgebase article'));
                         break;
                     case 'delete':
                         $category = $faq->getCategory();
@@ -113,7 +113,7 @@ if ($_POST) {
                             $msg=sprintf(__('Successfully deleted %s.'), Format::htmlchars($faq->getQuestion()));
                             $faq=null;
                         } else {
-                            $errors['err']=sprintf(__('Unable to delete %s.'), __('this FAQ article'));
+                            $errors['err']=sprintf(__('Unable to delete %s.'), __('this Knowledgebase article'));
                         }
                         break;
                     default:

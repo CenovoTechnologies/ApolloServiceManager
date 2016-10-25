@@ -76,7 +76,7 @@ if ($_POST && isset($_POST['luser'])) {
 }
 elseif ($_POST && isset($_POST['lticket'])) {
     if (!Validator::is_email($_POST['lemail']))
-        $errors['err'] = __('Valid email address and ticket number required');
+        $errors['err'] = __('Valid email address and service request number required');
     elseif (($user = UserAuthenticationBackend::process($_POST['lemail'],
             $_POST['lticket'], $errors))) {
 
@@ -95,7 +95,7 @@ elseif ($_POST && isset($_POST['lticket'])) {
             Format::htmlchars($user->getName()->getFirst()));
         $_POST = null;
     } elseif(!$errors['err']) {
-        $errors['err'] = __('Invalid email or ticket number - try again!');
+        $errors['err'] = __('Invalid email or service request number - try again!');
     }
 }
 elseif (isset($_GET['do'])) {

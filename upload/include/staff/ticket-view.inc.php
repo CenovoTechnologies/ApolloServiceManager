@@ -96,7 +96,7 @@ if($ticket->isOverdue())
 
             <?php
             // Assign
-            if ($ticket->isOpen() && $role->hasPerm(TicketModel::PERM_ASSIGN)) {?>
+            if (($ticket->isOpen() || $ticket->isStarted() || $ticket->isResolved()) && $role->hasPerm(TicketModel::PERM_ASSIGN)) {?>
             <span class="action-button pull-right"
                 data-dropdown="#action-dropdown-assign"
                 data-placement="bottom"
@@ -144,7 +144,7 @@ if($ticket->isOverdue())
                 <?php
                  }
 
-                 if($ticket->isOpen() && ($dept && $dept->isManager($thisstaff))) {
+                 if(($ticket->isOpen() || $ticket->isStarted()) && ($dept && $dept->isManager($thisstaff))) {
 
                     if($ticket->isAssigned()) { ?>
                         <li><a  class="confirm-action" id="ticket-release" href="#release"><i class="icon-user"></i> <?php
@@ -286,6 +286,14 @@ if($ticket->isOverdue())
                                     if(($open=$user->getNumOpenTickets()))
                                         echo sprintf('<li><a href="tickets.php?a=search&status=open&uid=%s"><i class="icon-folder-open-alt icon-fixed-width"></i> %s</a></li>',
                                                 $user->getId(), sprintf(_N('%d Open Ticket', '%d Open Tickets', $open), $open));
+                                                
+                                    if(($started=$user->getNumStartedTickets()))
+                                        echo sprintf('<li><a href="tickets.php?a=search&status=progress&uid=%s"><i class="icon-folder-open-alt icon-fixed-width"></i> %s</a></li>',
+                                                $user->getId(), sprintf(_N('%d Ticket in Progress', '%d Tickets in Progress', $started), $started));
+                                                
+                                    if(($resolved=$user->getNumResolvedTickets()))
+                                        echo sprintf('<li><a href="tickets.php?a=search&status=resolved&uid=%s"><i class="icon-folder-open-alt icon-fixed-width"></i> %s</a></li>',
+                                                $user->getId(), sprintf(_N('%d Resolved Ticket', '%d Resolved Tickets', $resolved), $resolved));
 
                                     if(($closed=$user->getNumClosedTickets()))
                                         echo sprintf('<li><a href="tickets.php?a=search&status=closed&uid=%d"><i
@@ -329,6 +337,20 @@ if($ticket->isOverdue())
                                     <?php echo sprintf(_N('%d Open Ticket', '%d Open Tickets', $open), $open); ?>
                                     </a></li>
 <?php   }
+        if ($started = $user->getNumStartedOrganizationTickets()) { ?>
+                                    <li><a href="tickets.php?<?php echo Http::build_query(array(
+                                        'a' => 'search', 'status' => 'progress', 'orgid' => $user->getOrgId()
+                                    )); ?>"><i class="icon-folder-open-alt icon-fixed-width"></i>
+                                    <?php echo sprintf(_N('%d Ticket in Progress', '%d Tickets in Progress', $started), $started); ?>
+                                    </a></li>
+<?php   }
+        if ($resolved = $user->getNumResolvedOrganizationTickets()) { ?>
+                                        <li><a href="tickets.php?<?php echo Http::build_query(array(
+                                            'a' => 'search', 'status' => 'resolved', 'orgid' => $user->getOrgId()
+                                        )); ?>"><i class="icon-folder-open-alt icon-fixed-width"></i>
+                                        <?php echo sprintf(_N('%d Resolved Ticket', '%d Resolved Tickets', $resolved), $resolved); ?>
+                                        </a></li>
+<?php   }
         if ($closed = $user->getNumClosedOrganizationTickets()) { ?>
                                     <li><a href="tickets.php?<?php echo Http::build_query(array(
                                         'a' => 'search', 'status' => 'closed', 'orgid' => $user->getOrgId()
@@ -369,7 +391,7 @@ if($ticket->isOverdue())
         <td width="50%">
             <table cellspacing="0" cellpadding="4" width="100%" border="0">
                 <?php
-                if($ticket->isOpen()) { ?>
+                if($ticket->isOpen() || $ticket->isStarted() || $ticket->isResolved()) { ?>
                 <tr>
                     <th width="100"><?php echo __('Assigned To');?>:</th>
                     <td>
@@ -703,7 +725,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                     <select name="reply_status_id">
                     <?php
                     $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
-                    $states = array('open');
+                    $states = array('open', 'progress', 'resolved');
                     if ($role->hasPerm(TicketModel::PERM_CLOSE) && !$outstanding)
                         $states = array_merge($states, array('closed'));
 
@@ -791,7 +813,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                     <select name="note_status_id">
                         <?php
                         $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
-                        $states = array('open');
+                        $states = array('open', 'progress', 'resolved');
                         if ($ticket->isCloseable() === true
                                 && $role->hasPerm(TicketModel::PERM_CLOSE))
                             $states = array_merge($states, array('closed'));

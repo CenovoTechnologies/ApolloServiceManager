@@ -1131,6 +1131,8 @@ class TicketStateChoiceField extends ChoiceField {
     function getChoices($verbose=false) {
         return array(
             'open' => __('Open'),
+            'progress' => __('In Progress'),
+            'resolved' => __('Resolved'),
             'closed' => __('Closed'),
             'archived' => _P('ticket state name', 'Archived'),
             'deleted' => _P('ticket state name','Deleted'),
@@ -1205,7 +1207,7 @@ class OpenClosedTicketStatusList extends TicketStatusList {
         $rv = array();
         $base = parent::getItems($criteria);
         foreach ($base as $idx=>$S) {
-            if (in_array($S->state, array('open', 'closed')))
+            if (in_array($S->state, array('open', 'progress', 'resolved', 'closed')))
                 $rv[$idx] = $S;
         }
         return $rv;

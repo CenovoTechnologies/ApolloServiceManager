@@ -66,5 +66,5 @@ $ost->setWarning($sysnotice);
 $nav = new AdminNav($thisstaff);
 
 //Page title.
-$ost->setPageTitle(__('osTicket :: Admin Control Panel'));
+$ost->setPageTitle(__('Apollo Service Manager :: Admin Control Panel'));
 ?>

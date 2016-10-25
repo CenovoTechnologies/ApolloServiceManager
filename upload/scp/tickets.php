@@ -318,7 +318,7 @@ if($_POST && !$errors):
                      $errors['err'] = sprintf('%s %s',
                              sprintf(__('You do not have permission %s'),
                                  __('to create tickets')),
-                             __('Contact admin for such access'));
+                             __('Contact your Administrator for such access'));
                 } else {
                     $vars = $_POST;
                     $vars['uid'] = $user? $user->getId() : 0;
@@ -355,7 +355,7 @@ if ($redirect) {
 }
 
 /*... Quick stats ...*/
-$stats= $thisstaff->getTicketsStats();
+$stats = $thisstaff->getTicketsStats();
 
 // Clear advanced search upon request
 if (isset($_GET['clear_filter']))
@@ -372,6 +372,12 @@ if($cfg->showAnsweredTickets()) {
                             'href'=>'tickets.php?status=open',
                             'iconclass'=>'Ticket'),
                         ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
+
+	$nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
+                               'title'=>__('Tickets in Progress'),
+                               'href'=>'tickets.php?status=progress',
+                               'iconclass'=>'answeredTickets'),
+                        ($_REQUEST['status']=='progress'));
 } else {
 
     if ($stats) {
@@ -383,12 +389,12 @@ if($cfg->showAnsweredTickets()) {
                             ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
     }
 
-    if($stats['answered']) {
-        $nav->addSubMenu(array('desc'=>__('Answered').' ('.number_format($stats['answered']).')',
-                               'title'=>__('Answered Tickets'),
-                               'href'=>'tickets.php?status=answered',
+    if($stats['progress']) {
+        $nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
+                               'title'=>__('Tickets in Progress'),
+                               'href'=>'tickets.php?status=progress',
                                'iconclass'=>'answeredTickets'),
-                            ($_REQUEST['status']=='answered'));
+                            ($_REQUEST['status']=='progress'));
     }
 }
 
@@ -403,7 +409,7 @@ if($stats['assigned']) {
 
 if($stats['overdue']) {
     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
-                           'title'=>__('Stale Tickets'),
+                           'title'=>__('Overdue Tickets'),
                            'href'=>'tickets.php?status=overdue',
                            'iconclass'=>'overdueTickets'),
                         ($_REQUEST['status']=='overdue'));
@@ -426,6 +432,12 @@ if (isset($_SESSION['advsearch'])) {
                            'iconclass'=>'Ticket'),
                         (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
 }
+
+$nav->addSubMenu(array('desc' => __('Resolved').' ('.number_format($stats['resolved']).')',
+                           'title'=>__('Resolved Tickets'),
+                           'href'=>'tickets.php?status=resolved',
+                           'iconclass'=>'closedTickets'),
+                        ($_REQUEST['status']=='resolved'));
 
 $nav->addSubMenu(array('desc' => __('Closed'),
                        'title'=>__('Closed Tickets'),

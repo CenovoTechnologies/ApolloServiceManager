@@ -17,7 +17,7 @@ if ($lang) {
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="x-pjax-version" content="<?php echo GIT_VERSION; ?>">
-    <title><?php echo ($ost && ($title=$ost->getPageTitle()))?$title:'osTicket :: '.__('Staff Control Panel'); ?></title>
+    <title><?php echo ($ost && ($title=$ost->getPageTitle()))?$title:'Apollo Service Manager :: '.__('Agent Control Panel'); ?></title>
     <!--[if IE]>
     <style type="text/css">
         .tip_shadow { display:block !important; }

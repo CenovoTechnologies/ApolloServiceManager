@@ -277,24 +277,6 @@ implements TemplateVariable {
     function getFullName() {
         return $this->name;
     }
-	
-	function getJobTitle() {
-		foreach ($this->getDynamicData() as $e)
-            if ($a = $e->getAnswer('title'))
-                return $a;
-	}
-	
-	function getLocation() {
-		foreach ($this->getDynamicData() as $e)
-            if ($a = $e->getAnswer('location'))
-                return $a;
-	}
-	
-	function getManager() {
-		foreach ($this->getDynamicData() as $e)
-            if ($a = $e->getAnswer('manager'))
-                return $a;
-	}
 
     function getPhoneNumber() {
         foreach ($this->getDynamicData() as $e)

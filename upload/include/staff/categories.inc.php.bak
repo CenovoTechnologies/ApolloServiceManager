@@ -110,7 +110,7 @@ $pageNav->paginate($categories);
             <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
             <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
             <?php } else {
-                echo __('No Knowledgebase Categories found');
+                echo __('No FAQ categories found!');
             } ?>
         </td>
      </tr>

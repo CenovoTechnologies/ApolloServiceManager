@@ -5,7 +5,7 @@ if (!defined('OSTSCPINC') || !$thisstaff
 
 $info = $qs = array();
 if($faq){
-    $title=__('Update FAQ').': '.$faq->getQuestion();
+    $title=__('Update Knowledgebase Article').': '.$faq->getQuestion();
     $action='update';
     $submit_text=__('Save Changes');
     $info=$faq->getHashtable();
@@ -29,9 +29,9 @@ if($faq){
         }
     }
 }else {
-    $title=__('Add New FAQ');
+    $title=__('Add a New Knowledgebase Article');
     $action='create';
-    $submit_text=__('Add FAQ');
+    $submit_text=__('Add Article');
     if($category) {
         $qs += array('cid' => $category->getId());
         $info['category_id']=$category->getId();
@@ -46,7 +46,7 @@ $qstr = Http::build_query($qs);
  <input type="hidden" name="do" value="<?php echo $action; ?>">
  <input type="hidden" name="a" value="<?php echo Format::htmlchars($_REQUEST['a']); ?>">
  <input type="hidden" name="id" value="<?php echo $info['id']; ?>">
- <h2><?php echo __('Frequently Asked Questions');?></h2>
+ <h2><?php echo __('Knowledgebase Articles');?></h2>
 <?php if ($info['question']) { ?>
      <div class="faq-title" style="margin:5px 0 15px"><?php echo $info['question']; ?></div>
 <?php } ?>
@@ -55,10 +55,10 @@ $qstr = Http::build_query($qs);
     <div>
         <b><?php echo __('Category Listing');?></b>:
         <span class="error">*</span>
-        <div class="faded"><?php echo __('FAQ category the question belongs to.');?></div>
+        <div class="faded"><?php echo __('Knowledgebase category the question belongs to.');?></div>
     </div>
     <select name="category_id" style="width:350px;">
-        <option value="0"><?php echo __('Select FAQ Category');?> </option>
+        <option value="0"><?php echo __('Select Knowledgebase Category');?> </option>
 <?php foreach (Category::objects() as $C) { ?>
         <option value="<?php echo $C->getId(); ?>" <?php
             if ($C->getId() == $info['category_id']) echo 'selected="selected"';
@@ -77,7 +77,7 @@ if ($topics = Topic::getAllHelpTopics()) {
 ?>
     <div style="padding-top:9px">
         <strong><?php echo __('Help Topics');?></strong>:
-        <div class="faded"><?php echo __('Check all help topics related to this FAQ.');?></div>
+        <div class="faded"><?php echo __('Check all help topics related to this article.');?></div>
     </div>
     <select multiple="multiple" name="topics[]" class="multiselect"
         data-placeholder="<?php echo __('Help Topics'); ?>"

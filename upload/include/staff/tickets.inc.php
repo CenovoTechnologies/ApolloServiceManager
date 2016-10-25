@@ -90,14 +90,14 @@ case 'closed':
         'priority,updated', 'priority,created', 'answered', 'number', 'hot');
     break;
 case 'overdue':
-    $status='open';
+    $status!='closed';
     $results_type=__('Overdue Tickets');
     $tickets->filter(array('isoverdue'=>1));
     $queue_sort_options = array('priority,due', 'due', 'priority,updated',
         'updated', 'answered', 'priority,created', 'number', 'hot');
     break;
 case 'assigned':
-    $status='open';
+    $status!='closed';
     $staffId=$thisstaff->getId();
     $results_type=__('My Tickets');
     $tickets->filter(Q::any(array(
@@ -108,8 +108,32 @@ case 'assigned':
         'priority,created', 'priority,due', 'due', 'answered', 'number',
         'hot');
     break;
+case 'progress':
+    $status='progress';
+    $staffId=$thisstaff->getId();
+    $results_type=__('Tickets in Progress');
+    $tickets->filter(Q::any(array(
+        'staff_id'=>$thisstaff->getId(),
+        Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
+    )));
+    $queue_sort_options = array('updated', 'priority,updated',
+        'priority,created', 'priority,due', 'due', 'answered', 'number',
+        'hot');
+    break;
+case 'resolved':
+    $status='resolved';
+    $staffId=$thisstaff->getId();
+    $results_type=__('Resolved Tickets');
+    $tickets->filter(Q::any(array(
+        'staff_id'=>$thisstaff->getId(),
+        Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
+    )));
+    $queue_sort_options = array('updated', 'priority,updated',
+        'priority,created', 'priority,due', 'due', 'answered', 'number',
+        'hot');
+    break;
 case 'answered':
-    $status='open';
+    $status!='closed';
     $showanswered=true;
     $results_type=__('Answered Tickets');
     $tickets->filter(array('isanswered'=>1));

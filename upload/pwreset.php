@@ -17,7 +17,7 @@ if($_POST) {
         case 'sendmail':
             if (($acct=ClientAccount::lookupByUsername($_POST['userid']))) {
                 if (!$acct->isPasswdResetEnabled()) {
-                    $banner = __('Password reset is not enabled for your account. Contact your administrator');
+                    $banner = __('Password Reset is not enabled for your account. Contact your administrator');
                 }
                 elseif ($acct->sendResetEmail()) {
                     $inc = 'pwreset.sent.php';
@@ -26,7 +26,7 @@ if($_POST) {
                     $banner = __('Unable to send reset email. Internal error');
             }
             else
-                $banner = sprintf(__('Unable to verify username %s'),
+                $banner = sprintf(__('Unable to verify username: %s'),
                     Format::htmlchars($_POST['userid']));
             break;
         case 'reset':

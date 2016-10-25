@@ -4,7 +4,7 @@ if(!defined('OSTSTAFFINC') || !$faq || !$thisstaff) die('Access Denied');
 $category=$faq->getCategory();
 
 ?><div class="has_bottom_border" style="padding-top:5px;">
-<div class="pull-left"><h2><?php echo __('Frequently Asked Questions');?></h2></div>
+<div class="pull-left"><h2><?php echo __('Knowledgebase Articles');?></h2></div>
 <div class="pull-right flush-right">
 <?php
 $query = array();

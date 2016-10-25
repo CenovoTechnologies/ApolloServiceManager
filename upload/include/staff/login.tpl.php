@@ -9,7 +9,7 @@ $info = ($_POST && $errors)?Format::htmlchars($_POST):array();
     </div>
     <h1 id="logo"><a href="index.php">
         <span class="valign-helper"></span>
-        <img src="logo.php?login" alt="osTicket :: <?php echo __('Staff Control Panel');?>" />
+        <img src="logo.php?login" alt="Apollo Service Manager :: <?php echo __('Staff Control Panel');?>" />
     </a></h1>
     <h3><?php echo Format::htmlchars($msg); ?></h3>
     <div class="banner"><small><?php echo ($content) ? Format::display($content->getLocalBody()) : ''; ?></small></div>
@@ -51,7 +51,7 @@ if (count($ext_bks)) { ?>
     </div>
 </div>
 <div id="poweredBy"><?php echo __('Powered by'); ?>
-    <a href="http://www.osticket.com" target="_blank">
+    <a href="http://www.cenovotechnologies.com" target="_blank">
         <img alt="osTicket" src="images/osticket-grey.png" class="osticket-logo">
     </a>
 </div>

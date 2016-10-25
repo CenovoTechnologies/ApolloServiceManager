@@ -134,6 +134,6 @@ if($thisstaff->forcePasswdChange() && !$exempt) {
     exit;
 }
 $ost->setWarning($sysnotice);
-$ost->setPageTitle(__('osTicket :: Staff Control Panel'));
+$ost->setPageTitle(__('Apollo Service Manager :: Staff Control Panel'));
 
 ?>

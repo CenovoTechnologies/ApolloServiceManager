@@ -299,14 +299,6 @@ implements RestrictedAccess, Threadable {
     function isReopenable() {
         return $this->getStatus()->isReopenable();
     }
-	
-	function isStarted() {
-		return $this->hasState('progress');
-	}
-	
-	function isResolved() {
-		return $this->hasState('resolved');
-	}
 
     function isClosed() {
          return $this->hasState('closed');
@@ -340,7 +332,7 @@ implements RestrictedAccess, Threadable {
     }
 
     function isAssigned() {
-        return ($this->isOpen() || $this->isStarted() || $this->isResolved()) && ($this->getStaffId() || $this->getTeamId());
+        return $this->isOpen() && ($this->getStaffId() || $this->getTeamId());
     }
 
     function isOverdue() {
@@ -575,18 +567,6 @@ implements RestrictedAccess, Threadable {
     function getPriority() {
         if (($a = $this->_answers['priority']) && ($b = $a->getValue()))
             return $b->getDesc();
-        return '';
-    }
-	
-	function getUrgency() {
-        if (($a = $this->_answers['urgency']))
-            return $a;
-        return '';
-    }
-	
-	function getImpact() {
-        if (($a = $this->_answers['impact']))
-            return $a;
         return '';
     }
 
@@ -912,7 +892,7 @@ implements RestrictedAccess, Threadable {
                 foreach ($dept->getAssignees() as $member)
                     $assignees['s'.$member->getId()] = $member;
 
-                if (!$source && ($this->isOpen() || $this->isStarted()) && $this->staff)
+                if (!$source && $this->isOpen() && $this->staff)
                     $assignee = sprintf('s%d', $this->staff->getId());
                 $prompt = __('Select an Agent');
                 break;
@@ -921,7 +901,7 @@ implements RestrictedAccess, Threadable {
                     foreach ($teams as $id => $name)
                         $assignees['t'.$id] = $name;
 
-                if (!$source && ($this->isOpen() || $this->isStarted()) && $this->team)
+                if (!$source && $this->isOpen() && $this->team)
                     $assignee = sprintf('t%d', $this->team->getId());
                 $prompt = __('Select a Team');
                 break;
@@ -1200,12 +1180,6 @@ implements RestrictedAccess, Threadable {
         // Double check permissions (when changing status)
         if ($role && $this->getStatusId()) {
             switch ($status->getState()) {
-			case 'progress':
-				break;
-			case 'resolved':
-                if (!($role->hasPerm(TicketModel::PERM_CLOSE)))
-                    return false;
-                break;
             case 'closed':
                 if (!($role->hasPerm(TicketModel::PERM_CLOSE)))
                     return false;
@@ -1257,24 +1231,8 @@ implements RestrictedAccess, Threadable {
                 }
 
                 // If the ticket is not open then clear answered flag
-                if (!$this->isOpen() || !$this->isStarted() || !$this->isResolved())
+                if (!$this->isOpen())
                     $this->isanswered = 0;
-				break;
-			case 'resolved':
-				if ($this->isClosed()) {
-					$this->closed = $this->lastupdate = $this->resolved = SqlFunction::NOW();
-					$ecb = function ($t) {
-						$t->logEvent('resolved', false, null, 'closed');
-					};
-				}
-				break;
-			case 'progress':
-				if ($this->isClosed()) {
-					$this->closed = $this->lastupdate = $this->progress = SqlFunction::NOW();
-					$ecb = function ($t) {
-						$t->logEvent('started', false, null, 'closed');
-					};
-				}
                 break;
             default:
                 return false;
@@ -1312,10 +1270,6 @@ implements RestrictedAccess, Threadable {
             return $this->setStatus('open');
         case 'closed':
             return $this->setStatus('closed');
-		case 'progress':
-			return $this->setStatus('progress');
-		case 'resolved':
-			return $this->setStatus('resolved');
         case 'answered':
             return $this->setAnsweredState(1);
         case 'unanswered':
@@ -1324,7 +1278,7 @@ implements RestrictedAccess, Threadable {
             return $this->markOverdue();
         case 'notdue':
             return $this->clearOverdue();
-        case 'unassigned':
+        case 'unassined':
             return $this->unassign();
         }
         // FIXME: Throw and excception and add test cases
@@ -2277,7 +2231,7 @@ implements RestrictedAccess, Threadable {
             return true;
 
         // We can only unassigned OPEN tickets.
-        if ($this->isClosed() || $thid->isResolved())
+        if ($this->isClosed())
             return false;
 
         // Unassign staff (if any)
@@ -2807,8 +2761,8 @@ implements RestrictedAccess, Threadable {
         $vars['note'] = ThreadEntryBody::clean($vars['note']);
 
         if ($vars['duedate']) {
-            if ($this->isClosed() || $this->isResolved())
-                $errors['duedate']=__('Due date can NOT be set on a closed/resolved ticket');
+            if ($this->isClosed())
+                $errors['duedate']=__('Due date can NOT be set on a closed ticket');
             elseif (!$vars['time'] || strpos($vars['time'],':') === false)
                 $errors['time']=__('Select a time from the list');
             elseif (strtotime($vars['duedate'].' '.$vars['time']) === false)
@@ -2951,7 +2905,7 @@ implements RestrictedAccess, Threadable {
     /* Quick staff's tickets stats */
     function getStaffStats($staff) {
         global $cfg;
-        $states = ['open', 'progress', 'resolved'];
+
         /* Unknown or invalid staff */
         if(!$staff || (!is_object($staff) && !($staff=Staff::lookup($staff))) || !$staff->isStaff())
             return null;
@@ -2964,16 +2918,16 @@ implements RestrictedAccess, Threadable {
         if ($teams = array_filter($staff->getTeams()))
             $assigned->add(array('team_id__in' => $teams));
 
-        $visibility = Q::any(new Q(array('status__state'=>'open, progress, resolved', $assigned)));
+        $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
 
         // -- Routed to a department of mine
         if (!$staff->showAssignedOnly() && ($depts = $staff->getDepts()))
             $visibility->add(array('dept_id__in' => $depts));
-        
+
         $blocks = Ticket::objects()
             ->filter(Q::any($visibility))
-            //->filter(array('status__state' => 'progress'))
-            ->aggregate(array('count' => SqlAggregate::COUNT('ticket_id'))) 
+            ->filter(array('status__state' => 'open'))
+            ->aggregate(array('count' => SqlAggregate::COUNT('ticket_id')))
             ->values('status__state', 'isanswered', 'isoverdue','staff_id', 'team_id');
 
         $stats = array();
@@ -2988,10 +2942,6 @@ implements RestrictedAccess, Threadable {
             else {
                 $stats['answered'] += $S['count'];
             }
-            if ($S['status__state'] == 'progress')
-                $stats['progress'] += $S['count'];
-            if ($S['status__state'] == 'resolved')
-                $stats['resolved'] += $S['count'];
             if ($S['isoverdue'])
                 $stats['overdue'] += $S['count'];
             if ($S['staff_id'] == $id)
@@ -3013,14 +2963,10 @@ implements RestrictedAccess, Threadable {
         if(!$user || !($user instanceof EndUser))
             return null;
 
-        $sql='SELECT count(open.ticket_id) as open, count(closed.ticket_id) as closed , count(progress.ticket_id) as progress, count(resolved.ticket_id) as resolved '
+        $sql='SELECT count(open.ticket_id) as open, count(closed.ticket_id) as closed '
             .' FROM '.TICKET_TABLE.' ticket '
             .' LEFT JOIN '.TICKET_TABLE.' open
                 ON (open.ticket_id=ticket.ticket_id AND open.status=\'open\') '
-            .' LEFT JOIN '.TICKET_TABLE.' progress
-                ON (progress.ticket_id=ticket.ticket_id AND progress.status=\'progress\') '
-            .' LEFT JOIN '.TICKET_TABLE.' resolved
-                ON (resolved.ticket_id=ticket.ticket_id AND resolved.status=\'resolved\') '
             .' LEFT JOIN '.TICKET_TABLE.' closed
                 ON (closed.ticket_id=ticket.ticket_id AND closed.status=\'closed\')'
             .' WHERE ticket.user_id = '.db_input($user->getId());
@@ -3492,7 +3438,7 @@ implements RestrictedAccess, Threadable {
         }
 
         // Only do assignment if the ticket is in an open state
-        if ($ticket->isOpen() || $ticket->isStarted()) {
+        if ($ticket->isOpen()) {
             // Assign ticket to staff or team (new ticket by staff)
             if ($vars['assignId']) {
                 $asnform = $ticket->getAssignmentForm(array(
@@ -3698,7 +3644,7 @@ implements RestrictedAccess, Threadable {
 
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
-                ON (status.id=T1.status_id AND status.state IN ("open","progress")) '
+                ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
             .' WHERE isoverdue=0 '
             .' AND ((reopened is NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.created))>=T2.grace_period*3600) '

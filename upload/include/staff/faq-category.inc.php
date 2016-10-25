@@ -62,7 +62,7 @@ if ($faqs->exists(true)) {
     echo '  </ol>
          </div>';
 }else {
-    echo '<strong>'.__('Category does not have FAQs').'</strong>';
+    echo '<strong>'.__('Category does not have any knowledgebase articles at this time').'</strong>';
 }
 ?>
 </div>
