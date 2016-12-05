@@ -34,6 +34,7 @@ if($email && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo $title; ?>
     <?php if (isset($info['email'])) { ?><small>
     — <?php echo $info['email']; ?></small>
@@ -44,46 +45,46 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
  <input type="hidden" name="do" value="<?php echo $action; ?>">
  <input type="hidden" name="a" value="<?php echo Format::htmlchars($_REQUEST['a']); ?>">
  <input type="hidden" name="id" value="<?php echo $info['id']; ?>">
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Email Information and Settings');?></strong></em>
+                <?php echo __('Email Information and Settings');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
-                <?php echo __('Email Address');?>
+            <td class="required" style="width:15%">
+                <?php echo __('Email Address')?>
             </td>
             <td>
-                <input type="text" size="35" name="email" value="<?php echo $info['email']; ?>"
+                <input type="text" class="form-control-sm" size="35" name="email" value="<?php echo $info['email']; ?>"
                     autofocus>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['email']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Email Name');?>
             </td>
             <td>
-                <input type="text" size="35" name="name" value="<?php echo $info['name']; ?>">
+                <input type="text" class="form-control-sm" size="35" name="name" value="<?php echo $info['name']; ?>">
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?>&nbsp;</span>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('New Ticket Settings'); ?></strong></em>
+                <?php echo __('New Ticket Settings'); ?>
             </th>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Department');?>
             </td>
             <td>
         <span>
-			<select name="dept_id">
+			<select name="dept_id" class="form-control-sm">
 			    <option value="0" selected="selected">&mdash; <?php
                 echo __('System Default'); ?> &mdash;</option>
 			    <?php
@@ -101,12 +102,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Priority'); ?>
             </td>
             <td>
 		<span>
-			<select name="priority_id">
+			<select name="priority_id" class="form-control-sm">
 			    <option value="0" selected="selected">&mdash; <?php
                 echo __('System Default'); ?> &mdash;</option>
 			    <?php
@@ -125,12 +126,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Help Topic'); ?>
             </td>
             <td>
 		<span>
-			<select name="topic_id">
+			<select name="topic_id" class="form-control-sm">
                 <option value="0" selected="selected">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
 			    <?php
                     $topics = Topic::getHelpTopics();
@@ -147,7 +148,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Auto-Response'); ?>
             </td>
             <td>
@@ -157,38 +158,38 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <i class="help-tip icon-question-sign" href="#auto_response"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Email Login Information'); ?></strong>
-                &nbsp;<i class="help-tip icon-question-sign" href="#login_information"></i></em>
+                <?php echo __('Email Login Information'); ?>
+                &nbsp;<i class="help-tip icon-question-sign" href="#login_information"></i>
             </th>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Username'); ?>
             </td>
             <td>
-                <input type="text" size="35" name="userid" value="<?php echo $info['userid']; ?>"
+                <input type="text" class="form-control-sm" size="35" name="userid" value="<?php echo $info['userid']; ?>"
                     autocomplete="off" autocorrect="off">
                 &nbsp;<span class="error">&nbsp;<?php echo $errors['userid']; ?>&nbsp;</span>
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                <?php echo __('Password'); ?>
             </td>
             <td>
-                <input type="password" size="35" name="passwd" value="<?php echo $info['passwd']; ?>"
+                <input type="password" class="form-control-sm" size="35" name="passwd" value="<?php echo $info['passwd']; ?>"
                     autocomplete="off">
                 &nbsp;<span class="error">&nbsp;<?php echo $errors['passwd']; ?>&nbsp;</span>
-                <br><em><?php echo $passwdtxt; ?></em>
+                <br><?php echo $passwdtxt; ?>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Fetching Email via IMAP or POP'); ?></strong>
+                <?php echo __('Fetching Email via IMAP or POP'); ?>
                 &nbsp;<i class="help-tip icon-question-sign" href="#mail_account"></i>
-                &nbsp;<font class="error">&nbsp;<?php echo $errors['mail']; ?></font></em>
+                &nbsp;<font class="error">&nbsp;<?php echo $errors['mail']; ?></font>
             </th>
         </tr>
         <tr>
@@ -203,14 +204,14 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         <tr><td><?php echo __('Hostname'); ?></td>
             <td>
 		<span>
-			<input type="text" name="mail_host" size=35 value="<?php echo $info['mail_host']; ?>">
+			<input type="text" class="form-control-sm" name="mail_host" size=35 value="<?php echo $info['mail_host']; ?>">
 			&nbsp;<font class="error">&nbsp;<?php echo $errors['mail_host']; ?></font>
 			<i class="help-tip icon-question-sign" href="#host_and_port"></i>
 		</span>
             </td>
         </tr>
         <tr><td><?php echo __('Port Number'); ?></td>
-            <td><input type="text" name="mail_port" size=6 value="<?php echo $info['mail_port']?$info['mail_port']:''; ?>">
+            <td><input type="text" class="form-control-sm" name="mail_port" size=6 value="<?php echo $info['mail_port']?$info['mail_port']:''; ?>">
 		<span>
 			&nbsp;<font class="error">&nbsp;<?php echo $errors['mail_port']; ?></font>
 			<i class="help-tip icon-question-sign" href="#host_and_port"></i>
@@ -220,7 +221,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         <tr><td><?php echo __('Mail Box Protocol'); ?></td>
             <td>
 		<span>
-			<select name="mail_proto">
+			<select name="mail_proto" class="form-control-sm">
                 <option value=''>&mdash; <?php echo __('Select protocol'); ?> &mdash;</option>
 <?php
     foreach (MailFetcher::getSupportedProtos() as $proto=>$desc) { ?>
@@ -238,7 +239,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         <tr><td><?php echo __('Fetch Frequency'); ?></td>
             <td>
 		<span>
-            <input type="text" name="mail_fetchfreq" size=4 value="<?php echo $info['mail_fetchfreq']?$info['mail_fetchfreq']:''; ?>"> <?php echo __('minutes'); ?>
+            <input type="text" class="form-control-sm" name="mail_fetchfreq" size=4 value="<?php echo $info['mail_fetchfreq']?$info['mail_fetchfreq']:''; ?>"> <?php echo __('minutes'); ?>
 			<i class="help-tip icon-question-sign" href="#fetch_frequency"></i>
 			&nbsp;<font class="error">&nbsp;<?php echo $errors['mail_fetchfreq']; ?></font>
 		</span>
@@ -247,7 +248,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         <tr><td><?php echo __('Emails Per Fetch'); ?></td>
             <td>
 		<span>
-			<input type="text" name="mail_fetchmax" size=4 value="<?php echo
+			<input type="text" class="form-control-sm" name="mail_fetchmax" size=4 value="<?php echo
             $info['mail_fetchmax']?$info['mail_fetchmax']:''; ?>">
 			<i class="help-tip icon-question-sign" href="#emails_per_fetch"></i>
 			&nbsp;<font class="error">&nbsp;<?php echo $errors['mail_fetchmax']; ?></font>
@@ -258,7 +259,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
              <td>
                 <label><input type="radio" name="postfetch" value="archive" <?php echo ($info['postfetch']=='archive')? 'checked="checked"': ''; ?> >
                 <?php echo __('Move to folder'); ?>:
-                <input type="text" name="mail_archivefolder" size="20" value="<?php echo $info['mail_archivefolder']; ?>"/></label>
+                <input type="text" class="form-control-sm" name="mail_archivefolder" size="20" value="<?php echo $info['mail_archivefolder']; ?>"/></label>
                     &nbsp;<font class="error"><?php echo $errors['mail_folder']; ?></font>
                     <i class="help-tip icon-question-sign" href="#fetched_emails"></i>
                 <br/>
@@ -271,11 +272,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
 
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Sending Email via SMTP'); ?></strong>
+                <?php echo __('Sending Email via SMTP'); ?>
                 &nbsp;<i class="help-tip icon-question-sign" href="#smtp_settings"></i>
-                &nbsp;<font class="error">&nbsp;<?php echo $errors['smtp']; ?></font></em>
+                &nbsp;<font class="error">&nbsp;<?php echo $errors['smtp']; ?></font>
             </th>
         </tr>
         <tr><td><?php echo __('Status');?></td>
@@ -287,13 +288,13 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr><td><?php echo __('Hostname'); ?></td>
-            <td><input type="text" name="smtp_host" size=35 value="<?php echo $info['smtp_host']; ?>">
+            <td><input type="text" class="form-control-sm" name="smtp_host" size=35 value="<?php echo $info['smtp_host']; ?>">
                 &nbsp;<font class="error"><?php echo $errors['smtp_host']; ?></font>
 			<i class="help-tip icon-question-sign" href="#host_and_port"></i>
             </td>
         </tr>
         <tr><td><?php echo __('Port Number'); ?></td>
-            <td><input type="text" name="smtp_port" size=6 value="<?php echo $info['smtp_port']?$info['smtp_port']:''; ?>">
+            <td><input type="text" class="form-control-sm" name="smtp_port" size=6 value="<?php echo $info['smtp_port']?$info['smtp_port']:''; ?>">
                 &nbsp;<font class="error"><?php echo $errors['smtp_port']; ?></font>
 			<i class="help-tip icon-question-sign" href="#host_and_port"></i>
             </td>
@@ -317,23 +318,24 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <i class="help-tip icon-question-sign" href="#header_spoofing"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php
-                echo __("Be liberal, they're internal");?> &nbsp;<span class="error">&nbsp;<?php echo $errors['notes']; ?></span></em>
+                <?php echo __('Internal Notes');?>: <?php
+                echo __("Be liberal, they're internal");?> &nbsp;<span class="error">&nbsp;<?php echo $errors['notes']; ?></span>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
+                <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
                     rows="5" style="width: 60%;"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Submit</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="emails.php"'>
 </p>
 </form>
+</div>

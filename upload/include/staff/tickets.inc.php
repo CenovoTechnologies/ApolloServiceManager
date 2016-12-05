@@ -83,21 +83,21 @@ $queue_name = $_SESSION[$queue_key] ?: '';
 
 switch ($queue_name) {
 case 'closed':
-    $status='closed';
+    $status=array('closed');
     $results_type=__('Closed Tickets');
     $showassigned=true; //closed by.
     $queue_sort_options = array('closed', 'priority,due', 'due',
         'priority,updated', 'priority,created', 'answered', 'number', 'hot');
     break;
 case 'overdue':
-    $status!='closed';
+    $status=array('open','progress');
     $results_type=__('Overdue Tickets');
     $tickets->filter(array('isoverdue'=>1));
     $queue_sort_options = array('priority,due', 'due', 'priority,updated',
         'updated', 'answered', 'priority,created', 'number', 'hot');
     break;
 case 'assigned':
-    $status!='closed';
+    $status=array('open','progress','resolved');
     $staffId=$thisstaff->getId();
     $results_type=__('My Tickets');
     $tickets->filter(Q::any(array(
@@ -109,7 +109,7 @@ case 'assigned':
         'hot');
     break;
 case 'progress':
-    $status='progress';
+    $status=array('progress');
     $staffId=$thisstaff->getId();
     $results_type=__('Tickets in Progress');
     $tickets->filter(Q::any(array(
@@ -121,7 +121,7 @@ case 'progress':
         'hot');
     break;
 case 'resolved':
-    $status='resolved';
+    $status=array('resolved');
     $staffId=$thisstaff->getId();
     $results_type=__('Resolved Tickets');
     $tickets->filter(Q::any(array(
@@ -133,7 +133,7 @@ case 'resolved':
         'hot');
     break;
 case 'answered':
-    $status!='closed';
+    $status=array('open','progress');
     $showanswered=true;
     $results_type=__('Answered Tickets');
     $tickets->filter(array('isanswered'=>1));
@@ -212,7 +212,7 @@ case 'search':
     }
     // Fall-through and show open tickets
 case 'open':
-    $status='open';
+    $status=array('open');
     $queue_name = $queue_name ?: 'open';
     $results_type=__('Open Tickets');
     if (!$cfg->showAnsweredTickets())
@@ -233,9 +233,8 @@ if ($status != 'closed' && $queue_name != 'assigned') {
 }
 
 // Apply primary ticket status
-if ($status)
-    $tickets->filter(array('status__state'=>$status));
-
+if (!empty($status))
+    $tickets->filter(Q::any(array('status__state__in'=>$status)));
 // Impose visibility constraints
 // ------------------------------------------------------------
 if (!$view_all_tickets) {
@@ -247,7 +246,7 @@ if (!$view_all_tickets) {
     if ($teams = array_filter($thisstaff->getTeams()))
         $assigned->add(array('team_id__in' => $teams));
 
-    $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
+    $visibility = Q::any(new Q(array('status__state'=>'open, progress, resolved', $assigned)));
 
     // -- Routed to a department of mine
     if (!$thisstaff->showAssignedOnly() && ($depts=$thisstaff->getDepts()))
@@ -422,65 +421,46 @@ $tickets->constrain(array('lock' => array(
 
 ?>
 
-<!-- SEARCH FORM START -->
-<div id='basic_search'>
-  <div class="pull-right" style="height:25px">
-    <span class="valign-helper"></span>
-    <?php
-    require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
-    ?>
-  </div>
-    <form action="tickets.php" method="get" onsubmit="javascript:
-  $.pjax({
-    url:$(this).attr('action') + '?' + $(this).serialize(),
-    container:'#pjax-container',
-    timeout: 2000
-  });
-return false;">
-    <input type="hidden" name="a" value="search">
-    <input type="hidden" name="search-type" value=""/>
-    <div class="attached input">
-      <input type="text" class="basic-search" data-url="ajax.php/tickets/lookup" name="query"
-        autofocus size="30" value="<?php echo Format::htmlchars($_REQUEST['query'], true); ?>"
-        autocomplete="off" autocorrect="off" autocapitalize="off">
-      <button type="submit" class="attached button"><i class="icon-search"></i>
-      </button>
-    </div>
-    <a href="#" onclick="javascript:
-        $.dialog('ajax.php/tickets/search', 201);"
-        >[<?php echo __('advanced'); ?>]</a>
-        <i class="help-tip icon-question-sign" href="#advanced"></i>
-    </form>
-</div>
-<!-- SEARCH FORM END -->
 <div class="clear"></div>
+<div class="col-sm-12 col-md-12">
 <div style="margin-bottom:20px; padding-top:5px;">
     <div class="sticky bar opaque">
         <div class="content">
             <div class="pull-left flush-left">
                 <h2><a href="<?php echo $refresh_url; ?>"
-                    title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
-                    $results_type; ?></a></h2>
+                    title="<?php echo __('Refresh'); ?>" class="ticket-header">
+                        <?php echo $results_type; ?></a></h2>
             </div>
             <div class="pull-right flush-right">
+                <span class="valign-helper"></span>
+                <?php
+                require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
+                ?>
             <?php
             if ($count) {
                 Ticket::agentActions($thisstaff, array('status' => $status));
             }?>
             </div>
+<!--            <div class="pull-right" style="height:25px">-->
+<!--                <span class="valign-helper"></span>-->
+<!--                --><?php
+//                require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
+//                ?>
+<!--            </div>-->
         </div>
     </div>
 </div>
 <div class="clear"></div>
+
 <form action="tickets.php" method="POST" name='tickets' id="tickets">
 <?php csrf_token(); ?>
  <input type="hidden" name="a" value="mass_process" >
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
+ <table class="table table-condensed table-bordered table-hover table-striped" border="0" cellspacing="1" cellpadding="2" style="width:100%">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <?php
             if ($thisstaff->canManageTickets()) { ?>
 	        <th width="2%">&nbsp;</th>
@@ -508,7 +488,7 @@ return false;">
             // Show headers
             foreach ($queue_columns as $k => $column) {
                 echo sprintf( '<th width="%s"><a href="?sort=%s&dir=%s&%s"
-                        class="%s">%s</a></th>',
+                        class="%s table-heading">%s</a></th>',
                         $column['width'],
                         $column['sort'] ?: $k,
                         $column['sort_dir'] ? 0 : 1,
@@ -561,7 +541,7 @@ return false;">
                         $sel=true;
                     ?>
                 <td align="center" class="nohover">
-                    <input class="ckb" type="checkbox" name="tids[]"
+                    <input class="ckb form-check" type="checkbox" name="tids[]"
                         value="<?php echo $T['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
                 <?php } ?>
@@ -629,9 +609,9 @@ return false;">
         <td colspan="7">
             <?php if($total && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo '<i>';
                 echo $ferror?Format::htmlchars($ferror):__('Query returned 0 results.');
@@ -656,7 +636,6 @@ return false;">
     } ?>
     </form>
 </div>
-
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

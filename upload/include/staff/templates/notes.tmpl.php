@@ -7,9 +7,9 @@ foreach ($notes as $note) {
 </div>
 <div id="new-note-box">
 <div class="quicknote" id="new-note" data-url="<?php echo $create_note_url; ?>">
-<div class="body">
+    <button class="btn btn-outline-primary btn-block">
     <a href="#"><i class="icon-plus icon-large"></i> &nbsp;
     <?php echo __('Click to create a new note'); ?></a>
-</div>
+    </button>
 </div>
 </div>

@@ -52,13 +52,14 @@ $extensions = array(
         );
 
 ?>
-<h2><?php echo __('About this osTicket Installation'); ?></h2>
-<table class="list" width="100%";>
+<div class="col-sm-12 col-md-12">
+<h2><?php echo __('Apollo Service Manager Installation'); ?></h2>
+<table class="table table-condensed table-bordered table-striped" >
 <thead>
-    <tr><th colspan="2"><?php echo __('Server Information'); ?></th></tr>
+    <tr class="table-heading"><th colspan="2"><?php echo __('Server Information'); ?></th></tr>
 </thead>
 <tbody>
-    <tr><td><?php echo __('osTicket Version'); ?></td>
+    <tr><td><?php echo __('Apollo Service Manager Version'); ?></td>
         <td><span class="ltr"><?php
             echo sprintf("%s (%s)", THIS_VERSION, trim($commit)); ?></span>
 <?php
@@ -73,18 +74,17 @@ else {
     // Report current version (v1.9.x ?: deadbeef ?: $git)
     $cv = $tv[0] == 'v' ? $tv : $gv;
 ?>
-      <a class="green button action-button pull-right"
-         href="http://osticket.com/download?cv=<?php echo $cv; ?>"><i class="icon-rocket"></i>
-        <?php echo __('Upgrade'); ?></a>
-<?php if ($lv) { ?>
-      <strong> — <?php echo str_replace(
-          '%s', $lv, __("%s is available")
-      ); ?></strong>
-<?php }
-}
-if (!$lv) { ?>
-    <strong> — <?php echo __('This osTicket version is no longer supported. Please consider upgrading');
-        ?></strong>
+<!--      <a class="green button action-button pull-right"-->
+<!--         href="http://osticket.com/download?cv=--><?php //echo $cv; ?><!--"><i class="icon-rocket"></i>-->
+<!--        --><?php //echo __('Upgrade'); ?><!--</a>-->
+<?php //if ($lv) { ?>
+<!--      <strong> — --><?php //echo str_replace(
+//          '%s', $lv, __("%s is available")
+//      ); ?><!--</strong>-->
+<?php //}
+//}
+//if (!$lv) { ?>
+
 <?php
 }
 ?>
@@ -97,7 +97,7 @@ if (!$lv) { ?>
         <td><span class="ltr"><?php echo phpversion(); ?></span></td></tr>
 </tbody>
 <thead>
-    <tr><th colspan="2"><?php echo __('PHP Extensions'); ?></th></tr>
+    <tr class="table-heading"><th colspan="2"><?php echo __('PHP Extensions'); ?></th></tr>
 </thead>
 <tbody>
     <?php
@@ -114,7 +114,7 @@ if (!$lv) { ?>
     } ?>
 </tbody>
 <thead>
-    <tr><th colspan="2"><?php echo __('PHP Settings'); ?></th></tr>
+    <tr class="table-heading"><th colspan="2"><?php echo __('PHP Settings'); ?></th></tr>
 </thead>
 <tbody>
     <tr>
@@ -136,7 +136,7 @@ if (!$lv) { ?>
     </tr>
 </tbody>
 <thead>
-    <tr><th colspan="2"><?php echo __('Database Information and Usage'); ?></th></tr>
+    <tr class="table-heading"><th colspan="2"><?php echo __('Database Information and Usage'); ?></th></tr>
 </thead>
 <tbody>
     <tr><td><?php echo __('Schema'); ?></td>
@@ -165,30 +165,31 @@ if (!$lv) { ?>
         </td></tr>
 </tbody>
 </table>
-<br/>
-<h2><?php echo __('Installed Language Packs'); ?></h2>
-<div style="margin: 0 20px">
-<?php
-    foreach (Internationalization::availableLanguages() as $info) {
-        $p = $info['path'];
-        if ($info['phar'])
-            $p = 'phar://' . $p;
-?>
-    <h3><strong><?php echo Internationalization::getLanguageDescription($info['code']); ?></strong>
-        &mdash; <?php echo $manifest['Language']; ?>
-<?php   if ($info['phar'])
-            Plugin::showVerificationBadge($info['path']); ?>
-        </h3>
-        <div><?php echo sprintf('<code>%s</code> — %s', $info['code'],
-                str_replace(ROOT_DIR, '', $info['path'])); ?>
-<?php   if (file_exists($p . '/MANIFEST.php')) {
-            $manifest = (include $p . '/MANIFEST.php'); ?>
-            <br/> <?php echo __('Version'); ?>: <?php echo $manifest['Version'];
-                ?>, <?php echo sprintf(__('for version %s'),
-                    'v'.($manifest['Phrases-Version'] ?: '1.9')); ?>
-            <br/> <?php echo __('Built'); ?>: <?php echo $manifest['Build-Date']; ?>
-<?php   } ?>
-        </div>
-<?php
-    } ?>
 </div>
+<!--<br/>-->
+<!--<h2>--><?php //echo __('Installed Language Packs'); ?><!--</h2>-->
+<!--<div style="margin: 0 20px">-->
+<?php
+//    foreach (Internationalization::availableLanguages() as $info) {
+//        $p = $info['path'];
+//        if ($info['phar'])
+//            $p = 'phar://' . $p;
+//?>
+<!--    <h3><strong>--><?php //echo Internationalization::getLanguageDescription($info['code']); ?><!--</strong>-->
+<!--        &mdash; --><?php //echo $manifest['Language']; ?>
+<?php //  if ($info['phar'])
+//            Plugin::showVerificationBadge($info['path']); ?>
+<!--        </h3>-->
+<!--        <div>--><?php //echo sprintf('<code>%s</code> — %s', $info['code'],
+//                str_replace(ROOT_DIR, '', $info['path'])); ?>
+<?php //  if (file_exists($p . '/MANIFEST.php')) {
+//            $manifest = (include $p . '/MANIFEST.php'); ?>
+<!--            <br/> --><?php //echo __('Version'); ?><!--: --><?php //echo $manifest['Version'];
+//                ?><!--, --><?php //echo sprintf(__('for version %s'),
+//                    'v'.($manifest['Phrases-Version'] ?: '1.9')); ?>
+<!--            <br/> --><?php //echo __('Built'); ?><!--: --><?php //echo $manifest['Build-Date']; ?>
+<?php //  } ?>
+<!--        </div>-->
+<?php
+//    } ?>
+<!--</div>-->

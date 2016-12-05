@@ -51,7 +51,7 @@ if ($_POST) {
         }
     }else{
         $errors['err'] = $errors['err'] ?: sprintf('%s %s',
-            __('Unable to create a ticket.'),
+            __('Unable to create a service request.'),
             __('Correct any errors below and try again.'));
     }
 }

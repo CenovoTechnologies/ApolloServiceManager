@@ -1,20 +1,18 @@
 body {
   font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
   font-weight: 400;
-  letter-spacing: 0.15px;
   -webkit-font-smoothing:antialiased;
-          font-smoothing:antialiased;
 }
 body, html {
-    background:#eee;
+    background:#FFF;
     color:#000;
-    font-size:14px;
+    font-size:16px;
     margin:0;
     padding:0;
+    height:100%;
 }
 
-.link,
-a {
+.link, a {
     color:#184E81;
     text-decoration:none;
     display: inline-block;
@@ -125,16 +123,16 @@ a time {
 
 
 #container {
-    width:960px;
-    margin:0 auto 20px auto;
+    width:100%;
+    margin:0;
+    padding-left: 0;
+    padding-right: 0;
+    height:100%;
 }
 
 #header {
-    height:76px;
-    border-left:1px solid #aaa;
-    border-right:1px solid #aaa;
+    height:70px;
     background-color: rgb(248,248,248);
-    box-shadow: inset 0 -10px 8px -5px rgba(0,0,0,0.1);
 }
 
 #logo {
@@ -162,52 +160,79 @@ a time {
 
 #header p {
     display:block;
-    width:auto;
-    max-width:630px;
-    margin:10px;
+    margin:5px;
     background:#eee;
     border:1px solid #ccc;
-    padding:8px;
+    padding:2px;
     text-align:center;
+}
+
+#info {
+    width:40%;
+}
+
+#pjax-container {
+    padding-left:0;
+    padding-right:0;
+}
+
+#nav_search {
+  padding: 8px;
+  height: 25px;
+}
+
+.card {
+    background-color: #eeeeee;
+    border: none;
+}
+
+#nav_admin {
+    vertical-align: bottom;
+}
+
+#nav-button {
+    background:#eee;
+}
+
+#leftNav {
+    position:fixed;
+    height:100%;
+    padding-left:0;
+    padding-right:0;
+    z-index:5;
 }
 
 #nav, #sub_nav {
     clear:both;
     margin:0;
-    padding:0 20px;
-    height:26px;
-    line-height:26px;
+    padding-bottom:20px;
     border-left:1px solid #aaa;
     border-right:1px solid #aaa;
-    white-space: nowrap;
+    height:100%;
+    /*overflow-y:scroll;*/
 }
 
 #nav .active, #sub_nav li {
     padding:0;
     list-style:none;
-    display:inline;
 }
 
 #nav {
     background:#eee;
-    padding-top:4px;
+    padding-top:0;
     z-index:200;
     border-top:1px solid #ddd;
     border-bottom:1px solid #c5d9ec;
 }
 
 #nav .active, #nav .inactive {
-    display:inline-block;
-    min-width:95px;
-    width: auto;
-    padding-left: 10px;
-    padding-right: 10px;
-    height:26px;
+    width: 100%;
+    padding-left: 1px;
+    padding-right: 1px;
     color:#555;
-    text-align:center;
+    text-align:left;
     position:relative;
-
-    border-radius:5px 5px 0 0;
+    border-radius:1px 1px 0 0;
     border-style: solid;
     border-width: 1px 1px 0;
     border-color: transparent;
@@ -219,16 +244,24 @@ a time {
 }
 
 #nav .active a {
-    color:#004a80;
+    color:#555;
+}
+
+#nav .nav-header {
     font-weight:bold;
+    text-align:left;
+    color:#184E81;
+    padding: 5px 10px 5px 10px;
+    border-bottom:1px solid #bebebe;
+    border-top:1px solid #bebebe;
 }
 
 #nav > li + li {
-    margin-left: 8px;
+    margin-left: 1px;
 }
 
 #nav li.active, #nav li.inactive:hover {
-    box-shadow: 4px -3px 6px -3px rgba(0,0,0,0.3);
+    /*box-shadow: 4px -3px 6px -3px rgba(0,0,0,0.3);*/
     border-color: #c5d9ec;
 }
 #nav li.active {
@@ -239,7 +272,7 @@ a time {
 }
 
 #nav li.inactive > ul {
-    width:230px;
+    width:100%;
     background:#fbfbfb;
     margin:0;
     padding:5px 0;
@@ -254,7 +287,6 @@ a time {
     -moz-box-shadow: 3px 3px 3px #ccc;
     -webkit-box-shadow: 3px 3px 3px #ccc;
     box-shadow: 3px 3px 3px #ccc;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
 
     visibility: hidden;
     opacity: 0;
@@ -290,7 +322,8 @@ a time {
 #nav .inactive li a {
     background-position: 10px 50%;
     background-repeat: no-repeat;
-    padding: 0 10px 0 34px;
+    padding: 0 10px 0 10px;
+    text-align: left;
 }
 
 #nav .inactive li a:hover {
@@ -400,6 +433,10 @@ a.newPage { background:url(../images/icons/new_page.gif) }
 a.forms { background:url(../images/icons/icon-form.png); background-size: 16px 16px; }
 a.lists { background:url(../images/icons/icon-list.png); background-size: 16px 16px; }
 
+a.ticket-header {
+    color: #20293f;
+}
+
 /* Generic CSS based Icons. use=> <tag class="Icon iconname">text</tag> */
 
 .Icon {
@@ -467,9 +504,7 @@ a.Icon:hover {
 
 #content {
     clear:both;
-    border:1px solid #aaa;
     border-top:none;
-    border-bottom:3px solid #bbb;
     padding:10px 10px 20px 10px;
     background:#fff;
 }
@@ -482,7 +517,19 @@ a {
     clear:both;
     padding:10px;
     text-align:center;
-    font-size:0.9em;
+    font-size:1em;
+    background-color: white;
+}
+.table-heading {
+    text-align:center;
+    background-color:#cacaca;
+    color:#20293f;
+}
+.table-heading th {
+    padding: 0.5em;
+}
+.table-heading th a{
+    color:#20293f;
 }
 table.dashboard-stats {
     text-align:right;
@@ -592,6 +639,11 @@ table.list tbody td.phoneticket, table.list tbody tr.row1 td.phoneticket {
 table.list tbody td.otherticket, table.list tbody tr.row1 td.otherticket {
     text-indent:20px;
     background:url(../images/icons/ticket_source_other.gif) 0 50% no-repeat;
+}
+
+.asm-table {
+    margin-left: 8px;
+    margin-right: 6px;
 }
 
 a.refresh {
@@ -727,7 +779,6 @@ td.multi-line {
 }
 
 input[type=text], input[type=password], textarea, input {
-    padding: 3px 5px;
     font-size: 0.95em;
     font-family: inherit;
     background:#fff;
@@ -764,7 +815,6 @@ input[type=text], input[type=password], textarea, input {
     border:1px solid #ccc;
     background:#eee;
     padding:0;
-    padding:5px;
 }
 
 div.section-break h3 {
@@ -846,7 +896,7 @@ h3 {
     color:#444;
 }
 .tixTitle {
-   padding:0 5px 0px;
+   padding:0 5px 0;
 }
 .tixTitle h3 {
    color:#444;
@@ -867,6 +917,11 @@ h3 {
 
 .ticket_info {
     background:#F4FAFF;
+}
+
+.user_info {
+    background: #ffffff;
+    width: 92%
 }
 
 .ticket_info.custom-data thead th {
@@ -1069,7 +1124,6 @@ img.avatar {
     width: 48%;
 }
 .thread-body .attachment-info .filename {
-  max-width: 80%;
   max-width: calc(100% - 70px);
 }
 
@@ -1099,7 +1153,7 @@ img.avatar {
 ul.tabs {
     padding:4px 0 0 20px;
     margin:0;
-    text-align:left;
+    text-align:center;
     height:29px;
     border-bottom:1px solid #aaa;
     background:#eef3f8;
@@ -1121,17 +1175,13 @@ ul.tabs li {
     height:28px;
     line-height:20px;
     color:#444;
-    display:inline-block;
     outline:none;
     position:relative;
     bottom:1px;
     background:#fbfbfb;
     background-color: rgba(251, 251, 251, 0.5);
     border:1px solid #ccc;
-    border:1px solid rgba(204, 204, 204, 0.5);
     border-bottom:none;
-    position: relative;
-    bottom: 1px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     font-size: 95%;
@@ -1210,7 +1260,6 @@ ul.tabs.vertical.left {
 }
 
 ul.tabs.vertical li {
-    border:1px solid #ccc;
     border:1px solid rgba(204, 204, 204, 0.5);
     border-right: none;
     min-width: 0;
@@ -1269,7 +1318,7 @@ ul.tabs.alt li.active {
 
 #response_options .reply_tab.tell {
     color:#a00 !important;
-    background-image:url(../images/reminder.png);
+    /*background-image:url(../images/reminder.png);*/
     background-position:12px 50%;
     background-repeat:no-repeat;
 }
@@ -1351,13 +1400,11 @@ ul.tabs.alt li.active {
     -o-transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
-    filter: FlipH;
     -ms-filter: "FlipH";
 }
 
 .tip_content {
     height:auto !important;
-    height:20px;
     min-height:20px;
     padding:10px;
     border:1px solid #666;
@@ -1415,7 +1462,6 @@ ul.tabs.alt li.active {
     top:0;
     left:0;
     width:auto !important;
-    width:310px;
 }
 
 .tip_menu {
@@ -1464,7 +1510,6 @@ ul.tabs.alt li.active {
 .tip_content form p {
     margin:0;
     width:auto !important;
-    width:295px;
     text-align:right;
     line-height:1.5em;
 }
@@ -1495,7 +1540,6 @@ caption > i.help-tip {
     opacity: 0.2;
 }
 caption:hover > i.help-tip {
-    color: orange;
     color: #ffc20f;
     opacity: 1;
 }
@@ -1555,11 +1599,10 @@ h2 > i.help-tip {
 #faq {
   clear: both;
   margin: 0;
-  padding: 0px 0 10px 0px;
+  padding: 0 0 10px 0;
 }
 #faq ol {
   font-size: 15px;
-  margin-left: 0;
   padding-left: 0;
   margin:0!IMPORTANT;
 }
@@ -1623,8 +1666,7 @@ time.faq {
 .dialog {
     position:fixed;
     padding:1em;
-    width:500px;
-    height:250px;
+    width:auto;
     height:auto !important;
     background:#f8f8f8;
     border:2px solid #2a67ac;
@@ -1632,7 +1674,7 @@ time.faq {
     z-index:10;
     box-shadow: 0 5px 60px #001;
     border-radius: 5px;
-    max-height: 72%;
+    max-height: 100%;
     min-height: 50px;
     overflow-y: auto;
 }
@@ -1825,6 +1867,13 @@ input[type="button"],
 -webkit-transition: opacity 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease, color 0.1s ease, background 0.1s ease;
         transition: opacity 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease, color 0.1s ease, background 0.1s ease;
 }
+
+.action-button {
+    padding: 1em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
 input[type="submit"] i,
 input[type="reset"] i,
 input[type="button"] i,
@@ -1988,7 +2037,6 @@ input[type=button].small, .small.button, input[type=submit].small {
     background-color: #eee;
     border: 1px dotted #bbb;
     padding: 0.3em;
-    padding-left: 0.3em;
 }
 
 #result-count div {
@@ -2035,7 +2083,7 @@ input[type=button].small, .small.button, input[type=submit].small {
 #upgrader #main  { padding-bottom: 20px; }
 
 ul.progress { margin: 10px 0 20px 20px; padding: 0; }
-ul.progress li { list-style: none; margin: 0; padding: 0 0 2px 24px; background: url('../images/incomplete.png?1312910844'); background-repeat: no-repeat; background-position: 0 50%; }
+/*ul.progress li { list-style: none; margin: 0; padding: 0 0 2px 24px; background: url('../images/incomplete.png?1312910844'); background-repeat: no-repeat; background-position: 0 50%; }*/
 ul.progress li.yes { background-image: url('../images/yes.png?1312906296'); }
 ul.progress li.no { background-image: url('../images/no.png?1312906277'); }
 
@@ -2043,7 +2091,7 @@ ul.progress li.yes small {color:green; }
 ul.progress li.no small {color:red;}
 
 #bar { clear: both; padding-top: 10px; height: 24px; line-height: 24px; text-align: center; border-top: 1px solid #aaaaaa; }
-#bar a.unstyled, #bar a.unstyled:hover { font-weight: normal; background: none; border: none; text-decoration: underline; color: #2a67ac; }
+/*#bar a.unstyled, #bar a.unstyled:hover { font-weight: normal; background: none; border: none; text-decoration: underline; color: #2a67ac; }*/
 
 #bar.error { background: #ffd; text-align: center; color: #a00; font-weight: bold; }
 
@@ -2103,7 +2151,7 @@ input.dp {
 }
 
 .icon-warning-sign {
-    color: #d33;
+    color: #dd000f;
 }
 
 div.patch {
@@ -2117,7 +2165,6 @@ div.patch {
 
 div.selected-signature {
     border: 1px solid #ddd;
-    border: 1px solid rgba(0,0,0,0.1);
     border-top-style: dotted;
     border-bottom-style: none;
     padding: 0.3em 10px 5px;
@@ -2162,7 +2209,6 @@ div.selected-signature .inner {
 }
 .muted-button:hover {
     border: 1px solid #aaa;
-    border: 1px solid rgba(0,0,0,0.3);
     cursor: pointer;
     background: rgba(255,255,255,0.1);
     color: black;
@@ -2175,7 +2221,6 @@ div.selected-signature .inner {
   color: #666;
   color: rgba(0,0,0,0.5);
   background-color: rgba(0,0,0,0.1);
-  background: linear-gradient(0, rgba(0,0,0,0.1), rgba(255,255,255,0.1));
 }
 
 .sortable-rows tr td:hover {
@@ -2221,7 +2266,7 @@ div.selected-signature .inner {
 .row-item .button-group {
     font-size: 105%;
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 0;
     display: inline-block;
 }
@@ -2327,7 +2372,7 @@ tr.disabled th {
     bottom: 1px;
     margin-bottom: 4px;
     font-size: 11px;
-    padding: 0px 7px;
+    padding: 0 7px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -2340,7 +2385,6 @@ tr.disabled th {
     background-color: #999999;
 }
 .label-bare {
-  background-color: transparent;
   background-color: rgba(0,0,0,0);
   border: 1px solid #999999;
   color: #999999;
@@ -2351,14 +2395,12 @@ tr.disabled th {
 }
 .label-verified {
     border:1px solid green;
-    background-color:transparent;
     background-color:rgba(0,0,0,0);
     color:green;
     text-shadow:none;
 }
 .label-danger {
     border:1px solid red;
-    background-color:transparent;
     background-color:rgba(0,0,0,0);
     color:red;
     text-shadow:none;
@@ -2504,7 +2546,7 @@ tr i.help-tip.warning {
     vertical-align: bottom;
 }
 .truncate.bleed {
-    text-overflow: hidden;
+    /*text-overflow: hidden;*/
 }
 td.indented {
     padding-left: 20px;
@@ -2549,12 +2591,11 @@ td.indented {
   display: none;
 }
 .accordian dd {
-  border-top: 0;
   font-size: 12px;
   margin-left: 0;
   border: 1px solid #ccc;
   border-top: none;
-  box-shadow: inset 0px 10px 5px -10px rgba(0,0,0,0.1);
+  box-shadow: inset 0 10px 5px -10px rgba(0,0,0,0.1);
   background-color:rgba(42,103,172,0.1);
 }
 .accordian dt ~ dt {
@@ -2623,7 +2664,7 @@ td.indented {
     background-color: #eee;
     background-color: rgba(0,0,0,0.1);
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 20px;
     padding: 8px 8px 5px;
     border-radius: 0 0 5px 5px;
@@ -2765,7 +2806,6 @@ td.indented {
     padding-top: 6px;
     padding-left: 30px;
     display: inline-block;
-    width: 772px;
     width: calc(100% - 95px);
     line-height: 1.4em;
 }
@@ -2803,11 +2843,9 @@ form .inset {
     width: 100%;
 }
 .span6 {
-    width: 48%;
     width: calc(50% - 10px);
 }
 .span6 + .span6 {
-    margin-left: 1%;
     margin-left: calc(0 + 10px);
 }
 .form.footer {
@@ -2852,7 +2890,6 @@ input, textarea {
 
 small {
     font-weight: normal;
-    letter-spacing: 0.01px;
 }
 
 /* Form layouts */
@@ -2884,13 +2921,12 @@ table.grid.form caption {
 }
 
 #basic_search {
-  background-color: #f4f4f4;
-  margin: -10px 0;
-  margin-bottom: 5px;
-  padding: 8px;
-  box-shadow: inset 0 4px 12px -10px black;
-  border-bottom: 1px dotted #aaa;
-  border-radius: 0 0 5px 5px;
+    background-color: #f4f4f4;
+    margin: -10px -25px;
+    margin-bottom: 5px;
+    padding: 8px;
+    box-shadow: inset 0 4px 12px -10px black;
+    border-bottom: 1px dotted #aaa;
 }
 
 #basic-ticket-search {

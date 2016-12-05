@@ -1,3 +1,4 @@
+<div class="col-sm-12 col-md-12">
 <form action="lists.php" method="POST" name="lists">
 
 <div class="sticky bar opaque">
@@ -8,13 +9,11 @@
         <div class="pull-right flush-right">
             <a href="lists.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php
                     echo __('Add New Custom List'); ?></a>
-
-            <span class="action-button" data-dropdown="#action-dropdown-more">
-                    <i class="icon-caret-down pull-right"></i>
+            <div class="btn-group">
+            <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
                     <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
             </span>
-            <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                <ul id="actions">
+                <ul id="actions" class="bleed-left dropdown-menu">
                     <li class="danger">
                         <a class="confirm" data-name="delete" href="lists.php?a=delete">
                             <i class="icon-trash icon-fixed-width"></i>
@@ -39,9 +38,9 @@ $showing=$pageNav->showing().' '._N('custom list', 'custom lists', $count);
 <?php csrf_token(); ?>
 <input type="hidden" name="do" value="mass_process" >
 <input type="hidden" id="action" name="a" value="" >
-<table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+<table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="32%"><?php echo __('List Name'); ?></th>
             <th width="32%"><?php echo __('Created') ?></th>
@@ -81,9 +80,9 @@ $showing=$pageNav->showing().' '._N('custom list', 'custom lists', $count);
         <td colspan="4">
             <?php if($count){ ?>
             <?php echo __('Select'); ?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All'); ?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None'); ?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle'); ?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All'); ?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None'); ?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle'); ?></a></button>
             <?php } else {
                 echo sprintf(__('No custom lists defined yet &mdash; %s add one %s!'),
                     '<a href="lists.php?a=add">','</a>');
@@ -98,7 +97,7 @@ if ($count) //Show options..
 ?>
 
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm'); ?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

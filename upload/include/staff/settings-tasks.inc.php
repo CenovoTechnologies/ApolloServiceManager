@@ -3,34 +3,35 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
 if(!($maxfileuploads=ini_get('max_file_uploads')))
     $maxfileuploads=DEFAULT_MAX_FILE_UPLOADS;
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('Task Settings and Options');?></h2>
 <form action="settings.php?t=tasks" method="post" id="save">
 <?php csrf_token(); ?>
 <input type="hidden" name="t" value="tasks" >
 
-<ul class="tabs" id="tasks-tabs">
-    <li class="active"><a href="#settings">
+<ul class="nav nav-tabs" id="tasks-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#taskSettings" role="tab">
         <i class="icon-asterisk"></i> <?php echo __('Settings'); ?></a></li>
-    <li><a href="#alerts">
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#alerts" role="tab">
         <i class="icon-bell-alt"></i> <?php echo __('Alerts &amp; Notices'); ?></a></li>
 </ul>
-<div id="tasks-tabs_container">
-   <div id="settings" class="tab_content">
-    <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<div class="tab-content" id="tasks-tabs_container">
+   <div id="taskSettings" class="tab-pane active" role="tabpanel">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
         <thead>
-            <tr>
+            <tr class="table-heading">
                 <th colspan="2">
-                    <em><?php echo __('Global default task settings and options.'); ?></em>
+                    <?php echo __('Global default task settings and options.'); ?>
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>
+                <td style="width:20%">
                     <?php echo __('Default Task Number Format'); ?>:
                 </td>
                 <td>
-                    <input type="text" name="task_number_format" value="<?php
+                    <input type="text" class="form-control-sm" name="task_number_format" value="<?php
                     echo $config['task_number_format']; ?>"/>
                     <span class="faded"><?php echo __('e.g.'); ?> <span id="format-example"><?php
                         if ($config['task_sequence_id'])
@@ -43,10 +44,10 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     <div class="error"><?php echo $errors['task_number_format']; ?></div>
                 </td>
             </tr>
-            <tr><td width="220"><?php echo __('Default Task Number Sequence'); ?>:</td>
+            <tr><td><?php echo __('Default Task Number Sequence'); ?>:</td>
     <?php $selected = 'selected="selected"'; ?>
                 <td>
-                    <select name="task_sequence_id">
+                    <select name="task_sequence_id" class="form-control-sm">
                     <option value="0" <?php if ($config['task_sequence_id'] == 0) echo $selected;
                         ?>>&mdash; <?php echo __('Random'); ?> &mdash;</option>
     <?php foreach (Sequence::objects() as $s) { ?>
@@ -55,7 +56,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                         ?>><?php echo $s->name; ?></option>
     <?php } ?>
                     </select>
-                    <button class="action-button pull-right" onclick="javascript:
+                    <button class="btn btn-sm btn-secondary pull-right" onclick="javascript:
                     $.dialog('ajax.php/sequence/manage', 205);
                     return false;
                     "><i class="icon-gear"></i> <?php echo __('Manage'); ?></button>
@@ -63,9 +64,9 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 </td>
             </tr>
             <tr>
-                <td width="180" class="required"><?php echo __('Default Priority');?>:</td>
+                <td class="required"><?php echo __('Default Priority');?>:</td>
                 <td>
-                    <select name="default_task_priority_id">
+                    <select name="default_task_priority_id" class="form-control-sm">
                         <?php
                         $priorities= db_query('SELECT priority_id,priority_desc FROM '.TICKET_PRIORITY_TABLE);
                         while (list($id,$tag) = db_fetch_row($priorities)){ ?>
@@ -78,19 +79,19 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     $errors['default_task_priority_id']; ?></span> <i class="help-tip icon-question-sign" href="#default_priority"></i>
                  </td>
             </tr>
-            <tr>
+            <tr class="table-heading">
                 <th colspan="2">
-                    <em><b><?php echo __('Attachments');?></b>:</em>
+                    <b><?php echo __('Attachments');?></b>:
                 </th>
             </tr>
             <tr>
-                <td width="180"><?php echo __('Task Attachment Settings');?>:</td>
+                <td><?php echo __('Task Attachment Settings');?>:</td>
                 <td>
     <?php
                     $tform = TaskForm::objects()->one()->getForm();
                     $f = $tform->getField('description');
     ?>
-                    <a class="action-button field-config" style="overflow:inherit"
+                    <a class="btn btn-secondary btn-sm field-config" style="overflow:inherit"
                         href="#ajax.php/form/field-config/<?php
                             echo $f->get('id'); ?>"
                         onclick="javascript:
@@ -103,14 +104,14 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
         </tbody>
     </table>
    </div>
-   <div id="alerts" class="tab_content" style="display:none;">
-    <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+   <div id="alerts" class="tab-pane" role="tabpanel">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
         <tbody>
-            <tr><th><em><b><?php echo __('New Task Alert'); ?></b>:
+            <tr class="table-heading"><th><b><?php echo __('New Task Alert'); ?></b>:
                 <i class="help-tip icon-question-sign" href="#task_alert"></i>
-                </em></th></tr>
+                </th></tr>
             <tr>
-                <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+                <td><b><?php echo __('Status'); ?>:</b> &nbsp;
                     <input type="radio" name="task_alert_active"  value="1"
                     <?php echo $config['task_alert_active'] ? 'checked="checked"' : ''; ?>
                     /> <?php echo __('Enable'); ?>
@@ -141,11 +142,11 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     <?php echo __('Department Members'); ?>
                 </td>
             </tr>
-            <tr><th><em><b><?php echo __('New Activity Alert'); ?></b>:
+            <tr class="table-heading"><th><b><?php echo __('New Activity Alert'); ?></b>:
                 <i class="help-tip icon-question-sign" href="#activity_alert"></i>
-                </em></th></tr>
+                </th></tr>
             <tr>
-                <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+                <td><b><?php echo __('Status'); ?>:</b>
                   <input type="radio" name="task_activity_alert_active" value="1"
                   <?php echo $config['task_activity_alert_active'] ? 'checked="checked"' : ''; ?> />
                     <?php echo __('Enable'); ?>
@@ -177,11 +178,11 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     <?php echo __('Department Manager'); ?>
                 </td>
             </tr>
-            <tr><th><em><b><?php echo __('Task Assignment Alert'); ?></b>:
+            <tr class="table-heading"><th><b><?php echo __('Task Assignment Alert'); ?></b>:
                 <i class="help-tip icon-question-sign" href="#assignment_alert"></i>
-                </em></th></tr>
+                </th></tr>
             <tr>
-                <td><em><b><?php echo __('Status'); ?>: </b></em> &nbsp;
+                <td><b><?php echo __('Status'); ?>: </b> &nbsp;
                   <input name="task_assignment_alert_active" value="1" type="radio"
                     <?php echo $config['task_assignment_alert_active'] ? 'checked="checked"' : ''; ?>>
                     <?php echo __('Enable'); ?>
@@ -213,11 +214,11 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     <?php echo __('Team Members'); ?>
                 </td>
             </tr>
-            <tr><th><em><b><?php echo __('Task Transfer Alert'); ?></b>:
+            <tr class="table-heading"><th><b><?php echo __('Task Transfer Alert'); ?></b>:
                 <i class="help-tip icon-question-sign" href="#transfer_alert"></i>
-                </em></th></tr>
+                </th></tr>
             <tr>
-                <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+                <td><b><?php echo __('Status'); ?>:</b> &nbsp;
                 <input type="radio" name="task_transfer_alert_active"  value="1"
                 <?php echo $config['task_transfer_alert_active'] ? 'checked="checked"' : ''; ?> />
                     <?php echo __('Enable'); ?>
@@ -249,11 +250,11 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     <?php echo __('Department Members'); ?>
                 </td>
             </tr>
-            <tr><th><em><b><?php echo __('Overdue Task Alert'); ?></b>:
+            <tr class="table-heading"><th><b><?php echo __('Overdue Task Alert'); ?></b>:
                 <i class="help-tip icon-question-sign" href="#overdue_alert"></i>
-                </em></th></tr>
+                </th></tr>
             <tr>
-                <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+                <td><b><?php echo __('Status'); ?>:</b> &nbsp;
                   <input type="radio" name="task_overdue_alert_active"  value="1"
                     <?php echo $config['task_overdue_alert_active'] ? 'checked="checked"' : ''; ?> /> <?php echo __('Enable'); ?>
                   <input type="radio" name="task_overdue_alert_active"  value="0"
@@ -286,11 +287,12 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
     </table>
    </div>
 </div>
-<p style="text-align:center;">
-    <input class="button" type="submit" name="submit" value="<?php echo __('Save Changes');?>">
-    <input class="button" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">
+<p style="text-align:left;">
+    <button class="btn btn-sm btn-outline-primary" type="submit" name="submit" value="<?php echo __('Save Changes');?>">Save Changes</button>
+    <button class="btn btn-sm btn-secondary" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">Reset</button>
 </p>
 </form>
+    </div>
 <script type="text/javascript">
 $(function() {
     var request = null,

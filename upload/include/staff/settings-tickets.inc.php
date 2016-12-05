@@ -3,35 +3,37 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
 if(!($maxfileuploads=ini_get('max_file_uploads')))
     $maxfileuploads=DEFAULT_MAX_FILE_UPLOADS;
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('Ticket Settings and Options');?></h2>
 <form action="settings.php?t=tickets" method="post" id="save">
 <?php csrf_token(); ?>
 <input type="hidden" name="t" value="tickets" >
 
-<ul class="clean tabs">
-    <li class="active"><a href="#settings"><i class="icon-asterisk"></i>
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#items" role="tab"><i class="icon-asterisk"></i>
         <?php echo __('Settings'); ?></a></li>
-    <li><a href="#autoresp"><i class="icon-mail-reply-all"></i>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#autoresp" role="tab"><i class="icon-mail-reply-all"></i>
         <?php echo __('Autoresponder'); ?></a></li>
-    <li><a href="#alerts"><i class="icon-bell-alt"></i>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#alerts" role="tab"><i class="icon-bell-alt"></i>
         <?php echo __('Alerts and Notices'); ?></a></li>
 </ul>
-<div class="tab_content" id="settings">
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content">
+<div class="tab-pane active" id="items" role="tabpanel">
+<table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('System-wide default ticket settings and options.'); ?></em>
+                <?php echo __('System-wide default ticket settings and options.'); ?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>
+            <td style="width:25%">
                 <?php echo __('Default Ticket Number Format'); ?>:
             </td>
             <td>
-                <input type="text" name="ticket_number_format" value="<?php
+                <input type="text" class="form-control-sm" name="ticket_number_format" value="<?php
                 echo $config['ticket_number_format']; ?>"/>
                 <span class="faded"><?php echo __('e.g.'); ?> <span id="format-example"><?php
                     if ($config['ticket_sequence_id'])
@@ -44,10 +46,10 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <div class="error"><?php echo $errors['ticket_number_format']; ?></div>
             </td>
         </tr>
-        <tr><td width="220"><?php echo __('Default Ticket Number Sequence'); ?>:</td>
+        <tr><td><?php echo __('Default Ticket Number Sequence'); ?>:</td>
 <?php $selected = 'selected="selected"'; ?>
             <td>
-                <select name="ticket_sequence_id">
+                <select name="ticket_sequence_id" class="form-control-sm">
                 <option value="0" <?php if ($config['ticket_sequence_id'] == 0) echo $selected;
                     ?>>&mdash; <?php echo __('Random'); ?> &mdash;</option>
 <?php foreach (Sequence::objects() as $s) { ?>
@@ -56,7 +58,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                     ?>><?php echo $s->name; ?></option>
 <?php } ?>
                 </select>
-                <button class="action-button pull-right" onclick="javascript:
+                <button class="pull-right btn btn-sm btn-secondary" onclick="javascript:
                 $.dialog('ajax.php/sequence/manage', 205);
                 return false;
                 "><i class="icon-gear"></i> <?php echo __('Manage'); ?></button>
@@ -64,12 +66,12 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Default Status'); ?>:
             </td>
             <td>
                 <span>
-                <select name="default_ticket_status_id">
+                <select name="default_ticket_status_id" class="form-control-sm">
                 <?php
                 $criteria = array('states' => array('open'));
                 foreach (TicketStatusList::getStatuses($criteria) as $status) {
@@ -95,9 +97,9 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td width="180" class="required"><?php echo __('Default Priority');?>:</td>
+            <td class="required"><?php echo __('Default Priority');?>:</td>
             <td>
-                <select name="default_priority_id">
+                <select name="default_priority_id" class="form-control-sm">
                     <?php
                     $priorities= db_query('SELECT priority_id,priority_desc FROM '.TICKET_PRIORITY_TABLE);
                     while (list($id,$tag) = db_fetch_row($priorities)){ ?>
@@ -109,12 +111,12 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
              </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Default SLA');?>:
             </td>
             <td>
                 <span>
-                <select name="default_sla_id">
+                <select name="default_sla_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('None');?> &mdash;</option>
                     <?php
                     if($slas=SLA::getSLAs()) {
@@ -132,9 +134,9 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Default Help Topic'); ?>:</td>
+            <td><?php echo __('Default Help Topic'); ?>:</td>
             <td>
-                <select name="default_help_topic">
+                <select name="default_help_topic" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('None'); ?> &mdash;</option><?php
                     $topics = Topic::getHelpTopics(false, Topic::DISPLAY_DISABLED);
                     while (list($id,$topic) = each($topics)) { ?>
@@ -146,9 +148,9 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Lock Semantics'); ?>:</td>
+            <td><?php echo __('Lock Semantics'); ?>:</td>
             <td>
-                <select name="ticket_lock" <?php if ($cfg->getLockTime() == 0) echo 'disabled="disabled"'; ?>>
+                <select name="ticket_lock" class="form-control-sm" <?php if ($cfg->getLockTime() == 0) echo 'disabled="disabled"'; ?>>
 <?php foreach (array(
     Lock::MODE_DISABLED => __('Disabled'),
     Lock::MODE_ON_VIEW => __('Lock on view'),
@@ -165,7 +167,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
         <tr>
             <td><?php echo __('Maximum <b>Open</b> Tickets');?>:</td>
             <td>
-                <input type="text" name="max_open_tickets" size=4 value="<?php echo $config['max_open_tickets']; ?>">
+                <input type="text" class="form-control-sm" name="max_open_tickets" size=4 value="<?php echo $config['max_open_tickets']; ?>">
                 <?php echo __('per end user'); ?>
                 <span class="error">*&nbsp;<?php echo $errors['max_open_tickets']; ?></span>
                 <i class="help-tip icon-question-sign" href="#maximum_open_tickets"></i>
@@ -205,19 +207,19 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <i class="help-tip icon-question-sign" href="#answered_tickets"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><b><?php echo __('Attachments');?></b>:  <?php echo __('Size and maximum uploads setting mainly apply to web tickets.');?></em>
+                <b><?php echo __('Attachments');?></b>:  <?php echo __('Size and maximum uploads setting mainly apply to web tickets.');?>
             </th>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Ticket Attachment Settings');?>:</td>
+            <td><?php echo __('Ticket Attachment Settings');?>:</td>
             <td>
 <?php
                 $tform = TicketForm::objects()->one()->getForm();
                 $f = $tform->getField('message');
 ?>
-                <a class="action-button field-config" style="overflow:inherit"
+                <a class="btn btn-sm btn-secondary field-config" style="overflow:inherit"
                     href="#ajax.php/form/field-config/<?php
                         echo $f->get('id'); ?>"
                     onclick="javascript:
@@ -230,20 +232,19 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
     </tbody>
 </table>
 </div>
-<div class="hidden tab_content" id="autoresp"
-    data-tip-namespace="settings.autoresponder">
+<div class="tab-pane" id="autoresp" role="tabpanel" data-tip-namespace="settings.autoresponder">
     <?php include STAFFINC_DIR . 'settings-autoresp.inc.php'; ?>
 </div>
-<div class="hidden tab_content" id="alerts"
-    data-tip-namespace="settings.alerts">
+<div class="tab-pane" id="alerts" role="tabpanel" data-tip-namespace="settings.alerts">
     <?php include STAFFINC_DIR . 'settings-alerts.inc.php'; ?>
 </div>
-
-<p style="text-align:center;">
-    <input class="button" type="submit" name="submit" value="<?php echo __('Save Changes');?>">
-    <input class="button" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">
+    </div>
+<p style="text-align:left;">
+    <button class="btn btn-sm btn-outline-primary" type="submit" name="submit" value="<?php echo __('Save Changes');?>">Save Changes</button>
+    <button class="btn btn-sm btn-secondary" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">Reset</button>
 </p>
 </form>
+    </div>
 <script type="text/javascript">
 $(function() {
     var request = null,

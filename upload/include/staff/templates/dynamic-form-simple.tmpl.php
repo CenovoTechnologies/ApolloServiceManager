@@ -1,4 +1,4 @@
-<div class="form-simple">
+<div class="form-simple" style="padding-top:5px;">
     <?php
     echo $form->getMedia();
     foreach ($form->getFields() as $name=>$f) { ?>
@@ -17,8 +17,8 @@
   <?php } ?>
         <?php
         if ($f->get('hint')) { ?>
-            <em style="color:gray;display:block"><?php
-                echo Format::viewableImages($f->get('hint')); ?></em>
+            <div style="color:gray;display:block"><?php
+                echo Format::viewableImages($f->get('hint')); ?></div>
         <?php
         } ?>
         </div><div>

@@ -8,20 +8,11 @@ if ($agent->hasPerm(Task::PERM_CLOSE, false)) {
     if (isset($options['status'])) {
         $status = $options['status'];
     ?>
-        <span
-            class="action-button"
-            data-dropdown="#action-dropdown-tasks-status">
-            <i class="icon-caret-down pull-right"></i>
-            <a class="tasks-status-action"
-                href="#statuses"
-                data-placement="bottom"
-                data-toggle="tooltip"
-                title="<?php echo __('Change Status'); ?>"><i
-                class="icon-flag"></i></a>
-        </span>
-        <div id="action-dropdown-tasks-status"
-            class="action-dropdown anchor-right">
-            <ul>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('Change Status'); ?>" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-flag"></i>
+            </button>
+            <ul id="action-dropdown-tasks-status" class="dropdown-menu">
                 <?php
                 if (!$status || !strcasecmp($status, 'closed')) { ?>
                 <li>
@@ -98,18 +89,22 @@ if ($agent->hasPerm(Task::PERM_DELETE, false)) {
 if ($actions && !isset($options['status'])) {
     $more = $options['morelabel'] ?: __('More');
     ?>
-    <span
-        class="action-button"
-        data-dropdown="#action-dropdown-moreoptions">
-        <i class="icon-caret-down pull-right"></i>
-        <a class="tasks-action"
-            href="#moreoptions"><i
-            class="icon-reorder"></i> <?php
-            echo $more; ?></a>
-    </span>
-    <div id="action-dropdown-moreoptions"
-        class="action-dropdown anchor-right">
-        <ul>
+<!--    <span-->
+<!--        class="action-button"-->
+<!--        data-dropdown="#action-dropdown-moreoptions">-->
+<!--        <i class="icon-caret-down pull-right"></i>-->
+<!--        <a class="tasks-action"-->
+<!--            href="#moreoptions"><i-->
+<!--            class="icon-reorder"></i> --><?php
+//            echo $more; ?><!--</a>-->
+<!--    </span>-->
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('More'); ?>" aria-haspopup="true" aria-expanded="false">
+            <i class="icon-reorder"></i>
+        </button>
+<!--    <div id="action-dropdown-moreoptions"-->
+<!--        class="action-dropdown anchor-right">-->
+        <ul id="action-dropdown-moreoptions" class="dropdown-menu">
     <?php foreach ($actions as $a => $action) { ?>
             <li <?php
                 if ($action['class'])
@@ -135,27 +130,22 @@ if ($actions && !isset($options['status'])) {
  } else {
     // Mass Claim/Assignment
     if ($agent->hasPerm(Task::PERM_ASSIGN, false)) {?>
-    <span
-        class="action-button" data-placement="bottom"
-        data-dropdown="#action-dropdown-assign" data-toggle="tooltip" title=" <?php
-        echo __('Assign'); ?>">
-        <i class="icon-caret-down pull-right"></i>
-        <a class="tasks-action" id="tasks-assign"
-            href="#tasks/mass/assign"><i class="icon-user"></i></a>
-    </span>
-    <div id="action-dropdown-assign" class="action-dropdown anchor-right">
-      <ul>
-         <li><a class="no-pjax tasks-action"
-            href="#tasks/mass/claim"><i
-            class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a>
-         <li><a class="no-pjax tasks-action"
-            href="#tasks/mass/assign/agents"><i
-            class="icon-user"></i> <?php echo __('Agent'); ?></a>
-         <li><a class="no-pjax tasks-action"
-            href="#tasks/mass/assign/teams"><i
-            class="icon-group"></i> <?php echo __('Team'); ?></a>
-      </ul>
-    </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('Assign'); ?>" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-user"></i>
+            </button>
+              <ul id="action-dropdown-assign" class="dropdown-menu">
+                 <li><a class="no-pjax tasks-action"
+                    href="#tasks/mass/claim"><i
+                    class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a>
+                 <li><a class="no-pjax tasks-action"
+                    href="#tasks/mass/assign/agents"><i
+                    class="icon-user"></i> <?php echo __('Agent'); ?></a>
+                 <li><a class="no-pjax tasks-action"
+                    href="#tasks/mass/assign/teams"><i
+                    class="icon-group"></i> <?php echo __('Team'); ?></a>
+              </ul>
+        </div>
     <?php
     }
 

@@ -1,12 +1,13 @@
 <?php
 if(!defined('OSTSCPINC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access Denied');
 ?>
-<h2><?php echo __('osTicket Upgrader');?></h2>
+<div class="col-sm-12 col-md-12">
+<h2><?php echo __('Apollo Service Manager Upgrader');?></h2>
 <div id="upgrader">
 
     <div id="main">
             <div id="intro">
-             <p><?php echo __('Thank you for being a loyal osTicket user!');?></p>
+             <p><?php echo __('Thank you for being a loyal Apollo Service Manager user!');?></p>
              <p><?php echo __("The upgrade wizard will guide you every step of the way in the upgrade process. While we try to ensure that the upgrade process is straightforward and painless, we can't guarantee it will be the case for every user.");?></p>
             </div>
             <h2><?php echo __('Getting ready!');?></h2>
@@ -17,8 +18,8 @@ if(!defined('OSTSCPINC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access D
                 <li class="<?php echo $upgrader->check_php()?'yes':'no'; ?>">
                 <?php echo sprintf(__('%s or later'), 'PHP v5.4'); ?> - (<small><b><?php echo PHP_VERSION; ?></b></small>)</li>
                 <li class="<?php echo $upgrader->check_mysql()?'yes':'no'; ?>">
-                <?php echo __('MySQLi extension for PHP'); ?>- (<small><b><?php
-                    echo extension_loaded('mysqli')?__('module loaded'):__('missing!'); ?></b></small>)</li>
+                <?php echo __('MySQLi extension for PHP'); ?>- (<?php
+                    echo extension_loaded('mysqli')?__('module loaded'):__('missing!'); ?>)</li>
                 <li class="<?php echo $upgrader->check_mysql_version()?'yes':'no'; ?>">
                 <?php echo sprintf(__('%s or later'), 'MySQL v5.0'); ?> - (<small><b><?php echo db_version(); ?></b></small>)</li>
             </ul>
@@ -46,7 +47,7 @@ if(!defined('OSTSCPINC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access D
     </div>
     <div class="clear"></div>
 </div>
-
+</div>
 <div id="overlay"></div>
 <div id="loading">
     <h4><?php echo __('Doing stuff!');?></h4>

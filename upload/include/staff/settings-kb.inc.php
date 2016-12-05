@@ -1,21 +1,22 @@
 <?php
 if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config) die('Access Denied');
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('Knowledge Base Settings and Options');?></h2>
 <form action="settings.php?t=kb" method="post" id="save">
 <?php csrf_token(); ?>
 <input type="hidden" name="t" value="kb" >
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __("Disabling knowledge base disables clients' interface.");?></em>
+                <?php echo __("Disabling knowledge base disables clients' interface.");?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" valign="top"><?php echo __('Knowledge Base Status'); ?>:</td>
+            <td style="width:15%"><?php echo __('Knowledge Base Status'); ?>:</td>
             <td>
                 <input type="checkbox" name="enable_kb" value="1" <?php echo $config['enable_kb']?'checked="checked"':''; ?>>
                 <?php echo __('Enable Knowledge Base'); ?>
@@ -28,7 +29,7 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Canned Responses');?>:</td>
+            <td><?php echo __('Canned Responses');?>:</td>
             <td>
                 <input type="checkbox" name="enable_premade" value="1" <?php echo $config['enable_premade']?'checked="checked"':''; ?> >
                 <?php echo __('Enable Canned Responses'); ?>
@@ -38,8 +39,9 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input class="button" type="submit" name="submit" value="<?php echo __('Save Changes'); ?>">
-    <input class="button" type="reset" name="reset" value="<?php echo __('Reset Changes'); ?>">
+<p style="text-align:left;">
+    <button class="btn btn-sm btn-outline-primary" type="submit" name="submit" value="<?php echo __('Save Changes'); ?>">Save Changes</button>
+    <button class="btn btn-sm btn-secondary" type="reset" name="reset" value="<?php echo __('Reset Changes'); ?>">Reset</button>
 </p>
 </form>
+    </div>

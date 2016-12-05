@@ -1,14 +1,26 @@
 <?php
+
 if(($tabs=$nav->getTabs()) && is_array($tabs)){
     foreach($tabs as $name =>$tab) {
         if ($tab['href'][0] != '/')
-            $tab['href'] = ROOT_PATH . 'scp/' . $tab['href'];
-        echo sprintf('<li class="%s %s"><a href="%s">%s</a>',
-            $tab['active'] ? 'active':'inactive',
+            echo "<div class='card'>";
+            echo "<div role='tab' id='heading.$name'>";
+        echo sprintf('<li><a class="btn btn-block %s" data-toggle="%s" data-parent="#nav" href="%s" aria-expanded="%s" aria-controls="%s">%s</a></li>',
             @$tab['class'] ?: '',
-            $tab['href'],$tab['desc']);
-        if(!$tab['active'] && ($subnav=$nav->getSubMenu($name))){
-            echo "<ul>\n";
+            $tab['data-toggle'],
+            $tab['href'],
+            $tab['aria-expanded'],
+            $tab['aria-controls'],
+            $tab['desc']);
+        echo "\n</div>\n";
+        if($subnav=$nav->getSubMenu($name)){
+            if($name == 'dashboard') {
+                echo "<div id='$name' class='collapse in' role='tabpanel' aria-labelledby='heading.$name'>\n";
+                echo "<ul class='inactive' >\n";
+            } else {
+                echo "<div id='$name' class='collapse' role='tabpanel' aria-labelledby='heading.$name'>\n";
+                echo "<ul class='inactive'>\n";
+            }
             foreach($subnav as $k => $item) {
                 if (!($id=$item['id']))
                     $id="nav$k";
@@ -23,6 +35,8 @@ if(($tabs=$nav->getTabs()) && is_array($tabs)){
             }
             echo "\n</ul>\n";
         }
-        echo "\n</li>\n";
+        echo "\n</div>\n";
+        echo "\n</div>\n";
     }
-} ?>
+}
+?>

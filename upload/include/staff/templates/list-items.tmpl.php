@@ -10,13 +10,13 @@
     ?>
     <div style="margin: 5px 0">
     <?php if ($list) { ?>
-    <div class="pull-left">
-        <input type="text" placeholder="<?php echo __('Search items'); ?>"
-            data-url="ajax.php/list/<?php echo $list->getId(); ?>/items/search"
-            size="25" id="items-search" value="<?php
-            echo Format::htmlchars($_POST['search']); ?>"/>
-    </div>
-    <div class="pull-right">
+<!--    <div class="pull-left">-->
+<!--        <input type="text" placeholder="--><?php //echo __('Search items'); ?><!--"-->
+<!--            data-url="ajax.php/list/--><?php //echo $list->getId(); ?><!--/items/search"-->
+<!--            size="25" id="items-search" value="--><?php
+//            echo Format::htmlchars($_POST['search']); ?><!--"/>-->
+<!--    </div>-->
+    <div class="pull-right flush-right">
 <?php
 if ($list->allowAdd()) { ?>
         <a class="green button action-button field-config"
@@ -36,12 +36,11 @@ if ($list->allowAdd()) { ?>
 <?php
     }
 } ?>
-        <span class="action-button pull-right" data-dropdown="#action-dropdown-more">
-            <i class="icon-caret-down pull-right"></i>
-            <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-        </span>
-        <div id="action-dropdown-more" class="action-dropdown anchor-right">
-            <ul>
+        <div class="btn-group">
+            <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
+                    <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
+            </span>
+            <ul class="bleed-left dropdown-menu">
                 <li><a class="items-action" href="#list/<?php echo $list->getId(); ?>/disable">
                     <i class="icon-ban-circle icon-fixed-width"></i>
                     <?php echo __('Disable'); ?></a></li>
@@ -64,9 +63,9 @@ if ($list->allowAdd()) { ?>
 $prop_fields = ($list) ? $list->getSummaryFields() : array();
 ?>
 
-    <table class="form_table fixed" width="940" border="0" cellspacing="0" cellpadding="2">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="28" nowrap></th>
             <th><?php echo __('Value'); ?></th>
 <?php
@@ -98,7 +97,7 @@ if ($prop_fields) {
     </tbody>
     </table>
 <?php if ($pageNav && $pageNav->getNumPages()) { ?>
-    <div><?php echo __('Page').':'.$pageNav->getPageLinks('items', $pjax_container); ?></div>
+<!--    <div>--><?php //echo __('Page').':'.$pageNav->getPageLinks('items', $pjax_container); ?><!--</div>-->
 <?php } ?>
 </div>
 <script type="text/javascript">

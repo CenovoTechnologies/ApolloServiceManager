@@ -23,6 +23,7 @@ if($filter && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="filters.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
     <?php csrf_token(); ?>
     <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -33,31 +34,31 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         — <?php echo $info['name']; ?></small>
         <?php } ?>
     </h2>
-    <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
         <thead>
-            <tr>
+            <tr class="table-heading">
                 <th colspan="2">
-                    <em><?php echo __('Filters are executed based on execution order. Filter can target specific ticket source.');?></em>
+                    <?php echo __('Filters are executed based on execution order. Filter can target specific ticket source.');?>
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td width="180" class="required">
+                <td class="required" style="width:15%">
                   <?php echo __('Filter Name');?>:
                 </td>
                 <td>
-                    <input type="text" size="30" name="name" value="<?php echo $info['name']; ?>"
+                    <input type="text" class="form-control-sm" size="30" name="name" value="<?php echo $info['name']; ?>"
                         autofocus>
                     &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
                 </td>
             </tr>
             <tr>
-                <td width="180" class="required">
+                <td class="required">
                   <?php echo __('Execution Order');?>:
                 </td>
                 <td>
-                    <input type="text" size="6" name="execorder" value="<?php echo $info['execorder']; ?>">
+                    <input type="text" class="form-control-sm" size="6" name="execorder" value="<?php echo $info['execorder']; ?>">
                     <em>(1...99)</em>
                     &nbsp;<span class="error">*&nbsp;<?php echo $errors['execorder']; ?></span>
                     &nbsp;&nbsp;&nbsp;
@@ -69,7 +70,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 </td>
             </tr>
             <tr>
-                <td width="180" class="required">
+                <td class="required">
                     <?php echo __('Filter Status');?>:
                 </td>
                 <td>
@@ -81,11 +82,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 </td>
             </tr>
             <tr>
-                <td width="180" class="required">
+                <td class="required">
                     <?php echo __('Target Channel');?>:
                 </td>
                 <td>
-                    <select name="target">
+                    <select name="target" class="form-control-sm">
                        <option value="">&mdash; <?php echo __('Select a Channel');?> &mdash;</option>
                        <?php
                        foreach(Filter::getTargets() as $k => $v) {
@@ -112,27 +113,28 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </tr>
         </tbody>
     </table>
-    <ul class="clean tabs" style="margin-top:20px;" id="filter-tabs">
-        <li class="active"><a href="#filter_rules"><i class="icon-filter"></i> <?php echo __('Filter Rules'); ?></a></li>
-        <li><a href="#filter_actions"><i class="icon-bolt"></i> <?php echo __('Filter Actions'); ?></a></li>
-        <li><a href="#internal_notes"><i class="icon-file-text-alt"></i> <?php echo __('Internal Notes'); ?></a></li>
+    <ul class="nav nav-tabs" style="margin-top:20px;" id="filter-tabs" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#filter_rules" role="tab"><i class="icon-filter"></i> <?php echo __('Filter Rules'); ?></a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#filter_actions" role="tab"><i class="icon-bolt"></i> <?php echo __('Filter Actions'); ?></a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#internal_notes" role="tab"><i class="icon-file-text-alt"></i> <?php echo __('Internal Notes'); ?></a></li>
     </ul>
-    <!-- ====================== FILTER RULES ========================== -->
-    <div class="tab_content" id="filter_rules">
-        <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content">
+        <!-- ====================== FILTER RULES ========================== -->
+        <div class="tab-pane active" id="filter_rules" role="tabpanel">
+        <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
             <thead>
-                <tr>
+                <tr class="table-heading">
                     <th colspan="2" style="text-align:left;">
-                        <em><strong><?php echo __('Filter Rules');?></strong>: <?php
+                        <strong><?php echo __('Filter Rules');?></strong>: <?php
                         echo __('Rules are applied based on the criteria.');?>&nbsp;<span class="error">*&nbsp;<?php echo
-                        $errors['rules']; ?></span></em>
+                        $errors['rules']; ?></span>
                     </th>
                 </tr>
             </thead>
             <tbody id="rules">
                 <tr>
                     <td colspan=2>
-                       <em><?php echo __('Rules Matching Criteria');?>:</em>
+                       <?php echo __('Rules Matching Criteria');?>:
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <label>
                         <input type="radio" name="match_all_rules" value="1" <?php echo $info['match_all_rules']?'checked="checked"':''; ?>>
@@ -152,7 +154,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 foreach ($info['rules'] as $i=>$rule) { ?>
                 <tr>
                     <td colspan="2">
-                        <select style="max-width: 200px;" name="rules[<?php echo $i; ?>][w]">
+                        <select name="rules[<?php echo $i; ?>][w]" class="form-control">
                             <option value="">&mdash; <?php echo __('Select One');?> &mdash;</option>
                                 <?php
                                 foreach ($matches as $group=>$ms) { ?>
@@ -165,7 +167,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                                 </optgroup>
                                 <?php } ?>
                             </select>
-                            <select name="rules[<?php echo $i; ?>][h]">
+                            <select name="rules[<?php echo $i; ?>][h]" class="form-control">
                                 <option value="0">&mdash; <?php echo __('Select One');?> &mdash;</option>
                                 <?php
                                     foreach($match_types as $k=>$v){
@@ -175,7 +177,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                                 }
                                 ?>
                             </select>&nbsp;
-                            <input type="text" size="60" name="rules[<?php echo $i; ?>][v]" value="<?php echo $rule["v"]; ?>">
+                            <input type="text" class="form-control-sm" size="60" name="rules[<?php echo $i; ?>][v]" value="<?php echo $rule["v"]; ?>">
                         <div class="pull-right" style="padding-right:20px;"><a href="#" class="clearrule"
                             onclick="javascript: $(this).closest('tr').remove();">(<?php echo __('clear');?>)</a></div>
                         <div class="error"><?php echo $errors["rule_$i"]; ?></div>
@@ -187,7 +189,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             <tbody class="hidden" id="new-rule-template">
                 <tr>
                     <td colspan="2">
-                        <select style="max-width: 200px;" data-name="rulew">
+                        <select data-name="rulew" class="form-control-sm">
                             <option value="">&mdash; <?php echo __('Select One');?> &mdash;</option>
                             <?php
                             foreach ($matches as $group=>$ms) { ?>
@@ -199,7 +201,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                             </optgroup>
                             <?php } ?>
                         </select>
-                        <select data-name="ruleh">
+                        <select data-name="ruleh" class="form-control-sm">
                             <option value="0">&mdash; <?php echo __('Select One');?> &mdash;</option>
                             <?php
                                 foreach($match_types as $k=>$v){
@@ -220,17 +222,17 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </div>
     </div>
     <!-- ======================= FILTER ACTIONS ========================= -->
-    <div class="tab_content hidden" id="filter_actions">
-        <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-pane" id="filter_actions" role="tabpanel">
+        <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
             <thead>
-                <tr>
+                <tr class="table-heading">
                     <th colspan="2">
-                        <em><strong><?php echo __('Filter Actions');?></strong>:
+                        <strong><?php echo __('Filter Actions');?></strong>:
                         <div><?php
                             echo __('Can be overwridden by other filters depending on processing order.');
                         ?><br/><?php
                             echo __('Actions are executed in the order declared below');
-                            ?></div></em>
+                            ?></div>
                     </th>
                 </tr>
             </thead>
@@ -240,7 +242,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 if ($filter) { foreach ($filter->getActions() as $A) {
                     $existing[] = $A->type;
                 ?>
-                <tr style="background-color:white"><td><i class="icon-sort icon-large icon-muted"></i>
+                <tr><td><i class="icon-sort icon-large icon-muted"></i>
                     <?php echo $A->getImpl()->getName(); ?>:</td>
                     <td>
                         <div style="position:relative"><?php
@@ -266,8 +268,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 </tbody>
             </table>
             <div style="padding: 5px">
-                <i class="icon-plus-sign"></i>
-                <select name="new-action" id="new-action-select"
+                <select name="new-action" class="form-control-sm" id="new-action-select"
                         onchange="javascript: $('#new-action-btn').trigger('click');">
                     <option value="">— <?php echo __('Select an Action'); ?> —</option>
                     <?php
@@ -307,33 +308,35 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </div>
     </div>
     <!-- ======================== INTERNAL NOTES ======================== -->
-    <div class="tab_content hidden" id="internal_notes">
-        <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-pane" id="internal_notes" role="tabpanel">
+        <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
             <thead>
-                <tr>
+                <tr class="table-heading">
                     <th colspan="2">
-                        <em><strong><?php echo __('Internal Notes');?></strong>: <?php
-                            echo __("Be liberal, they're internal");?></em>
+                        <strong><?php echo __('Internal Notes');?></strong>: <?php
+                            echo __("Be liberal, they're internal");?>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td colspan=2>
-                        <textarea class="richtext no-bar" name="notes" cols="21"
+                        <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
                             rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <p style="text-align:center;">
-        <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+    </div>
+    <p style="text-align:left;">
+        <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Add Filter</button>
         <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="filters.php"'>
     </p>
 </form>
-<script type="text/javascript">
+</div>
+    <script type="text/javascript">
    var fixHelper = function(e, ui) {
       ui.children().each(function() {
           $(this).width($(this).width());

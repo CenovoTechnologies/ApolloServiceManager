@@ -8,44 +8,39 @@ if ($agent->canManageTickets())
 
 // Mass Claim/Assignment
 if ($agent->hasPerm(Ticket::PERM_ASSIGN, false)) {?>
-<span
-    class="action-button" data-placement="bottom"
-    data-dropdown="#action-dropdown-assign" data-toggle="tooltip" title=" <?php
-    echo __('Assign'); ?>">
-    <i class="icon-caret-down pull-right"></i>
-    <a class="tickets-action" id="tickets-assign"
-        href="#tickets/mass/assign"><i class="icon-user"></i></a>
-</span>
-<div id="action-dropdown-assign" class="action-dropdown anchor-right">
-  <ul>
-     <li><a class="no-pjax tickets-action"
-        href="#tickets/mass/claim"><i
-        class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a>
-     <li><a class="no-pjax tickets-action"
-        href="#tickets/mass/assign/agents"><i
-        class="icon-user"></i> <?php echo __('Agent'); ?></a>
-     <li><a class="no-pjax tickets-action"
-        href="#tickets/mass/assign/teams"><i
-        class="icon-group"></i> <?php echo __('Team'); ?></a>
-  </ul>
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('Assign'); ?>" aria-haspopup="true" aria-expanded="false">
+        <i class="icon-user"></i>
+    </button>
+      <ul class="dropdown-menu">
+         <li><a class="no-pjax tickets-action"
+            href="#tickets/mass/claim"><i
+            class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a>
+         <li><a class="no-pjax tickets-action"
+            href="#tickets/mass/assign/agents"><i
+            class="icon-user"></i> <?php echo __('Agent'); ?></a>
+         <li><a class="no-pjax tickets-action"
+            href="#tickets/mass/assign/teams"><i
+            class="icon-group"></i> <?php echo __('Team'); ?></a>
+      </ul>
 </div>
 <?php
 }
 
 // Mass Transfer
 if ($agent->hasPerm(Ticket::PERM_TRANSFER, false)) {?>
-<span class="action-button">
+<span class="btn btn-default action-button">
  <a class="tickets-action" id="tickets-transfer" data-placement="bottom"
     data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
     href="#tickets/mass/transfer"><i class="icon-share"></i></a>
 </span>
-<?php
+    <?php
 }
 
 
 // Mass Delete
 if ($agent->hasPerm(Ticket::PERM_DELETE, false)) {?>
-<span class="red button action-button">
+<span class="red button btn btn-default action-button">
  <a class="tickets-action" id="tickets-delete" data-placement="bottom"
     data-toggle="tooltip" title="<?php echo __('Delete'); ?>"
     href="#tickets/mass/delete"><i class="icon-trash"></i></a>

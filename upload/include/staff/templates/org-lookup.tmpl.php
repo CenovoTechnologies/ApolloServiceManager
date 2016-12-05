@@ -67,20 +67,16 @@ if ($info['error']) {
 </div>
 <div id="new-org-form" style="display:<?php echo $org ? 'none' :'block'; ?>;">
 <form method="post" class="org" action="<?php echo $info['action'] ?: '#orgs/add'; ?>">
-    <table width="100%" class="fixed">
+    <table width="100%" class="table table-condensed">
     <?php
         if (!$form) $form = OrganizationForm::getInstance();
         $form->render(true, __('Create New Organization')); ?>
     </table>
     <hr>
     <p class="full-width">
-        <span class="buttons pull-left">
-            <input type="reset" value="<?php echo __('Reset'); ?>">
-            <input type="button" name="cancel" class="<?php echo $org ? 'cancel' : 'close' ?>"
-                value="<?php echo __('Cancel'); ?>">
-        </span>
-        <span class="buttons pull-right">
-            <input type="submit" value="<?php echo __('Add Organization'); ?>">
+        <span class="btn-group-sm pull-right">
+            <button class="btn btn-default" type="reset" value="<?php echo __('Reset'); ?>">Reset</button>
+            <button class="btn btn-outline-primary" type="submit" value="<?php echo __('Add Organization'); ?>">Add Organization</button>
         </span>
      </p>
 </form>

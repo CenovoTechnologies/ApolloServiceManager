@@ -31,26 +31,24 @@ $qstr = '&amp;order='.($order=='DESC'?'ASC':'DESC');
 $pageNav->paginate($categories);
 
 ?>
-
+<div class="col-sm-12 col-md-12">
 <form action="categories.php" method="POST" id="mass-actions">
-    <div class="sticky bar opaque">
+    <div class="sticky bar opaque ">
         <div class="content">
-            <div class="pull-left flush-left">
+            <div class="pull-left">
                 <h2><?php echo __('FAQ Categories');?></h2>
             </div>
-            <div class="pull-right flush-right">
+            <div class="pull-right">
                 <a href="categories.php?a=add" class="green button">
                     <i class="icon-plus-sign"></i>
                     <?php echo __( 'Add New Category');?>
                 </a>
-                <div class="pull-right flush-right">
-
-                    <span class="action-button" data-dropdown="#action-dropdown-more">
-                        <i class="icon-caret-down pull-right"></i>
-                        <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-                    </span>
-                    <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                        <ul id="actions">
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('More') ?>" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-cog"></i> <?php echo __('More');?>
+                        </button>
+                        <ul id="action-dropdown-more" class="dropdown-menu">
                             <li class="danger">
                                 <a class="confirm" data-form-id="mass-actions" data-name="delete" href="categories.php?a=delete">
                                     <i class="icon-trash icon-fixed-width"></i>
@@ -67,12 +65,12 @@ $pageNav->paginate($categories);
     <?php csrf_token(); ?>
     <input type="hidden" name="do" value="mass_process" >
     <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed table-bordered table-striped" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
-            <th width="56%"><a <?php echo $name_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
-            <th width="10%"><a  <?php echo $type_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=type"><?php echo __('Type');?></a></th>
+            <th width="46%"><a <?php echo $name_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
+            <th width="20%"><a  <?php echo $type_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=type"><?php echo __('Type');?></a></th>
             <th width="10%"><a  <?php echo $faqs_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=faqs"><?php echo __('FAQs');?></a></th>
             <th width="20%" nowrap><a  <?php echo $updated_sort; ?>href="categories.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
         </tr>
@@ -91,10 +89,10 @@ $pageNav->paginate($categories);
             ?>
             <tr id="<?php echo $C->getId(); ?>">
                 <td align="center">
-                  <input type="checkbox" name="ids[]" value="<?php echo $C->getId(); ?>" class="ckb"
+                  <input type="checkbox" class="form-check-input" name="ids[]" value="<?php echo $C->getId(); ?>" class="ckb"
                             <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <td><a class="truncate" style="width:500px" href="categories.php?id=<?php echo $C->getId(); ?>"><?php
+                <td><a class="truncate" href="categories.php?id=<?php echo $C->getId(); ?>"><?php
                     echo $C->getLocalName(); ?></a></td>
                 <td><?php echo $C->getVisibilityDescription(); ?></td>
                 <td style="text-align:right;padding-right:25px;"><?php echo $faqs; ?></td>
@@ -120,15 +118,16 @@ $pageNav->paginate($categories);
 if ($total) {
     echo '<div>&nbsp;'.__('Page').': '.$pageNav->getPageLinks().'</div>';
 ?>
-<p class="centered" id="actions">
-    <input class="button" type="submit" name="make_public" value="<?php echo __('Make Public');?>">
-    <input class="button" type="submit" name="make_private" value="<?php echo __('Make Internal');?>">
-    <input class="button" type="submit" name="delete" value="<?php echo __('Delete');?>" >
-</p>
+<!--<p class="btn-group-sm" id="actions">-->
+<!--    <button class="btn btn-default" type="submit" name="make_public" value="--><?php //echo __('Make Public');?><!--">Make Public</button>-->
+<!--    <button class="btn btn-default" type="submit" name="make_private" value="--><?php //echo __('Make Internal');?><!--">Make Internal</button>-->
+<!--    <button class="btn btn-outline-warning" type="submit" name="delete" value="--><?php //echo __('Delete');?><!--" >Delete</button>-->
+<!--</p>-->
 <?php
 }
 ?>
 </form>
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>
@@ -150,10 +149,10 @@ if ($total) {
     <hr style="margin-top:1em"/>
     <p class="full-width">
         <span class="buttons pull-left">
-            <input type="button" value="<?php echo __('No, Cancel');?>" class="close">
+            <input type="button" value="<?php echo __('Cancel');?>" class="close">
         </span>
         <span class="buttons pull-right">
-            <input type="button" value="<?php echo __('Yes, Do it!');?>" class="confirm">
+            <input type="button" value="<?php echo __('Yes');?>" class="confirm">
         </span>
      </p>
     <div class="clear"></div>

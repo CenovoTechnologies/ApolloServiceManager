@@ -37,6 +37,7 @@ if($page && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="pages.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -48,33 +49,32 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
      <?php } ?>
     <i class="help-tip icon-question-sign" href="#site_pages"></i>
     </h2>
- <table class="form_table fixed" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr><td style="padding:0"></td><td style="padding:0;"></td></tr> <!-- For fixed table layout -->
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Page information'); ?></em>
+                <?php echo __('Page information'); ?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
               <?php echo __('Name'); ?>:
             </td>
             <td>
-                <input type="text" size="40" name="name" value="<?php echo $info['name']; ?>"
+                <input type="text" class="form-control-sm" size="40" name="name" value="<?php echo $info['name']; ?>"
                     autofocus data-translate-tag="<?php echo $trans['name']; ?>"/>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Type'); ?>:
             </td>
             <td>
                 <span>
-                <select name="type">
+                <select name="type" class="form-control-sm">
                     <option value="" selected="selected">&mdash; <?php
                     echo __('Select Page Type'); ?> &mdash;</option>
                     <?php
@@ -90,7 +90,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <?php if ($info['name'] && $info['type'] == 'other') { ?>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Public URL'); ?>:
             </td>
             <td><a href="<?php echo sprintf("%s/pages/%s",
@@ -100,7 +100,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <?php } ?>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Status'); ?>:
             </td>
             <td>
@@ -114,11 +114,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     </tbody>
 </table>
 <div style="margin-top: 10px">
-  <ul class="tabs clean">
-    <li class="active"><a href="#page-content"><?php echo __('Page Content'); ?></a></li>
-    <li><a href="#notes"><?php echo __('Internal Notes'); ?></a></li>
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#page-content" role="tab"><?php echo __('Page Content'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notes" role="tab"><?php echo __('Internal Notes'); ?></a></li>
   </ul>
-  <div class="tab_content active" id="page-content">
+    <div class="tab-content">
+  <div class="tab-pane active" id="page-content" role="tablist">
 
 <?php
 $langs = Internationalization::getConfiguredSystemLanguages();
@@ -135,12 +136,6 @@ if ($page && count($langs) > 1) { ?>
     </ul>
 <?php
 }
-
-// For landing page, constrain to the diplayed width of 565px;
-if ($info['type'] == 'landing')
-    $width = '565px';
-else
-    $width = '100%';
 ?>
     <div id="translations_container">
       <div id="translation-<?php echo $cfg->getPrimaryLanguage(); ?>" class="tab_content"
@@ -180,17 +175,18 @@ else
       <div class="clear"></div>
     </div>
   </div>
-  <div class="tab_content" style="display:none" id="notes">
-    <em><strong><?php echo __('Internal Notes'); ?></strong>:
-      <?php echo __("Be liberal, they're internal"); ?></em>
+  <div class="tab-pane" id="notes" role="tabpanel">
+    <strong><?php echo __('Internal Notes'); ?></strong>:
+      <?php echo __("Be liberal, they're internal"); ?>
     <textarea class="richtext no-bar" name="notes" cols="21"
       rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
   </div>
 </div>
-
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+</div>
+<p style="text-align:left; padding-top: 0.5em">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Save Changes</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset'); ?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick='window.location.href="pages.php"'>
 </p>
 </form>
+</div>

@@ -2,29 +2,30 @@
 if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config) die('Access Denied');
 
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('Agents Settings'); ?></h2>
 <form action="settings.php?t=agents" method="post" id="save">
     <?php csrf_token(); ?>
     <input type="hidden" name="t" value="agents" >
-    <ul class="tabs" id="agents-tabs">
-        <li class="active"><a href="#settings">
+    <ul class="nav nav-tabs" role="tablist" id="agents-tabs">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#agentSettings" role="tab">
             <i class="icon-asterisk"></i> <?php echo __('Settings'); ?></a></li>
-        <li><a href="#templates">
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#templates" tab="tab">
             <i class="icon-file-text"></i> <?php echo __('Templates'); ?></a></li>
     </ul>
-    <div id="agents-tabs_container">
-        <div id="settings" class="tab_content">
-            <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content" id="agents-tabs_container">
+        <div id="agentSettings" class="tab-pane active" role="tabpanel">
+            <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
                 <tbody>
-                    <tr>
+                    <tr class="table-heading">
                         <th colspan="2">
-                            <em><b><?php echo __('General Settings'); ?></b></em>
+                            <b><?php echo __('General Settings'); ?></b>
                         </th>
                     </tr>
                     <tr>
-                        <td width="180"><?php echo __('Name Formatting'); ?>:</td>
+                        <td style="width:20%"><?php echo __('Name Formatting'); ?>:</td>
                         <td>
-                            <select name="agent_name_format">
+                            <select name="agent_name_format" class="form-control-sm">
                                 <?php foreach (PersonsName::allFormats() as $n=>$f) {
                                 list($desc, $func) = $f;
                                 $selected = ($config['agent_name_format'] == $n) ? 'selected="selected"' : ''; ?>
@@ -44,9 +45,9 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                         </td>
                     </tr>
                     <tr>
-                        <td width="180"><?php echo __('Avatar Source'); ?>:</td>
+                        <td><?php echo __('Avatar Source'); ?>:</td>
                         <td>
-                            <select name="agent_avatar">
+                            <select name="agent_avatar" class="form-control-sm">
 <?php                       require_once INCLUDE_DIR . 'class.avatar.php';
                             foreach (AvatarSource::allSources() as $id=>$class) {
                                 $modes = $class::getModes();
@@ -68,15 +69,15 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                             <div class="error"><?php echo Format::htmlchars($errors['agent_avatar']); ?></div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="table-heading">
                         <th colspan="2">
-                            <em><b><?php echo __('Authentication Settings'); ?></b></em>
+                            <b><?php echo __('Authentication Settings'); ?></b>
                         </th>
                     </tr>
                     <tr>
                         <td><?php echo __('Password Expiration Policy'); ?>:</td>
                         <td>
-                            <select name="passwd_reset_period">
+                            <select name="passwd_reset_period" class="form-control-sm">
                             <option value="0"> &mdash; <?php echo __('No expiration'); ?> &mdash;</option>
                             <?php
                                 for ($i = 1; $i <= 12; $i++) {
@@ -100,7 +101,7 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                     <tr>
                         <td><?php echo __('Reset Token Expiration'); ?>:</td>
                         <td>
-                            <input type="text" name="pw_reset_window" size="6" value="<?php
+                            <input type="text" class="form-control-sm" name="pw_reset_window" size="6" value="<?php
                                 echo $config['pw_reset_window']; ?>">
                                 <em><?php echo __('minutes'); ?></em>
                                 <i class="help-tip icon-question-sign" href="#reset_token_expiration"></i>
@@ -110,7 +111,7 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                     <tr>
                         <td><?php echo __('Agent Excessive Logins'); ?>:</td>
                         <td>
-                            <select name="staff_max_logins">
+                            <select name="staff_max_logins" class="form-control-sm">
                                 <?php
                                     for ($i = 1; $i <= 10; $i++) {
                                         echo sprintf('<option value="%d" %s>%d</option>', $i,(($config['staff_max_logins']==$i)?'selected="selected"':''), $i);
@@ -119,7 +120,7 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                             </select> <?php echo __(
                                 'failed login attempt(s) allowed before a lock-out is enforced'); ?>
                             <br/>
-                            <select name="staff_login_timeout">
+                            <select name="staff_login_timeout" class="form-control-sm">
                                 <?php
                                     for ($i = 1; $i <= 10; $i++) {
                                         echo sprintf('<option value="%d" %s>%d</option>', $i,(($config['staff_login_timeout']==$i)?'selected="selected"':''), $i);
@@ -131,7 +132,7 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                     <tr>
                         <td><?php echo __('Agent Session Timeout'); ?>:</td>
                         <td>
-                            <input type="text" name="staff_session_timeout" size=6 value="<?php echo $config['staff_session_timeout']; ?>">
+                            <input type="text" class="form-control-sm" name="staff_session_timeout" size=6 value="<?php echo $config['staff_session_timeout']; ?>">
                             <?php echo __('minutes'); ?> <em><?php echo __('(0 to disable)'); ?></em>. <i class="help-tip icon-question-sign" href="#staff_session_timeout"></i>
                         </td>
                     </tr>
@@ -145,8 +146,8 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                 </tbody>
             </table>
         </div>
-        <div id="templates" class="tab_content hidden">
-            <table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+        <div id="templates" class="tab-pane" role="tabpanel">
+            <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
                 <tbody>
                     <?php
                         $res = db_query('select distinct(`type`), id, notes, name, updated from '
@@ -189,10 +190,10 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                     </tr>
                         <?php
                         }; ?>
-                    <tr>
+                    <tr class="table-heading">
                         <th colspan="2">
-                            <em><b><?php echo __(
-                            'Authentication and Registration Templates &amp; Pages'); ?></b></em>
+                            <b><?php echo __(
+                            'Authentication and Registration Templates &amp; Pages'); ?></b>
                         </th>
                     </tr>
                     <?php $manage_content(__('Agent Welcome Email'), 'registration-staff'); ?>
@@ -201,9 +202,10 @@ if (!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config
                 </tbody>
             </table>
         </div>
-    <p style="text-align:center">
-        <input class="button" type="submit" name="submit" value="<?php echo __('Save Changes'); ?>">
-        <input class="button" type="reset" name="reset" value="<?php echo __('Reset Changes'); ?>">
+    <p style="text-align:left">
+        <button class="btn btn-sm btn-outline-primary" type="submit" name="submit" value="<?php echo __('Save Changes'); ?>">Save Changes</button>
+        <button class="btn btn-sm btn-secondary" type="reset" name="reset" value="<?php echo __('Reset Changes'); ?>">Reset</button>
     </p>
     </div>
 </form>
+    </div>

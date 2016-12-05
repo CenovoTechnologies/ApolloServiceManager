@@ -31,6 +31,7 @@ if($form && $_REQUEST['a']!='add') {
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
 ?>
+<div class="col-sm-12 col-md-12">
 <form class="manage-form" action="<?php echo $url ?>" method="post" id="save">
     <?php csrf_token(); ?>
     <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -42,13 +43,13 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     — <?php echo $info['title']; ?></small>
         <?php } ?>
     </h2>
-    <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __(
+                <?php echo __(
                 'Forms are used to allow for collection of custom data'
-                ); ?></em>
+                ); ?>
             </th>
         </tr>
     </thead>
@@ -96,7 +97,7 @@ if ($form && count($langs) > 1) { ?>
             style="display:none;" lang="<?php echo $tag; ?>">
         <div>
             <div class="required"><?php echo __('Title'); ?>:</div>
-            <input type="text" name="trans[<?php echo $tag; ?>][title]" size="60"
+            <input type="text" class="form-control-sm" name="trans[<?php echo $tag; ?>][title]" size="60"
                 value="<?php echo $info['trans'][$tag]['title']; ?>"/>
                 <i class="help-tip icon-question-sign" href="#form_title"></i>
         </div>
@@ -104,7 +105,7 @@ if ($form && count($langs) > 1) { ?>
             <i class="help-tip icon-question-sign" href="#form_instructions"></i>
             </div>
         <textarea name="trans[<?php echo $tag; ?>][instructions]" cols="21" rows="12"
-            style="width:100%" class="richtext small"><?php
+            style="width:100%" class="form-control-sm richtext small"><?php
             echo $info['trans'][$tag]['instructions']; ?></textarea>
         </div>
 <?php }
@@ -113,20 +114,20 @@ if ($form && count($langs) > 1) { ?>
       </tr>
     </tbody>
     </table>
-    <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <?php if ($form && $form->get('type') == 'T') {
     $uform = UserForm::objects()->one();
     ?>
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="7">
-                <em><strong><?php echo __('User Information Fields'); ?></strong>
+                <strong><?php echo __('User Information Fields'); ?></strong>
                 <?php echo sprintf(__('(These fields are requested for new tickets
                 via the %s form)'),
-                $uform->get('title')); ?></em>
+                $uform->get('title')); ?>
             </th>
         </tr>
-        <tr>
+        <tr class="table-active">
             <th></th>
             <th><?php echo __('Label'); ?></th>
             <th><?php echo __('Type'); ?></th>
@@ -153,13 +154,13 @@ if ($form && count($langs) > 1) { ?>
     </tbody>
     <?php } # form->type == 'T' ?>
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="7">
-                <em><strong><?php echo __('Form Fields'); ?></strong>
-                <?php echo __('fields available where this form is used'); ?></em>
+                <strong><?php echo __('Form Fields'); ?></strong>
+                <?php echo __('fields available where this form is used'); ?>
             </th>
         </tr>
-        <tr>
+        <tr class="table-active">
             <th nowrap width="4%"
                 ><i class="help-tip icon-question-sign" href="#field_sort"></i></th>
             <th nowrap><?php echo __('Label'); ?>
@@ -183,14 +184,14 @@ if ($form && count($langs) > 1) { ?>
         $ferrors = $f->errors(); ?>
         <tr>
             <td align="center"><i class="icon-sort"></i></td>
-            <td><input type="text" size="32" name="label-<?php echo $id; ?>"
+            <td><input type="text" class="form-control-sm" size="32" name="label-<?php echo $id; ?>"
                 data-translate-tag="<?php echo $f->getTranslateTag('label'); ?>"
                 value="<?php echo Format::htmlchars($f->get('label')); ?>"/>
                 <font class="error"><?php
                     if ($ferrors['label']) echo '<br/>'; echo $ferrors['label']; ?>
                 </font>
             </td>
-            <td nowrap><select style="max-width:150px" name="type-<?php echo $id; ?>" <?php
+            <td nowrap><select class="form-control-sm" name="type-<?php echo $id; ?>" <?php
                 if (!$fi->isChangeable()) echo 'disabled="disabled"'; ?>>
                 <?php foreach (FormField::allTypes() as $group=>$types) {
                         ?><optgroup label="<?php echo Format::htmlchars(__($group)); ?>"><?php
@@ -217,7 +218,7 @@ if ($form && count($langs) > 1) { ?>
                 <?php echo $f->getVisibilityDescription(); ?>
             </td>
             <td>
-                <input type="text" size="20" name="name-<?php echo $id; ?>"
+                <input type="text" class="form-control-sm" size="20" name="name-<?php echo $id; ?>"
                     value="<?php echo Format::htmlchars($f->get('name'));
                     ?>" <?php echo $force_name ?>/>
                 <font class="error"><?php
@@ -265,7 +266,7 @@ if ($form && count($langs) > 1) { ?>
          echo 'selected="selected"'; ?>><?php echo $I['desc']; ?></option>
 <?php } ?>
                 <select>
-                    <td><input type="text" size="20" name="name-new-<?php echo $i; ?>"
+                    <td><input type="text" class="form-control-sm" size="20" name="name-new-<?php echo $i; ?>"
                         value="<?php echo $info["name-new-$i"]; ?>"/>
                         <font class="error"><?php
                             if ($errors["new-$i"]['name']) echo '<br/>'; echo $errors["new-$i"]['name'];
@@ -278,22 +279,22 @@ if ($form && count($langs) > 1) { ?>
     <?php } ?>
     </tbody>
     <tbody>
-        <tr>
+        <tr class="table-heading">
             <th colspan="7">
-                <em><strong><?php echo __('Internal Notes'); ?>:</strong>
-                <?php echo __("Be liberal, they're internal"); ?></em>
+                <strong><?php echo __('Internal Notes'); ?>:</strong>
+                <?php echo __("Be liberal, they're internal"); ?>
             </th>
         </tr>
         <tr>
-            <td colspan="7"><textarea class="richtext no-bar" name="notes"
+            <td colspan="7"><textarea class="form-control-sm richtext no-bar" name="notes"
                 rows="6" cols="80"><?php
                 echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
     </table>
-<p class="centered">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="float:left">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Save Changes</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset'); ?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick='window.location.href="?"'>
 </p>
@@ -323,7 +324,7 @@ if ($form && count($langs) > 1) { ?>
     <div class="clear"></div>
 </div>
 </form>
-
+</div>
 <div style="display:none;" class="dialog draggable" id="field-config">
     <div id="popup-loading">
         <h1><i class="icon-spinner icon-spin icon-large"></i>

@@ -114,7 +114,7 @@ if($_POST && !$errors):
             if(!$errors && ($response=$ticket->postReply($vars, $errors, $_POST['emailreply']))) {
                 $msg = sprintf(__('%s: Reply posted successfully'),
                         sprintf(__('Ticket #%s'),
-                            sprintf('<a href="tickets.php?id=%d"><b>%s</b></a>',
+                            sprintf('<a href="tickets.php?id=%d">%s</a>',
                                 $ticket->getId(), $ticket->getNumber()))
                         );
 
@@ -356,7 +356,6 @@ if ($redirect) {
 
 /*... Quick stats ...*/
 $stats = $thisstaff->getTicketsStats();
-
 // Clear advanced search upon request
 if (isset($_GET['clear_filter']))
     unset($_SESSION['advsearch']);
@@ -366,93 +365,99 @@ $nav->setTabActive('tickets');
 $open_name = _P('queue-name',
     /* This is the name of the open ticket queue */
     'Open');
-if($cfg->showAnsweredTickets()) {
-    $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
-                            'title'=>__('Open Tickets'),
-                            'href'=>'tickets.php?status=open',
-                            'iconclass'=>'Ticket'),
-                        ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
+/**
+ * if($cfg->showAnsweredTickets()) {
+ *     $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
+ *                             'title'=>__('Open Tickets'),
+ *                             'href'=>'tickets.php?status=open',
+ *                             'iconclass'=>'Ticket'),
+ *                         ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
 
-	$nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
-                               'title'=>__('Tickets in Progress'),
-                               'href'=>'tickets.php?status=progress',
-                               'iconclass'=>'answeredTickets'),
-                        ($_REQUEST['status']=='progress'));
-} else {
+ * 	$nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
+ *                                'title'=>__('Tickets in Progress'),
+ *                                'href'=>'tickets.php?status=progress',
+ *                                'iconclass'=>'answeredTickets'),
+ *                         ($_REQUEST['status']=='progress'));
+ * } else {
 
-    if ($stats) {
+ *     if ($stats) {
 
-        $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']).')',
-                               'title'=>__('Open Tickets'),
-                               'href'=>'tickets.php?status=open',
-                               'iconclass'=>'Ticket'),
-                            ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
-    }
+ *         $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']).')',
+ *                                'title'=>__('Open Tickets'),
+ *                                'href'=>'tickets.php?status=open',
+ *                                'iconclass'=>'Ticket'),
+ *                             ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
+ *     }
 
-    if($stats['progress']) {
-        $nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
-                               'title'=>__('Tickets in Progress'),
-                               'href'=>'tickets.php?status=progress',
-                               'iconclass'=>'answeredTickets'),
-                            ($_REQUEST['status']=='progress'));
-    }
-}
+ *     if($stats['progress']) {
+ *         $nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
+ *                                'title'=>__('Tickets in Progress'),
+ *                                'href'=>'tickets.php?status=progress',
+ *                                'iconclass'=>'answeredTickets'),
+ *                             ($_REQUEST['status']=='progress'));
+ *     }
+ * }
 
-if($stats['assigned']) {
+ * if($stats['assigned']) {
 
-    $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
-                           'title'=>__('Assigned Tickets'),
-                           'href'=>'tickets.php?status=assigned',
-                           'iconclass'=>'assignedTickets'),
-                        ($_REQUEST['status']=='assigned'));
-}
+ *     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
+ *                            'title'=>__('Assigned Tickets'),
+ *                            'href'=>'tickets.php?status=assigned',
+ *                            'iconclass'=>'assignedTickets'),
+ *                         ($_REQUEST['status']=='assigned'));
+ * }
 
-if($stats['overdue']) {
-    $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
-                           'title'=>__('Overdue Tickets'),
-                           'href'=>'tickets.php?status=overdue',
-                           'iconclass'=>'overdueTickets'),
-                        ($_REQUEST['status']=='overdue'));
+ * if($stats['overdue']) {
+ *     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
+ *                            'title'=>__('Overdue Tickets'),
+ *                            'href'=>'tickets.php?status=overdue',
+ *                            'iconclass'=>'overdueTickets'),
+ *                         ($_REQUEST['status']=='overdue'));
 
-    if(!$sysnotice && $stats['overdue']>10)
-        $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
-}
+ *     if(!$sysnotice && $stats['overdue']>10)
+ *         $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
+ * }
+ */
 
-if (isset($_SESSION['advsearch'])) {
-    // XXX: De-duplicate and simplify this code
-    TicketForm::ensureDynamicDataView();
-    $search = SavedSearch::create();
-    $form = $search->getFormFromSession('advsearch');
-    $tickets = TicketModel::objects();
-    $tickets = $search->mangleQuerySet($tickets, $form);
-    $count = $tickets->count();
-    $nav->addSubMenu(array('desc' => __('Search').' ('.number_format($count).')',
-                           'title'=>__('Advanced Ticket Search'),
-                           'href'=>'tickets.php?status=search',
-                           'iconclass'=>'Ticket'),
-                        (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
-}
+/**
+ * if (isset($_SESSION['advsearch'])) {
+ *     // XXX: De-duplicate and simplify this code
+ *     TicketForm::ensureDynamicDataView();
+ *     $search = SavedSearch::create();
+ *     $form = $search->getFormFromSession('advsearch');
+ *     $tickets = TicketModel::objects();
+ *     $tickets = $search->mangleQuerySet($tickets, $form);
+ *     $count = $tickets->count();
+ *     $nav->addSubMenu(array('desc' => __('Search').' ('.number_format($count).')',
+ *                            'title'=>__('Advanced Ticket Search'),
+ *                            'href'=>'tickets.php?status=search',
+ *                            'iconclass'=>'Ticket'),
+ *                         (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
+ * }
+ */
 
-$nav->addSubMenu(array('desc' => __('Resolved').' ('.number_format($stats['resolved']).')',
-                           'title'=>__('Resolved Tickets'),
-                           'href'=>'tickets.php?status=resolved',
-                           'iconclass'=>'closedTickets'),
-                        ($_REQUEST['status']=='resolved'));
+/**
+ * $nav->addSubMenu(array('desc' => __('Resolved').' ('.number_format($stats['resolved']).')',
+ *                            'title'=>__('Resolved Tickets'),
+ *                            'href'=>'tickets.php?status=resolved',
+ *                            'iconclass'=>'closedTickets'),
+ *                         ($_REQUEST['status']=='resolved'));
 
-$nav->addSubMenu(array('desc' => __('Closed'),
-                       'title'=>__('Closed Tickets'),
-                       'href'=>'tickets.php?status=closed',
-                       'iconclass'=>'closedTickets'),
-                    ($_REQUEST['status']=='closed'));
+ * $nav->addSubMenu(array('desc' => __('Closed'),
+ *                        'title'=>__('Closed Tickets'),
+ *                        'href'=>'tickets.php?status=closed',
+ *                        'iconclass'=>'closedTickets'),
+ *                     ($_REQUEST['status']=='closed'));
 
-if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
-    $nav->addSubMenu(array('desc'=>__('New Ticket'),
-                           'title'=> __('Open a New Ticket'),
-                           'href'=>'tickets.php?a=open',
-                           'iconclass'=>'newTicket',
-                           'id' => 'new-ticket'),
-                        ($_REQUEST['a']=='open'));
-}
+ * if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
+ *     $nav->addSubMenu(array('desc'=>__('New Ticket'),
+ *                            'title'=> __('Open a New Ticket'),
+ *                            'href'=>'tickets.php?a=open',
+ *                            'iconclass'=>'newTicket',
+ *                            'id' => 'new-ticket'),
+ *                         ($_REQUEST['a']=='open'));
+ * }
+ */
 
 
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?907ec36"></script>');

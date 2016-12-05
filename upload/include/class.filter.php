@@ -50,7 +50,7 @@ class Filter {
         $sql='SELECT filter.*,count(rule.id) as rule_count '
             .' FROM '.FILTER_TABLE.' filter '
             .' LEFT JOIN '.FILTER_RULE_TABLE.' rule ON(rule.filter_id=filter.id) '
-            .' WHERE filter.id='.db_input($id)
+            .' WHERE filter.id IN ('.db_input($id).')'
             .' GROUP BY filter.id';
 
         if(!($res=db_query($sql)) || !db_num_rows($res))
@@ -166,7 +166,7 @@ class Filter {
         if (!$this->ht['rules']) {
             $rules=array();
             //We're getting the rules...live because it gets cleared on update.
-            $sql='SELECT * FROM '.FILTER_RULE_TABLE.' WHERE filter_id='.db_input($this->getId());
+            $sql='SELECT * FROM '.FILTER_RULE_TABLE.' WHERE filter_id IN ('.db_input($this->getId()).')';
             if(($res=db_query($sql)) && db_num_rows($res)) {
                 while($row=db_fetch_array($res))
                     $rules[]=array('w'=>$row['what'],'h'=>$row['how'],'v'=>$row['val']);

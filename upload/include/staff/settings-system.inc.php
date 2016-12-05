@@ -3,50 +3,52 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin() || !$config)
 
 $gmtime = Misc::gmtime();
 ?>
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('System Settings and Preferences');?> <small>— <span class="ltr">Apollo Service Manager (<?php echo $cfg->getVersion(); ?>)</span></small></h2>
 <form action="settings.php?t=system" method="post" id="save">
 <?php csrf_token(); ?>
 <input type="hidden" name="t" value="system" >
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><b><?php echo __('General Settings'); ?></b></em>
+                <?php echo __('General Settings'); ?>
             </th>
         </tr>
     </thead>
     <tbody>
 
         <tr>
-            <td width="220" class="required"><?php echo __('Helpdesk Status');?>:</td>
+            <td style="width:20%" class="required"><?php echo __('Helpdesk Status');?>:</td>
             <td>
                 <span>
-                <label><input type="radio" name="isonline"  value="1"   <?php echo $config['isonline']?'checked="checked"':''; ?> />&nbsp;<b><?php echo __('Online'); ?></b>&nbsp;</label>
-                <label><input type="radio" name="isonline"  value="0"   <?php echo !$config['isonline']?'checked="checked"':''; ?> />&nbsp;<b><?php echo __('Offline'); ?></b></label>
+                <label><input type="radio" name="isonline"  value="1"   <?php echo $config['isonline']?'checked="checked"':''; ?> />&nbsp;<?php echo __('Online'); ?>&nbsp;</label>
+                <label><input type="radio" name="isonline"  value="0"   <?php echo !$config['isonline']?'checked="checked"':''; ?> />&nbsp;<?php echo __('Offline'); ?></label>
                 &nbsp;<font class="error"><?php echo $config['isoffline']?'osTicket '.__('Offline'):''; ?></font>
                 <i class="help-tip icon-question-sign" href="#helpdesk_status"></i>
                 </span>
             </td>
         </tr>
         <tr>
-            <td width="220" class="required"><?php echo __('Helpdesk URL');?>:</td>
+            <td class="required"><?php echo __('Helpdesk URL');?>:</td>
             <td>
-                <input type="text" size="40" name="helpdesk_url" value="<?php echo $config['helpdesk_url']; ?>">
+
+                <input type="text" class="form-control-sm" size="40" name="helpdesk_url" value="<?php echo $config['helpdesk_url']; ?>">
                 &nbsp;<font class="error">*&nbsp;<?php echo $errors['helpdesk_url']; ?></font>
                 <i class="help-tip icon-question-sign" href="#helpdesk_url"></i>
         </td>
         </tr>
         <tr>
-            <td width="220" class="required"><?php echo __('Helpdesk Name/Title');?>:</td>
-            <td><input type="text" size="40" name="helpdesk_title" value="<?php echo $config['helpdesk_title']; ?>">
+            <td class="required"><?php echo __('Helpdesk Name/Title');?>:</td>
+            <td><input type="text" class="form-control-sm" size="40" name="helpdesk_title" value="<?php echo $config['helpdesk_title']; ?>">
                 &nbsp;<font class="error">*&nbsp;<?php echo $errors['helpdesk_title']; ?></font>
                 <i class="help-tip icon-question-sign" href="#helpdesk_name_title"></i>
             </td>
         </tr>
         <tr>
-            <td width="220" class="required"><?php echo __('Default Department');?>:</td>
+            <td class="required"><?php echo __('Default Department');?>:</td>
             <td>
-                <select name="default_dept_id" data-quick-add="department">
+                <select name="default_dept_id" class="form-control-sm" data-quick-add="department">
                     <option value="">&mdash; <?php echo __('Select Default Department');?> &mdash;</option>
                     <?php
                     if (($depts=Dept::getPublicDepartments())) {
@@ -64,14 +66,14 @@ $gmtime = Misc::gmtime();
         <tr>
             <td><?php echo __('Collision Avoidance Duration'); ?>:</td>
             <td>
-                <input type="text" name="autolock_minutes" size=4 value="<?php echo $config['autolock_minutes']; ?>">
+                <input type="text" class="form-control-sm" name="autolock_minutes" size=4 value="<?php echo $config['autolock_minutes']; ?>">
                 <font class="error"><?php echo $errors['autolock_minutes']; ?></font>&nbsp;<?php echo __('minutes'); ?>
                 &nbsp;<i class="help-tip icon-question-sign" href="#collision_avoidance"></i>
             </td>
         </tr>
         <tr><td><?php echo __('Default Page Size');?>:</td>
             <td>
-                <select name="max_page_size">
+                <select name="max_page_size" class="form-control-sm">
                     <?php
                      $pagelimit=$config['max_page_size'];
                     for ($i = 5; $i <= 50; $i += 5) {
@@ -86,7 +88,7 @@ $gmtime = Misc::gmtime();
         <tr>
             <td><?php echo __('Default Log Level');?>:</td>
             <td>
-                <select name="log_level">
+                <select name="log_level" class="form-control-sm">
                     <option value=0 <?php echo $config['log_level'] == 0 ? 'selected="selected"':''; ?>><?php echo __('None (Disable Logger)');?></option>
                     <option value=3 <?php echo $config['log_level'] == 3 ? 'selected="selected"':''; ?>> <?php echo __('DEBUG');?></option>
                     <option value=2 <?php echo $config['log_level'] == 2 ? 'selected="selected"':''; ?>> <?php echo __('WARN');?></option>
@@ -99,7 +101,7 @@ $gmtime = Misc::gmtime();
         <tr>
             <td><?php echo __('Purge Logs');?>:</td>
             <td>
-                <select name="log_graceperiod">
+                <select name="log_graceperiod" class="form-control-sm">
                     <option value=0 selected><?php echo __('Never Purge Logs');?></option>
                     <?php
                     for ($i = 1; $i <=12; $i++) {
@@ -131,17 +133,16 @@ $gmtime = Misc::gmtime();
                 <i class="help-tip icon-question-sign" href="#enable_richtext"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><b><?php echo __('Date and Time Options'); ?></b>&nbsp;
+                <?php echo __('Date and Time Options'); ?>&nbsp;
                 <i class="help-tip icon-question-sign" href="#date_time_options"></i>
-                </em>
             </th>
         </tr>
 <?php if (extension_loaded('intl')) { ?>
-        <tr><td width="220" class="required"><?php echo __('Default Locale');?>:</td>
+        <tr><td class="required"><?php echo __('Default Locale');?>:</td>
             <td>
-                <select name="default_locale">
+                <select name="default_locale" class="form-control-sm">
                     <option value=""><?php echo __('Use Language Preference'); ?></option>
                     <?php
                     foreach (Internationalization::allLocales() as $code=>$name) { ?>
@@ -156,7 +157,7 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
 <?php } ?>
-        <tr><td width="220" class="required"><?php echo __('Default Time Zone');?>:</td>
+        <tr><td class="required"><?php echo __('Default Time Zone');?>:</td>
             <td>
                 <?php
                 $TZ_TIMEZONE = $config['default_timezone'];
@@ -166,9 +167,9 @@ $gmtime = Misc::gmtime();
                 <div class="error"><?php echo $errors['default_timezone']; ?></div>
             </td>
         </tr>
-        <tr><td width="220" class="required"><?php echo __('Date and Time Format');?>:</td>
+        <tr><td class="required"><?php echo __('Date and Time Format');?>:</td>
             <td>
-                <select name="date_formats" onchange="javascript:
+                <select name="date_formats" class="form-control-sm" onchange="javascript:
     $('#advanced-time').toggle($(this).find(':selected').val() == 'custom');
 ">
 <?php foreach (array(
@@ -189,38 +190,38 @@ $gmtime = Misc::gmtime();
     <tbody id="advanced-time" <?php if ($config['date_formats'] != 'custom')
         echo 'style="display:none;"'; ?>>
         <tr>
-            <td width="220" class="indented required"><?php echo __('Time Format');?>:</td>
+            <td style="width:20%" class="indented required"><?php echo __('Time Format');?>:</td>
             <td>
-                <input type="text" name="time_format" value="<?php echo $config['time_format']; ?>" class="date-format-preview">
+                <input type="text" name="time_format" value="<?php echo $config['time_format']; ?>" class="form-control-sm date-format-preview">
                     &nbsp;<font class="error">*&nbsp;<?php echo $errors['time_format']; ?></font>
-                    <em><?php echo Format::time(null, false); ?></em>
+                    <?php echo Format::time(null, false); ?>
                 <span class="faded date-format-preview" data-for="time_format">
                     <?php echo Format::time('now'); ?>
                 </span>
             </td>
         </tr>
-        <tr><td width="220" class="indented required"><?php echo __('Date Format');?>:</td>
-            <td><input type="text" name="date_format" value="<?php echo $config['date_format']; ?>" class="date-format-preview">
+        <tr><td class="indented required"><?php echo __('Date Format');?>:</td>
+            <td><input type="text" name="date_format" value="<?php echo $config['date_format']; ?>" class="form-control-sm date-format-preview">
                         &nbsp;<font class="error">*&nbsp;<?php echo $errors['date_format']; ?></font>
-                        <em><?php echo Format::date(null, false); ?></em>
+                        <?php echo Format::date(null, false); ?>
                 <span class="faded date-format-preview" data-for="date_format">
                     <?php echo Format::date('now'); ?>
                 </span>
             </td>
         </tr>
-        <tr><td width="220" class="indented required"><?php echo __('Date and Time Format');?>:</td>
-            <td><input type="text" name="datetime_format" value="<?php echo $config['datetime_format']; ?>" class="date-format-preview">
+        <tr><td  class="indented required"><?php echo __('Date and Time Format');?>:</td>
+            <td><input type="text" name="datetime_format" value="<?php echo $config['datetime_format']; ?>" class="form-control-sm date-format-preview">
                         &nbsp;<font class="error">*&nbsp;<?php echo $errors['datetime_format']; ?></font>
-                        <em><?php echo Format::datetime(null, false); ?></em>
+                        <?php echo Format::datetime(null, false); ?>
                 <span class="faded date-format-preview" data-for="datetime_format">
                     <?php echo Format::datetime('now'); ?>
                 </span>
             </td>
         </tr>
-        <tr><td width="220" class="indented required"><?php echo __('Day, Date and Time Format');?>:</td>
-            <td><input type="text" name="daydatetime_format" value="<?php echo $config['daydatetime_format']; ?>" class="date-format-preview">
+        <tr><td class="indented required"><?php echo __('Day, Date and Time Format');?>:</td>
+            <td><input type="text" name="daydatetime_format" value="<?php echo $config['daydatetime_format']; ?>" class="form-control-sm date-format-preview">
                         &nbsp;<font class="error">*&nbsp;<?php echo $errors['daydatetime_format']; ?></font>
-                        <em><?php echo Format::daydatetime(null, false); ?></em>
+                        <?php echo Format::daydatetime(null, false); ?>
                 <span class="faded date-format-preview" data-for="daydatetime_format">
                     <?php echo Format::daydatetime('now'); ?>
                 </span>
@@ -228,18 +229,17 @@ $gmtime = Misc::gmtime();
         </tr>
     </tbody>
     <tbody>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><b><?php echo __('System Languages'); ?></b>&nbsp;
+                <?php echo __('System Languages'); ?>&nbsp;
                 <i class="help-tip icon-question-sign" href="#languages"></i>
-                </em>
             </th>
         </tr>
         <tr><td><?php echo __('Primary Language'); ?>:</td>
             <td>
         <?php
         $langs = Internationalization::availableLanguages(); ?>
-                <select name="system_language">
+                <select name="system_language" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('Select a Language'); ?> &mdash;</option>
 <?php foreach($langs as $l) {
     $selected = ($config['system_language'] == $l['code']) ? 'selected="selected"' : ''; ?>
@@ -253,14 +253,14 @@ $gmtime = Misc::gmtime();
         </tr>
         <tr>
             <td style="vertical-align:top;padding-top:4px;"><?php echo __('Secondary Languages'); ?>:</td>
-            <td><div id="secondary_langs" style="width: 300px"><?php
+            <td><div id="secondary_langs"><?php
             foreach ($cfg->getSecondaryLanguages() as $lang) {
                 $info = Internationalization::getLanguageInfo($lang); ?>
             <div class="secondary_lang" style="cursor:move">
             <i class="icon-sort"></i>&nbsp;
             <span class="flag flag-<?php echo $info['flag']; ?>"></span>&nbsp;
             <?php echo Internationalization::getLanguageDescription($lang); ?>
-            <input type="hidden" name="secondary_langs[]" value="<?php echo $lang; ?>"/>
+            <input type="hidden" class="form-control-sm" name="secondary_langs[]" value="<?php echo $lang; ?>"/>
             <div class="pull-right">
             <a href="#<?php echo $lang; ?>" onclick="javascript:
                 if (confirm('<?php echo __('You sure?'); ?>')) {
@@ -276,8 +276,7 @@ $gmtime = Misc::gmtime();
             <script type="text/javascript">
             </script>
             </div>
-            <i class="icon-plus-sign"></i>&nbsp;
-            <select name="add_secondary_language">
+            <select name="add_secondary_language" class="form-control-sm">
                 <option value="">&mdash; <?php echo __('Add a Language'); ?> &mdash;</option>
 <?php foreach($langs as $l) {
     $selected = ($config['add_secondary_language'] == $l['code']) ? 'selected="selected"' : '';
@@ -292,15 +291,15 @@ $gmtime = Misc::gmtime();
             <span class="error">&nbsp;<?php echo $errors['add_secondary_language']; ?></span>
             <i class="help-tip icon-question-sign" href="#secondary_language"></i>
         </td></tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><b><?php echo __('Attachments Storage and Settings');?></b>:<i
-                class="help-tip icon-question-sign" href="#attachments"></i></em>
+                <?php echo __('Attachments Storage and Settings');?>:<i
+                class="help-tip icon-question-sign" href="#attachments"></i>
             </th>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Store Attachments'); ?>:</td>
-            <td><select name="default_storage_bk"><?php
+            <td><?php echo __('Store Attachments'); ?>:</td>
+            <td><select name="default_storage_bk" class="form-control-sm"><?php
                 if (($bks = FileStorageBackend::allRegistered())) {
                     foreach ($bks as $char=>$class) {
                         $selected = $config['default_storage_bk'] == $char
@@ -320,11 +319,11 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __(
+            <td><?php echo __(
                 // Maximum size for agent-uploaded files (via SCP)
                 'Agent Maximum File Size');?>:</td>
             <td>
-                <select name="max_file_size">
+                <select name="max_file_size" class="form-control-sm">
                     <option value="262144">&mdash; <?php echo __('Small'); ?> &mdash;</option>
                     <?php $next = 512 << 10;
                     $max = strtoupper(ini_get('upload_max_filesize'));
@@ -360,7 +359,7 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Login required');?>:</td>
+            <td><?php echo __('Login required');?>:</td>
             <td>
                 <input type="checkbox" name="files_req_auth" <?php
                     if ($config['files_req_auth']) echo 'checked="checked"';
@@ -371,11 +370,12 @@ $gmtime = Misc::gmtime();
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input class="button" type="submit" name="submit" value="<?php echo __('Save Changes');?>">
-    <input class="button" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">
+<p style="text-align:left;">
+    <button class="btn btn-sm btn-outline-primary" type="submit" name="submit" value="<?php echo __('Save Changes');?>">Save Changes</button>
+    <button class="btn btn-sm btn-secondary" type="reset" name="reset" value="<?php echo __('Reset Changes');?>">Reset Changes</button>
 </p>
 </form>
+    </div>
 <script type="text/javascript">
 $(function() {
     $('#secondary_langs').sortable({

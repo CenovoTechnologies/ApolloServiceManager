@@ -31,30 +31,31 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     — <?php echo $info['title']; ?></small>
      <?php } ?><i class="help-tip icon-question-sign" href="#canned_response"></i>
 </h2>
- <table class="form_table fixed" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr><td></td><td></td></tr> <!-- For fixed table layout -->
         <tr>
             <th colspan="2">
-                <em><?php echo __('Canned response settings');?></em>
+                <?php echo __('Canned response settings');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required"><?php echo __('Status');?>:</td>
+            <td width="15%" class="required"><?php echo __('Status');?>:</td>
             <td>
-                <label><input type="radio" name="isenabled" value="1" <?php
-                    echo $info['isenabled']?'checked="checked"':''; ?>>&nbsp;<?php echo __('Active'); ?>&nbsp;</label>
-                <label><input type="radio" name="isenabled" value="0" <?php
-                        echo !$info['isenabled']?'checked="checked"':''; ?>>&nbsp;<?php echo __('Disabled'); ?>&nbsp;</label>
-                &nbsp;<span class="error">*&nbsp;<?php echo $errors['isenabled']; ?></span>
+                <div class="form-group">
+                    <label class="form-check-inline"><input type="radio" class="form-check-input" name="isenabled" value="1" <?php
+                        echo $info['isenabled']?'checked="checked"':''; ?>>&nbsp;<?php echo __('Active'); ?>&nbsp;</label>
+                    <label class="form-check-inline"><input type="radio" class="form-check-input" name="isenabled" value="0" <?php
+                            echo !$info['isenabled']?'checked="checked"':''; ?>>&nbsp;<?php echo __('Disabled'); ?>&nbsp;</label>
+                    &nbsp;<span class="error">*&nbsp;<?php echo $errors['isenabled']; ?></span>
+                </div>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required"><?php echo __('Department');?>:</td>
+            <td width="15%" class="required"><?php echo __('Department');?>:</td>
             <td>
-                <select name="dept_id">
+                <select name="dept_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('All Departments');?> &mdash;</option>
                     <?php
                     if (($depts=Dept::getDepartments())) {
@@ -70,13 +71,13 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <tr>
             <th colspan="2">
-                <em><strong><?php echo __('Canned Response');?></strong>: <?php echo __('Make the title short and clear.');?>&nbsp;</em>
+                <?php echo __('Canned Response');?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
                 <div><b><?php echo __('Title');?></b><span class="error">*&nbsp;<?php echo $errors['title']; ?></span></div>
-                <input type="text" size="70" name="title" value="<?php echo $info['title']; ?>">
+                <input type="text" size="70" class="form-control" name="title" value="<?php echo $info['title']; ?>">
                 <br><br>
                 <div style="margin-bottom:0.5em"><b><?php echo __('Canned Response'); ?></b>
                     <font class="error">*&nbsp;<?php echo $errors['response']; ?></font>
@@ -84,13 +85,13 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     </div>
                 <textarea name="response" cols="21" rows="12"
                     data-root-context="cannedresponse"
-                    style="width:98%;" class="richtext draft draft-delete" <?php
+                    style="width:98%;" class="form-control richtext draft draft-delete" <?php
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('canned',
         is_object($canned) ? $canned->getId() : false, $info['response']);
     echo $attrs; ?>><?php echo $draft ?: $info['response'];
                 ?></textarea>
-                <div><h3><?php echo __('Canned Attachments'); ?> <?php echo __('(optional)'); ?>
-                &nbsp;<i class="help-tip icon-question-sign" href="#canned_attachments"></i></h3>
+                <div style="padding-top: 0.5em"><h5><?php echo __('Attachments'); ?> <?php echo __('(optional)'); ?>
+                &nbsp;<i class="help-tip icon-question-sign" href="#canned_attachments"></i></h5>
                 <div class="error"><?php echo $errors['files']; ?></div>
                 </div>
                 <?php
@@ -104,12 +105,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <tr>
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __('Notes about the canned response.');?>&nbsp;</em>
+                <?php echo __('Additional Notes');?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
+                <textarea class="form-control richtext no-bar" name="notes" cols="21"
                     rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
@@ -120,12 +121,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     <div id="msg_warning"><?php echo __('Canned response is in use by email filter(s)');?>: <?php
     echo implode(', ', $canned->getFilters()); ?></div>
  <?php } ?>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
-    <input type="reset"  name="reset"  value="<?php echo __('Reset'); ?>" onclick="javascript:
+<p style="text-align:left;" class="btn-group-sm">
+    <button type="submit" class="btn btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Submit Response</button>
+    <button type="reset"  class="btn btn-secondary" name="reset"  value="<?php echo __('Reset'); ?>" onclick="javascript:
         $(this.form).find('textarea.richtext')
             .redactor('deleteDraft');
-        location.reload();" />
-    <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>" onclick='window.location.href="canned.php"'>
+        location.reload();" >Reset</button>
+    <button type="button" class="btn btn-secondary" name="cancel" value="<?php echo __('Cancel'); ?>" onclick='window.location.href="canned.php"'>Cancel</button>
 </p>
 </form>

@@ -19,6 +19,7 @@ if($rule && $_REQUEST['a']!='add'){
 
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="banlist.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -28,17 +29,17 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     <h2><?php echo $title; ?>
     <i class="help-tip icon-question-sign" href="#ban_list"></i>
     </h2>
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Valid email address is required');?></em>
+                <?php echo __('Valid email address is required');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Ban Status'); ?>:
             </td>
             <td>
@@ -48,30 +49,31 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Email Address');?>:
             </td>
             <td>
-                <input name="val" type="text" size="24" value="<?php echo $info['val']; ?>">
+                <input name="val" class="form-control-sm" type="text" size="24" value="<?php echo $info['val']; ?>">
                  &nbsp;<span class="error">*&nbsp;<?php echo $errors['val']; ?></span>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __('Admin Notes');?>&nbsp;</em>
+                <?php echo __('Internal Notes');?>: <?php echo __('Admin Notes');?>&nbsp;
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
-                    rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
+                <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
+                    rows="8"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Add</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="banlist.php"'>
 </p>
 </form>
+</div>

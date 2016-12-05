@@ -1,7 +1,9 @@
 </div>
 </div>
+</div>
+</div>
 <?php if (!isset($_SERVER['HTTP_X_PJAX'])) { ?>
-    <div id="footer">
+    <div id="footer" class="col-sm-9 offset-sm-3 col-md-10 offset-md-2">
         Copyright &copy; 2016-<?php echo date('Y'); ?>&nbsp;<?php echo (string) $ost->company ?: 'cenovotechnologies.com'; ?>&nbsp;All Rights Reserved.
     </div>
 <?php
@@ -13,7 +15,7 @@ if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
     </div>
 <?php
 } ?>
-</div>
+
 <div id="overlay"></div>
 <div id="loading">
     <i class="icon-spinner icon-spin icon-3x pull-left icon-light"></i>

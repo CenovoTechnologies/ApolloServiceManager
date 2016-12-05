@@ -10,7 +10,7 @@ $plots = $report->getPlotData();
 <script type="text/javascript" src="js/dashboard.inc.js?907ec36"></script>
 
 <link rel="stylesheet" type="text/css" href="css/dashboard.css?907ec36"/>
-
+<div class="col-sm-12 col-md-12">
 <form method="post" action="dashboard.php">
 <div id="basic_search">
     <div style="min-height:25px;">
@@ -114,12 +114,13 @@ foreach ($groups as $g=>$desc) {
     <div style="margin-top: 5px"><button type="submit" class="link button" name="export"
         value="<?php echo Format::htmlchars($g); ?>">
         <i class="icon-download"></i>
-        <?php echo __('Export'); ?></a></div>
+        <?php echo __('Export'); ?></button></div>
     </div>
 <?php
 }
 ?>
 </form>
+    </div>
 <script>
     $.drawPlots(<?php echo JsonDataEncoder::encode($report->getPlotData()); ?>);
 </script>

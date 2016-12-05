@@ -17,6 +17,7 @@ if($api && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="apikeys.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -28,17 +29,17 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     <?php } ?>
     <i class="help-tip icon-question-sign" href="#api_key"></i>
     </h2>
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('API Key is auto-generated. Delete and re-add to change the key.');?></em>
+                <?php echo __('API Key is auto-generated. Delete and re-add to change the key.');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="150" class="required">
+            <td style="width:15%" class="required">
                 <?php echo __('Status');?>:
             </td>
             <td>
@@ -49,7 +50,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <?php if($api){ ?>
         <tr>
-            <td width="150">
+            <td>
                 <?php echo __('IP Address');?>:
             </td>
             <td>
@@ -60,19 +61,19 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="150">
+            <td>
                 <?php echo __('API Key');?>:
             </td>
             <td><?php echo $api->getKey(); ?> &nbsp;</td>
         </tr>
         <?php }else{ ?>
         <tr>
-            <td width="150" class="required">
+            <td class="required">
                <?php echo __('IP Address');?>:
             </td>
             <td>
                 <span>
-                <input type="text" size="30" name="ipaddr" value="<?php echo $info['ipaddr']; ?>"i
+                <input type="text" class="form-control-sm" size="30" name="ipaddr" value="<?php echo $info['ipaddr']; ?>"i
                     autofocus>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['ipaddr']; ?></span>
                 <i class="help-tip icon-question-sign" href="#ip_addr"></i>
@@ -80,9 +81,9 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <?php } ?>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Services');?>:</strong> <?php echo __('Check applicable API services enabled for the key.');?></em>
+                <strong><?php echo __('Services');?>:</strong> <?php echo __('Check applicable API services enabled for the key.');?>
             </th>
         </tr>
         <tr>
@@ -101,22 +102,23 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 </label>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __("Be liberal, they're internal");?></em>
+                <strong><?php echo __('Internal Notes');?></strong>: <?php echo __("Be liberal, they're internal");?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
+                <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
                     rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
 </table>
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Add Key</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="apikeys.php"'>
 </p>
 </form>
+</div>

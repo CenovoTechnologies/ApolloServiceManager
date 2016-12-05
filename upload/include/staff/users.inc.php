@@ -58,24 +58,23 @@ $users->values('id', 'name', 'default_email__address', 'account__id',
     'account__status', 'created', 'updated');
 $users->order_by($order . $order_column);
 ?>
-<div id="basic_search">
-    <div style="min-height:25px;">
-        <form action="users.php" method="get">
-            <?php csrf_token(); ?>
-            <input type="hidden" name="a" value="search">
-            <div class="attached input">
-                <input type="text" class="basic-search" id="basic-user-search" name="query"
-                         size="30" value="<?php echo Format::htmlchars($_REQUEST['query']); ?>"
-                        autocomplete="off" autocorrect="off" autocapitalize="off">
-            <!-- <td>&nbsp;&nbsp;<a href="" id="advanced-user-search">[advanced]</a></td> -->
-                <button type="submit" class="attached button"><i class="icon-search"></i>
-                </button>
-            </div>
-        </form>
-    </div>
- </div>
-<form id="users-list" action="users.php" method="POST" name="staff" >
-
+<div class="col-sm-12 col-md-12">
+<!--<div id="basic_search">-->
+<!--    <div style="min-height:25px;">-->
+<!--        <form action="users.php" method="get">-->
+<!--            --><?php //csrf_token(); ?>
+<!--            <input type="hidden" name="a" value="search">-->
+<!--            <div class="attached input">-->
+<!--                <input type="text" class="basic-search" id="basic-user-search" name="query"-->
+<!--                         size="30" value="--><?php //echo Format::htmlchars($_REQUEST['query']); ?><!--"-->
+<!--                        autocomplete="off" autocorrect="off" autocapitalize="off">-->
+<!--            <!-- <td>&nbsp;&nbsp;<a href="" id="advanced-user-search">[advanced]</a></td> -->
+<!--                <button type="submit" class="attached button"><i class="icon-search"></i>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!-- </div>-->
 <div style="margin-bottom:20px; padding-top:5px;">
     <div class="sticky bar opaque">
         <div class="content">
@@ -95,13 +94,11 @@ $users->order_by($order . $order_column);
                     <?php echo __('Import'); ?>
                 </a>
                 <?php } ?>
-                <span class="action-button" data-dropdown="#action-dropdown-more"
-                      style="/*DELME*/ vertical-align:top; margin-bottom:0">
-                    <i class="icon-caret-down pull-right"></i>
-                    <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-                </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('More');?>" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-cog"></i> <?php echo __('More');?>
+                    </button>
+                    <ul id="actions" class="dropdown-menu">
                         <?php if ($thisstaff->hasPerm(User::PERM_EDIT)) { ?>
                         <li><a href="#add-to-org" class="users-action">
                             <i class="icon-group icon-fixed-width"></i>
@@ -136,6 +133,8 @@ $users->order_by($order . $order_column);
     </div>
 </div>
 <div class="clear"></div>
+
+    <form id="users-list" action="users.php" method="POST" name="staff" >
 <?php
 $showing = $search ? __('Search Results').': ' : '';
 if($users->exists(true))
@@ -148,9 +147,9 @@ else
  <input type="hidden" id="action" name="a" value="" >
  <input type="hidden" id="selected-count" name="count" value="" >
  <input type="hidden" id="org_id" name="org_id" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed table-bordered table-hover table-striped" border="0" cellspacing="1" cellpadding="0" width="940">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th nowrap width="4%">&nbsp;</th>
             <th><a <?php echo $name_sort; ?> href="users.php?<?php
                 echo $qstr; ?>&sort=name"><?php echo __('Name'); ?></a></th>
@@ -230,7 +229,7 @@ if ($total) {
 }
 ?>
 </form>
-
+</div>
 <script type="text/javascript">
 $(function() {
     $('input#basic-user-search').typeahead({

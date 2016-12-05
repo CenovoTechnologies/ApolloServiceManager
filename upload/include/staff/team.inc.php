@@ -23,6 +23,7 @@ if ($team && $_REQUEST['a']!='add') {
 
 $info = $team->getInfo();
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="teams.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -35,35 +36,35 @@ $info = $team->getInfo();
     <i class="help-tip icon-question-sign" href="#teams"></i>
 </h2>
 <br>
-<ul class="clean tabs">
-    <li class="active"><a href="#team">
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#team" role="tab">
         <i class="icon-file"></i> <?php echo __('Team'); ?></a></li>
-    <li><a href="#members">
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#members" role="tab">
         <i class="icon-group"></i> <?php echo __('Members'); ?></a></li>
 </ul>
-
-<div id="team" class="tab_content">
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<div class="tab-content">
+<div id="team" class="tab-pane active" role="tabpanel">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Team Information'); ?></strong>:</em>
+                <?php echo __('Team Information'); ?>:
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Name');?>:
             </td>
             <td>
-                <input type="text" size="30" name="name" value="<?php echo Format::htmlchars($team->name); ?>"
+                <input type="text" class="form-control-sm" size="30" name="name" value="<?php echo Format::htmlchars($team->name); ?>"
                     autofocus data-translate-tag="<?php echo $trans['name']; ?>"/>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Status');?>:
             </td>
             <td>
@@ -77,12 +78,12 @@ $info = $team->getInfo();
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Team Lead');?>:
             </td>
             <td>
                 <span>
-                <select id="team-lead-select" name="lead_id" data-quick-add="staff">
+                <select id="team-lead-select" class="form-control-sm" name="lead_id" data-quick-add="staff">
                     <option value="0">&mdash; <?php echo __('None');?> &mdash;</option>
 <?php               if ($members) {
                         foreach($members as $k=>$staff){
@@ -98,7 +99,7 @@ $info = $team->getInfo();
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Assignment Alert');?>:
             </td>
             <td>
@@ -107,15 +108,15 @@ $info = $team->getInfo();
                 <i class="help-tip icon-question-sign" href="#assignment_alert"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Admin Notes');?></strong>: <?php echo __('Internal notes viewable by all admins.');?>&nbsp;</em>
+                <?php echo __('Admin Notes');?>: <?php echo __('Internal notes viewable by all admins.');?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
-                    rows="8" style="width: 80%;"><?php echo Format::htmlchars($team->notes); ?></textarea>
+                <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
+                    rows="8"><?php echo Format::htmlchars($team->notes); ?></textarea>
             </td>
         </tr>
     </tbody>
@@ -128,22 +129,17 @@ foreach ($members as $m)
     unset($agents[$m->staff_id]);
 ?>
 
-<div id="members" class="tab_content" style="display:none">
-   <table class="two-column table" width="100%">
+<div id="members" class="tab-pane">
+   <table class="table table-condensed">
     <tbody>
-        <tr class="header">
+        <tr class="table-heading">
             <td colspan="2">
                 <?php echo __('Team Members'); ?>
-                <div><small>
-                <?php echo __('Agents who are members of this team'); ?>
-                <i class="help-tip icon-question-sign" href="#members"></i>
-                </small></div>
             </td>
         </tr>
       <tr id="add_member">
         <td colspan="2">
-          <i class="icon-plus-sign"></i>
-          <select id="add_access" data-quick-add="staff">
+          <select id="add_access" class="form-control-sm" data-quick-add="staff">
             <option value="0">&mdash; <?php echo __('Select Agent');?> &mdash;</option>
             <?php
             foreach ($agents as $id=>$name) {
@@ -152,7 +148,7 @@ foreach ($members as $m)
             ?>
             <option value="0" data-quick-add>&mdash; <?php echo __('Add New');?> &mdash;</option>
           </select>
-          <button type="button" class="action-button">
+          <button type="button" class="btn btn-sm btn-outline-success">
             <?php echo __('Add'); ?>
           </button>
         </td>
@@ -175,14 +171,14 @@ foreach ($members as $m)
     </tbody>
    </table>
 </div>
-
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+</div>
+<p style="text-align:left; padding-top: 5px;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>"><?php echo $submit_text; ?></button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="?"'>
 </p>
 </form>
-
+</div>
 <script type="text/javascript">
 var addMember = function(staffid, name, alerts, error) {
   if (!staffid) return;

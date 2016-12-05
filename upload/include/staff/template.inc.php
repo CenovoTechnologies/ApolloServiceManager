@@ -19,6 +19,7 @@ if($template && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="templates.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -29,26 +30,26 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     — <?php echo $info['name']; ?></small>
      <?php } ?>
 </h2>
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Template information');?></em>
+                <?php echo __('Template information');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
               <?php echo __('Name');?>:
             </td>
             <td>
-                <input type="text" size="30" name="name" value="<?php echo $info['name']; ?>">
+                <input type="text" class="form-control-sm" size="30" name="name" value="<?php echo $info['name']; ?>">
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Status');?>:
             </td>
             <td>
@@ -63,7 +64,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         <?php
         if($template){ ?>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Language');?>:
             </td>
             <td><?php
@@ -83,11 +84,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                  continue;
              if (!$current_group || $current_group != $info['group']) {
                 $current_group = $info['group']; ?>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-            <em><strong><?php echo isset($_groups[$current_group])
-            ? $_groups[$current_group] : $current_group; ?></strong>
-            :: <?php echo __('Click on the title to edit.'); ?></em>
+            <?php echo isset($_groups[$current_group])
+            ? $_groups[$current_group] : $current_group; ?>
+            :: <?php echo __('Click on the title to edit.'); ?>
             </th>
         </tr>
 <?php } # end if ($current_group)
@@ -106,11 +107,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
          } # endfor
         } else { ?>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Template Set To Clone');?>:
             </td>
             <td>
-                <select name="tpl_id" onchange="javascript:
+                <select name="tpl_id" class="form-control-sm" onchange="javascript:
     if ($(this).val() == 0)
         $('#language').show();
     else
@@ -130,16 +131,16 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['tpl_id']; ?></span><i class="help-tip icon-question-sign" href="#template_to_clone"></i>
             </td>
         </tr>
-</tbody>
-<tbody id="language">
+    </tbody>
+    <tbody id="language">
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Language'); ?>:
             </td>
             <td>
         <?php
         $langs = Internationalization::availableLanguages(); ?>
-                <select name="lang_id">
+                <select name="lang_id" class="form-control-sm">
 <?php foreach($langs as $l) {
     $selected = ($info['lang_id'] == $l['code']) ? 'selected="selected"' : ''; ?>
                     <option value="<?php echo $l['code']; ?>" <?php echo $selected;
@@ -150,26 +151,27 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <i class="help-tip icon-question-sign" href="#language"></i>
             </td>
         </tr>
-</tbody>
-<tbody>
+    </tbody>
+    <tbody>
         <?php } ?>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __(
-                "Be liberal, they're internal");?></em>
+                <?php echo __('Internal Notes');?>: <?php echo __(
+                "Be liberal, they're internal");?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
+                <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
                     rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
 </table>
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>"><?php echo $submit_text; ?></button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="templates.php"'>
 </p>
 </form>
+</div>

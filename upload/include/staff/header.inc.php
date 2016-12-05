@@ -23,7 +23,11 @@ if ($lang) {
         .tip_shadow { display:block !important; }
     </style>
     <![endif]-->
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/tether/utils.js?907ec36"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/tether/tether.js?907ec36"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.11.2.min.js?907ec36"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/bootstrap.js?907ec36"></script>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/bootstrap.css?907ec36" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css?907ec36" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css?907ec36" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?907ec36" media="screen"/>
@@ -48,7 +52,7 @@ if ($lang) {
     ?>
 </head>
 <body>
-<div id="container">
+<div id="container" class="container-fluid">
     <?php
     if($ost->getError())
         echo sprintf('<div id="error_bar">%s</div>', $ost->getError());
@@ -57,23 +61,54 @@ if ($lang) {
     elseif($ost->getNotice())
         echo sprintf('<div id="notice_bar">%s</div>', $ost->getNotice());
     ?>
-    <div id="header">
-        <p id="info" class="pull-right no-pjax"><?php echo sprintf(__('Welcome, %s.'), '<strong>'.$thisstaff->getFirstName().'</strong>'); ?>
-           <?php
-            if($thisstaff->isAdmin() && !defined('ADMINPAGE')) { ?>
-            | <a href="<?php echo ROOT_PATH ?>scp/admin.php" class="no-pjax"><?php echo __('Admin Panel'); ?></a>
-            <?php }else{ ?>
-            | <a href="<?php echo ROOT_PATH ?>scp/index.php" class="no-pjax"><?php echo __('Agent Panel'); ?></a>
-            <?php } ?>
-            | <a href="<?php echo ROOT_PATH ?>scp/profile.php"><?php echo __('Profile'); ?></a>
-            | <a href="<?php echo ROOT_PATH ?>scp/logout.php?auth=<?php echo $ost->getLinkToken(); ?>" class="no-pjax"><?php echo __('Log Out'); ?></a>
-        </p>
-        <a href="<?php echo ROOT_PATH ?>scp/index.php" class="no-pjax" id="logo">
-            <span class="valign-helper"></span>
-            <img src="<?php echo ROOT_PATH ?>scp/logo.php?<?php echo strtotime($cfg->lastModified('staff_logo_id')); ?>" alt="osTicket &mdash; <?php echo __('Customer Support System'); ?>"/>
-        </a>
+    <div class="row-fluid">    
+        <div id="leftNav" class="col-sm-3 col-md-2 float-md-left">
+            <div id="nav" class="nav nav-sidebar nav-list" role="tablist">
+                <?php include STAFFINC_DIR . "templates/navigation.tmpl.php"; ?>
+            </div>
+        </div>
+    </div>        
+    <div class="row-fluid">
+    <div id="header" class="page-header col-sm-9 offset-sm-3 col-md-10 offset-md-2">
+        <div class="pull-right no-pjax">
+            <div id="nav_admin" class="pull-left" style="margin: 15px 0px;">
+                <?php
+                if($thisstaff->isAdmin() && defined('ADMINPAGE')) { ?>
+                <button type="button" class="btn btn-secondary"><a href="<?php echo ROOT_PATH ?>scp/index.php" class="no-pjax"><?php echo __('Back to Agent Panel'); ?></a></button>
+                <?php } ?>
+            </div>
+            <!-- SEARCH FORM START -->
+            <div id="nav_search" class="pull-left" style="margin: 15px 0;">
+                <form action="tickets.php" method="get" onsubmit="javascript:
+                  $.pjax({
+                    url:$(this).attr('action') + '?' + $(this).serialize(),
+                    container:'#pjax-container',
+                    timeout: 2000
+                  });
+                return false;">
+                <input type="hidden" name="a" value="search"/>
+                <input type="hidden" name="search-type" value=""/>
+                <div class="attached input">
+                  <input type="text" class="basic-search" data-url="scp/ajax.php/tickets/lookup" name="query"
+                    size="30" value="<?php echo Format::htmlchars($_REQUEST['query'], true); ?>"
+                    autocomplete="off" autocorrect="off" autocapitalize="off"/>
+                  <button type="submit" id="nav-button" class="attached button"><i class="icon-search"></i></button>
+                </div>
+                <a href="#" onclick="javascript:
+                    $.dialog('ajax.php/tickets/search', 201);"
+                    >[<?php echo __('advanced'); ?>]</a>
+                </form>
+            </div>
+            <!-- SEARCH FORM END -->
+            <a href="<?php echo ROOT_PATH ?>scp/profile.php">
+            <div class="avatar pull-right" style="margin: 10px 15px; width: 50px; height: 50px;">
+            <?php       $avatar = $thisstaff->getAvatar();
+                        echo $avatar; ?>
+            </div>
+            </a>
+        </div>
     </div>
-    <div id="pjax-container" class="<?php if ($_POST) echo 'no-pjax'; ?>">
+    <div id="pjax-container" class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 <?php if ($_POST) echo 'no-pjax'; ?>">
 <?php } else {
     header('X-PJAX-Version: ' . GIT_VERSION);
     if ($pjax = $ost->getExtraPjax()) { ?>
@@ -85,14 +120,8 @@ if ($lang) {
         if (strpos($h, '<script ') !== false)
             echo $h;
     } ?>
-    <title><?php echo ($ost && ($title=$ost->getPageTitle()))?$title:'osTicket :: '.__('Staff Control Panel'); ?></title><?php
+    <title><?php echo ($ost && ($title=$ost->getPageTitle()))?$title:'Apollo Service Manager'; ?></title><?php
 } # endif X_PJAX ?>
-    <ul id="nav">
-<?php include STAFFINC_DIR . "templates/navigation.tmpl.php"; ?>
-    </ul>
-    <ul id="sub_nav">
-<?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
-    </ul>
     <div id="content">
         <?php if($errors['err']) { ?>
             <div id="msg_error"><?php echo $errors['err']; ?></div>

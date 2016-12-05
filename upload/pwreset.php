@@ -17,7 +17,7 @@ if($_POST) {
         case 'sendmail':
             if (($acct=ClientAccount::lookupByUsername($_POST['userid']))) {
                 if (!$acct->isPasswdResetEnabled()) {
-                    $banner = __('Password Reset is not enabled for your account. Contact your administrator');
+                    $banner = __('Password Reset is not enabled for your account. Contact your Administrator for assistance');
                 }
                 elseif ($acct->sendResetEmail()) {
                     $inc = 'pwreset.sent.php';

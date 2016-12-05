@@ -22,17 +22,17 @@ if($topic && $_REQUEST['a']!='add') {
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
-
+<div class="col-sm-12 col-md-12">
 <h2><?php echo $title; ?>
     <?php if (isset($info['topic'])) { ?><small>
     — <?php echo $info['topic']; ?></small>
 <?php } ?>
  <i class="help-tip icon-question-sign" href="#help_topic_information"></i></h2>
 
-<ul class="clean tabs" id="topic-tabs">
-    <li class="active"><a href="#info"><i class="icon-info-sign"></i> <?php echo __('Help Topic Information'); ?></a></li>
-    <li><a href="#routing"><i class="icon-ticket"></i> <?php echo __('New ticket options'); ?></a></li>
-    <li><a href="#forms"><i class="icon-paste"></i> <?php echo __('Forms'); ?></a></li>
+<ul class="nav nav-tabs" id="topic-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info" role="tab"><i class="icon-info-sign"></i> <?php echo __('Help Topic Information'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#routing" role="tab"><i class="icon-ticket"></i> <?php echo __('New ticket options'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#forms" role="tab"><i class="icon-paste"></i> <?php echo __('Forms'); ?></a></li>
 </ul>
 
 <form action="helptopics.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
@@ -41,22 +41,22 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
  <input type="hidden" name="a" value="<?php echo Format::htmlchars($_REQUEST['a']); ?>">
  <input type="hidden" name="id" value="<?php echo $info['id']; ?>">
 
-<div id="topic-tabs_container">
-<div class="tab_content" id="info">
- <table class="table" border="0" cellspacing="0" cellpadding="2">
+<div id="topic-tabs_container" class="tab-content">
+<div class="tab-pane active" id="info" role="tabpanel">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                <?php echo __('Topic');?>:
             </td>
             <td>
-                <input type="text" size="30" name="topic" value="<?php echo $info['topic']; ?>"
+                <input type="text" class="form-control-sm" size="30" name="topic" value="<?php echo $info['topic']; ?>"
                 autofocus data-translate-tag="<?php echo $trans['name']; ?>"/>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['topic']; ?></span> <i class="help-tip icon-question-sign" href="#topic"></i>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Status');?>:
             </td>
             <td>
@@ -66,7 +66,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Type');?>:
             </td>
             <td>
@@ -76,11 +76,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Parent Topic');?>:
             </td>
             <td>
-                <select name="topic_pid">
+                <select name="topic_pid" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('Top-Level Topic'); ?> &mdash;</option><?php
                     $topics = Topic::getAllHelpTopics();
                     while (list($id,$topic) = each($topics)) {
@@ -102,24 +102,24 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             <?php echo __("Be liberal, they're internal");?>
         </div>
 
-        <textarea class="richtext no-bar" name="notes" cols="21"
+        <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"
             rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
 
 </div>
 
-<div class="hidden tab_content" id="routing">
+<div class="tab-pane" id="routing" role="tabpanel">
 <div style="padding:8px 0;border-bottom: 2px dotted #ddd;">
 <div><b class="big"><?php echo __('New ticket options');?></b></div>
 </div>
 
- <table class="table" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
         <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required" style="width:15%">
                 <?php echo __('Department'); ?>:
             </td>
             <td>
-                <select name="dept_id" data-quick-add="department">
+                <select name="dept_id" class="form-control-sm" data-quick-add="department">
                     <option value="0">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     foreach (Dept::getDepartments() as $id=>$name) {
@@ -153,7 +153,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <?php echo __('Format'); ?>:
             </td>
             <td>
-                <input type="text" name="number_format" value="<?php echo $info['number_format']; ?>"/>
+                <input type="text" class="form-control-sm" name="number_format" value="<?php echo $info['number_format']; ?>"/>
                 <span class="faded"><?php echo __('e.g.'); ?> <span id="format-example"><?php
                     if ($info['custom-numbers']) {
                         if ($info['sequence_id'])
@@ -171,7 +171,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <?php echo __('Sequence'); ?>:
             </td>
             <td>
-                <select name="sequence_id">
+                <select name="sequence_id" class="form-control-sm">
                 <option value="0" <?php if ($info['sequence_id'] == 0) echo $selected;
                     ?>>&mdash; <?php echo __('Random'); ?> &mdash;</option>
 <?php foreach (Sequence::objects() as $s) { ?>
@@ -189,12 +189,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     </tbody>
     <tbody>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Status'); ?>:
             </td>
             <td>
                 <span>
-                <select name="status_id">
+                <select name="status_id" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     foreach (TicketStatusList::getStatuses(array('states'=>array('open'))) as $status) {
@@ -219,11 +219,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Priority'); ?>:
             </td>
             <td>
-                <select name="priority_id">
+                <select name="priority_id" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     if (($priorities=Priority::getPriorities())) {
@@ -239,11 +239,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('SLA Plan');?>:
             </td>
             <td>
-                <select name="sla_id">
+                <select name="sla_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __("Department's Default");?> &mdash;</option>
                     <?php
                     if($slas=SLA::getSLAs()) {
@@ -259,9 +259,9 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Thank-You Page'); ?>:</td>
+            <td><?php echo __('Thank-You Page'); ?>:</td>
             <td>
-                <select name="page_id">
+                <select name="page_id" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     if(($pages = Page::getActiveThankYouPages())) {
@@ -279,11 +279,11 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Auto-assign To');?>:
             </td>
             <td>
-                <select name="assign" data-quick-add>
+                <select name="assign" class="form-control-sm" data-quick-add>
                     <option value="0">&mdash; <?php echo __('Unassigned'); ?> &mdash;</option>
                     <?php
                     if (($users=Staff::getStaffMembers())) {
@@ -319,7 +319,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Auto-Response'); ?>:
             </td>
             <td>
@@ -332,8 +332,8 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
  </table>
 </div>
 
-<div class="hidden tab_content" id="forms">
- <table id="topic-forms" class="table" border="0" cellspacing="0" cellpadding="2">
+<div class="tab-pane" id="forms" role="tabpanel">
+ <table id="topic-forms" class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
 
 <?php
 $current_forms = array();
@@ -385,7 +385,7 @@ foreach ($forms as $F) {
 
    <br/>
    <strong><?php echo __('Add Custom Form'); ?></strong>:
-   <select name="form_id" id="newform">
+   <select name="form_id" id="newform" class="form-control-sm">
     <option value=""><?php echo '— '.__('Add a custom form') . ' —'; ?></option>
     <?php foreach (DynamicForm::objects()
         ->filter(array('type'=>'G'))
@@ -406,12 +406,13 @@ foreach ($forms as $F) {
 
 </div>
 
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left; padding-top: 0.5em">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Add Topic</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="helptopics.php"'>
 </p>
 </form>
+    </div>
 <script type="text/javascript">
 $(function() {
     var request = null,

@@ -2,19 +2,19 @@
 if(!defined('OSTSTAFFINC') || !$staff || !$thisstaff) die('Access Denied');
 ?>
 
-<form action="profile.php" method="post" id="save" autocomplete="off">
+<form action="profile.php" method="post" id="save" class="form-inline" autocomplete="off">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="update">
  <input type="hidden" name="id" value="<?php echo $staff->getId(); ?>">
 <h2><?php echo __('My Account Profile');?></h2>
-  <ul class="clean tabs">
-    <li class="active"><a href="#account"><i class="icon-user"></i> <?php echo __('Account'); ?></a></li>
-    <li><a href="#preferences"><?php echo __('Preferences'); ?></a></li>
-    <li><a href="#signature"><?php echo __('Signature'); ?></a></li>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#account" role="tab"><i class="icon-user"></i> <?php echo __('Account'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#preferences" role="tab"><?php echo __('Preferences'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#signature" role="tab"><?php echo __('Signature'); ?></a></li>
   </ul>
-
-  <div class="tab_content" id="account">
-    <table class="table two-column" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content">
+  <div class="tab-pane active" id="account" role="tabpanel">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
       <tbody>
         <tr><td colspan="2"><div>
         <div class="avatar pull-left" style="margin: 10px 15px; width: 100px; height: 100px;">
@@ -46,24 +46,26 @@ if ($avatar->isChangeable()) { ?>
 <?php
 } ?>
         </div>
-        <table class="table two-column" border="0" cellspacing="2" cellpadding="2" style="width:760px">
+        <table class="table table-condensed" border="0" cellspacing="2" cellpadding="2" style="width:85%">
         <tr>
-          <td class="required"><?php echo __('Name'); ?>:</td>
+          <td class="required" width="8%"><?php echo __('Name'); ?>:</td>
           <td>
-            <input type="text" size="20" maxlength="64" style="width: 145px" name="firstname"
+              <div class="form-group">
+            <input type="text" class="form-control" size="20" maxlength="64" name="firstname"
               autofocus value="<?php echo Format::htmlchars($staff->firstname); ?>"
               placeholder="<?php echo __("First Name"); ?>" />
-            <input type="text" size="20" maxlength="64" style="width: 145px" name="lastname"
+            <input type="text" class="form-control" size="20" maxlength="64" name="lastname"
               value="<?php echo Format::htmlchars($staff->lastname); ?>"
               placeholder="<?php echo __("Last Name"); ?>" />
-            <div class="error"><?php echo $errors['firstname']; ?></div>
+                  <div class="error"><?php echo $errors['firstname']; ?></div>
             <div class="error"><?php echo $errors['lastname']; ?></div>
+                  </div>
           </td>
         </tr>
         <tr>
           <td class="required"><?php echo __('Email Address'); ?>:</td>
-          <td>
-            <input type="email" size="40" maxlength="64" style="width: 300px" name="email"
+          <td style="width:40%">
+            <input type="email" class="form-control-sm" size="40" maxlength="64" name="email"
               value="<?php echo Format::htmlchars($staff->email); ?>"
               placeholder="<?php echo __('e.g. me@mycompany.com'); ?>" />
             <div class="error"><?php echo $errors['email']; ?></div>
@@ -72,19 +74,21 @@ if ($avatar->isChangeable()) { ?>
         <tr>
           <td><?php echo __('Phone Number');?>:</td>
           <td>
-            <input type="tel" size="18" name="phone" class="auto phone"
+              <div class="form-group">
+            <input type="tel" class="form-control-sm" size="18" name="phone"
               value="<?php echo Format::htmlchars($staff->phone); ?>" />
             <?php echo __('Ext');?>
-            <input type="text" size="5" name="phone_ext"
-              value="<?php echo Format::htmlchars($staff->phone_ext); ?>">
-            <div class="error"><?php echo $errors['phone']; ?></div>
+            <input type="tel" class="form-control-sm" size="5" name="phone_ext"
+              value="<?php echo Format::htmlchars($staff->phone_ext); ?>"/>
+                  <div class="error"><?php echo $errors['phone']; ?></div>
             <div class="error"><?php echo $errors['phone_ext']; ?></div>
+                  </div>
           </td>
         </tr>
         <tr>
           <td><?php echo __('Mobile Number');?>:</td>
           <td>
-            <input type="tel" size="18" name="mobile" class="auto phone"
+            <input type="tel" class="form-control-sm auto phone" size="18" name="mobile"
               value="<?php echo Format::htmlchars($staff->mobile); ?>" />
             <div class="error"><?php echo $errors['mobile']; ?></div>
           </td>
@@ -108,17 +112,19 @@ if ($avatar->isChangeable()) { ?>
           <td class="required"><?php echo __('Username'); ?>:
             <span class="error">*</span></td>
           <td>
-            <input type="text" size="40" style="width:300px"
-              class="staff-username typeahead"
+              <div class="form-group">
+            <input type="text" size="40"
+              class="form-control-sm staff-username typeahead"
               name="username" disabled value="<?php echo Format::htmlchars($staff->username); ?>" />
 <?php if (!$bk || $bk->supportsPasswordChange()) { ?>
-            <button type="button" id="change-pw-button" class="action-button" onclick="javascript:
+            <button type="button" id="change-pw-button" class="btn btn-outline-warning btn-sm" onclick="javascript:
             $.dialog('ajax.php/staff/'+<?php echo $staff->getId(); ?>+'/change-password', 201);">
               <i class="icon-refresh"></i> <?php echo __('Change Password'); ?>
             </button>
 <?php } ?>
             <i class="offset help-tip icon-question-sign" href="#username"></i>
-            <div class="error"><?php echo $errors['username']; ?></div>
+                  <div class="error"><?php echo $errors['username']; ?></div>
+              </div>
           </td>
         </tr>
       </tbody>
@@ -151,7 +157,7 @@ if ($avatar->isChangeable()) { ?>
 
   <!-- =================== PREFERENCES ======================== -->
 
-  <div class="hidden tab_content" id="preferences">
+  <div class="tab-pane" id="preferences" role="tabpanel">
     <table class="table two-column" width="100%">
       <tbody>
         <tr class="header">
@@ -164,9 +170,9 @@ if ($avatar->isChangeable()) { ?>
           </th>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Maximum Page Size');?>:</td>
+            <td width="30%"><?php echo __('Maximum Page Size');?>:</td>
             <td>
-                <select name="max_page_size">
+                <select name="max_page_size" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('System Default');?> &mdash;</option>
                     <?php
                     $pagelimit = $staff->max_page_size ?: $cfg->getPageSize();
@@ -178,11 +184,11 @@ if ($avatar->isChangeable()) { ?>
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Auto Refresh Rate');?>:
-              <div class="faded"><?php echo __('Tickets page refresh rate in minutes.'); ?></div>
+            <td width="30%"><?php echo __('Auto Refresh Rate');?>:
+              <div class="faded"><em><?php echo __('Ticket refresh rate'); ?></em></div>
             </td>
             <td>
-                <select name="auto_refresh_rate">
+                <select name="auto_refresh_rate" class="form-control-sm">
                   <option value="0">&mdash; <?php echo __('Disabled');?> &mdash;</option>
                   <?php
                   $y=1;
@@ -198,11 +204,11 @@ if ($avatar->isChangeable()) { ?>
         </tr>
 
         <tr>
-            <td><?php echo __('Default From Name');?>:
-              <div class="faded"><?php echo __('From name to use when replying to a thread');?></div>
+            <td><?php echo __('Default Name');?>:
+              <div class="faded"><em><?php echo __('Name used when replying to a thread');?></em></div>
             </td>
             <td>
-                <select name="default_from_name">
+                <select name="default_from_name" class="form-control-sm">
                   <?php
                    $options=array(
                            'email' => __("Email Address Name"),
@@ -225,10 +231,10 @@ if ($avatar->isChangeable()) { ?>
         </tr>
         <tr>
             <td><?php echo __('Thread View Order');?>:
-              <div class="faded"><?php echo __('The order of thread entries');?></div>
+              <div class="faded"><em><?php echo __('Order of thread entries');?></em></div>
             </td>
             <td>
-                <select name="thread_view_order">
+                <select name="thread_view_order" class="form-control-sm">
                   <?php
                    $options=array(
                            'desc' => __('Descending'),
@@ -248,10 +254,10 @@ if ($avatar->isChangeable()) { ?>
         </tr>
         <tr>
             <td><?php echo __('Default Signature');?>:
-              <div class="faded"><?php echo __('This can be selected when replying to a thread');?></div>
+              <div class="faded"><em><?php echo __('Can be used when replying to a thread');?></em></div>
             </td>
             <td>
-                <select name="default_signature_type">
+                <select name="default_signature_type" class="form-control-sm">
                   <option value="none" selected="selected">&mdash; <?php echo __('None');?> &mdash;</option>
                   <?php
                    $options=array('mine'=>__('My Signature'),'dept'=>sprintf(__('Department Signature (%s)'),
@@ -266,11 +272,11 @@ if ($avatar->isChangeable()) { ?>
             </td>
         </tr>
         <tr>
-            <td width="180"><?php echo __('Default Paper Size');?>:
-              <div class="faded"><?php echo __('Paper size used when printing tickets to PDF');?></div>
+            <td width="30%"><?php echo __('Default Paper Size');?>:
+              <div class="faded"><em><?php echo __('Used when converting tickets to PDF');?></em></div>
             </td>
             <td>
-                <select name="default_paper_size">
+                <select name="default_paper_size" class="form-control-sm">
                   <option value="none" selected="selected">&mdash; <?php echo __('None');?> &mdash;</option>
                   <?php
 
@@ -302,7 +308,7 @@ if ($avatar->isChangeable()) { ?>
         </tr>
         <tr><td><?php echo __('Time Format');?>:</td>
             <td>
-                <select name="datetime_format">
+                <select name="datetime_format" class="form-control-sm">
 <?php
     $datetime_format = $staff->datetime_format;
     foreach (array(
@@ -323,7 +329,7 @@ if ($avatar->isChangeable()) { ?>
             <td>
         <?php
         $langs = Internationalization::getConfiguredSystemLanguages(); ?>
-                <select name="lang">
+                <select name="lang" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('Use Browser Preference'); ?> &mdash;</option>
 <?php foreach($langs as $l) {
     $selected = ($staff->lang == $l['code']) ? 'selected="selected"' : ''; ?>
@@ -339,7 +345,7 @@ if ($avatar->isChangeable()) { ?>
         <tr>
             <td><?php echo __('Preferred Locale');?>:</td>
             <td>
-                <select name="locale">
+                <select name="locale" class="form-control-sm">
                     <option value=""><?php echo __('Use Language Preference'); ?></option>
 <?php foreach (Internationalization::allLocales() as $code=>$name) { ?>
                     <option value="<?php echo $code; ?>" <?php
@@ -356,7 +362,7 @@ if ($avatar->isChangeable()) { ?>
 
   <!-- ==================== SIGNATURES ======================== -->
 
-  <div id="signature" class="hidden">
+  <div id="signature" class="tab-pane" role="tabpanel">
     <table class="table two-column" width="100%">
       <tbody>
         <tr class="header">
@@ -365,25 +371,25 @@ if ($avatar->isChangeable()) { ?>
             <div><small><?php echo __(
             "Optional signature used on outgoing emails.")
             .' '.
-            __('Signature is made available as a choice, on ticket reply.'); ?>
+            __('Signature is a choice on ticket reply.'); ?>
             </small></div>
           </th>
         </tr>
         <tr>
             <td colspan="2">
-                <textarea class="richtext no-bar" name="signature" cols="21"
+                <textarea class="richtext no-bar form-control" name="signature" cols="21"
                     rows="5" style="width: 60%;"><?php echo $staff->signature; ?></textarea>
             </td>
         </tr>
       </tbody>
     </table>
   </div>
-
-  <p style="text-align:center;">
-    <button class="button action-button" type="submit" name="submit" ><i class="icon-save"></i> <?php echo __('Save Changes'); ?></button>
-    <button class="button action-button" type="reset"  name="reset"><i class="icon-undo"></i>
+    </div>
+  <p style="text-align:left;">
+    <button class="btn btn-outline-primary btn-sm" type="submit" name="submit" ><i class="icon-save"></i> <?php echo __('Save Changes'); ?></button>
+    <button class="btn btn-secondary btn-sm" type="reset"  name="reset"><i class="icon-undo"></i>
         <?php echo __('Reset');?></button>
-    <button class="red button action-button" type="button" name="cancel" onclick="window.history.go(-1);"><i class="icon-remove-circle"></i> <?php echo __('Cancel');?></button>
+    <button class="btn btn-sm btn-secondary" type="button" name="cancel" onclick="window.history.go(-1);"><i class="icon-remove-circle"></i> <?php echo __('Cancel');?></button>
   </p>
     <div class="clear"></div>
 </form>

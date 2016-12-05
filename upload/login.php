@@ -122,7 +122,7 @@ elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
             $inc = 'register.inc.php';
         }
         else {
-            $errors['err'] = __('Access Denied. Contact your help desk administrator to have an account registered for you');
+            $errors['err'] = __('Access Denied. Contact your Service Desk Administrator to have an account registered for you');
             // fall through to show login page again
         }
     }

@@ -1,15 +1,15 @@
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Global setting - can be disabled at department or email level.'); ?></em>
+                <?php echo __('Global setting - can be disabled at department or email level.'); ?>
             </th>
         </tr>
     </thead>
     <tbody>
 
         <tr>
-            <td width="160"><?php echo __('New Ticket'); ?>:</td>
+            <td style="width:15%"><?php echo __('New Ticket'); ?>:</td>
             <td>
                 <input type="checkbox" name="ticket_autoresponder" <?php
 echo $config['ticket_autoresponder'] ? 'checked="checked"' : ''; ?>/>
@@ -18,7 +18,7 @@ echo $config['ticket_autoresponder'] ? 'checked="checked"' : ''; ?>/>
             </td>
         </tr>
         <tr>
-            <td width="160"><?php echo __('New Ticket by Agent'); ?>:</td>
+            <td><?php echo __('New Ticket by Agent'); ?>:</td>
             <td>
                 <input type="checkbox" name="ticket_notice_active" <?php
 echo $config['ticket_notice_active'] ? 'checked="checked"' : ''; ?>/>
@@ -27,7 +27,7 @@ echo $config['ticket_notice_active'] ? 'checked="checked"' : ''; ?>/>
             </td>
         </tr>
         <tr>
-            <td width="160" rowspan="2"><?php echo __('New Message'); ?>:</td>
+            <td rowspan="2"><?php echo __('New Message'); ?>:</td>
             <td>
                 <input type="checkbox" name="message_autoresponder" <?php
 echo $config['message_autoresponder'] ? 'checked="checked"' : ''; ?>/>
@@ -41,11 +41,10 @@ echo $config['message_autoresponder'] ? 'checked="checked"' : ''; ?>/>
 echo $config['message_autoresponder_collabs'] ? 'checked="checked"' : ''; ?>/>
                 <?php echo __('Participants: Send new activity notice'); ?>&nbsp;
                 <i class="help-tip icon-question-sign" href="#new_message_for_participants"></i>
-                </div>
             </td>
         </tr>
         <tr>
-            <td width="160"><?php echo __('Overlimit Notice'); ?>:</td>
+            <td><?php echo __('Overlimit Notice'); ?>:</td>
             <td>
                 <input type="checkbox" name="overlimit_notice_active" <?php
 echo $config['overlimit_notice_active'] ? 'checked="checked"' : ''; ?>/>

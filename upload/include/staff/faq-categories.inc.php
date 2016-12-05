@@ -7,15 +7,19 @@ if(!defined('OSTSTAFFINC') || !$thisstaff) die('Access Denied');
     <input type="hidden" name="cid" value="<?php echo Format::htmlchars($_REQUEST['cid']); ?>"/>
     <input type="hidden" name="topicId" value="<?php echo Format::htmlchars($_REQUEST['topicId']); ?>"/>
 
-    <div id="basic_search">
-        <div class="attached input">
-            <input id="query" type="text" size="20" name="q" autofocus
-                value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
-            <button class="attached button" id="searchSubmit" type="submit">
-                <i class="icon icon-search"></i>
-            </button>
-        </div>
+<!--    <div id="basic_search">-->
+<!--        <div class="attached input">-->
+<!--            <input id="query" type="text" size="20" name="q" autofocus-->
+<!--                value="--><?php //echo Format::htmlchars($_REQUEST['q']); ?><!--">-->
+<!--            <button class="attached button" id="searchSubmit" type="submit">-->
+<!--                <i class="icon icon-search"></i>-->
+<!--            </button>-->
+<!--        </div>-->
 
+    <div class="has_bottom_border" style="margin-bottom:5px; padding-top:5px;">
+        <div class="pull-left">
+            <h2><?php echo __('Frequently Asked Questions');?></h2>
+        </div>
         <div class="pull-right">
             <span class="action-button muted" data-dropdown="#category-dropdown">
                 <i class="icon-caret-down pull-right"></i>
@@ -32,6 +36,8 @@ if(!defined('OSTSTAFFINC') || !$thisstaff) die('Access Denied');
                 </span>
             </span>
         </div>
+        <div class="clear"></div>
+    </div>
 
         <div id="category-dropdown" class="action-dropdown anchor-right"
             onclick="javascript:
@@ -91,14 +97,9 @@ foreach ($topics as $T) {
             </ul>
         </div>
 
-    </div>
+<!--    </div>-->
 </form>
-    <div class="has_bottom_border" style="margin-bottom:5px; padding-top:5px;">
-        <div class="pull-left">
-            <h2><?php echo __('Frequently Asked Questions');?></h2>
-        </div>
-        <div class="clear"></div>
-    </div>
+
 <div>
 <?php
 if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.

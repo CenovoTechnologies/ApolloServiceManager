@@ -4,13 +4,13 @@
 <hr/>
 <?php
 if (!isset($info['lookup']) || $info['lookup'] !== false) { ?>
-<div><p id="msg_info"><i class="icon-info-sign"></i>&nbsp; <?php echo
+<div><p id="msg_info" class="label-info"><i class="icon-info-sign"></i>&nbsp; <?php echo
     $thisstaff->hasPerm(User::PERM_CREATE)
     ? __('Search existing users or add a new user.')
     : __('Search existing users.');
 ?></p></div>
 <div style="margin-bottom:10px;">
-    <input type="text" class="search-input" style="width:100%;"
+    <input type="text" class="form-control search-input" style="width:100%;"
     placeholder="<?php echo __('Search by email, phone or name'); ?>" id="user-search"
     autofocus autocorrect="off" autocomplete="off"/>
 </div>
@@ -81,19 +81,16 @@ if ($user) { ?>
 <div id="new-user-form" style="display:<?php echo $user ? 'none' :'block'; ?>;">
 <?php if ($thisstaff->hasPerm(User::PERM_CREATE)) { ?>
 <form method="post" class="user" action="<?php echo $info['action'] ?: '#users/lookup/form'; ?>">
-    <table width="100%" class="fixed">
+    <table class="table table-condensed" class="fixed">
     <?php
         if(!$form) $form = UserForm::getInstance();
         $form->render(true, __('Create New User')); ?>
     </table>
     <hr>
     <p class="full-width">
-        <span class="buttons pull-left">
-            <input type="reset" value="<?php echo __('Reset'); ?>">
-            <input type="button" name="cancel" class="<?php echo $user ?  'cancel' : 'close' ?>"  value="<?php echo __('Cancel'); ?>">
-        </span>
-        <span class="buttons pull-right">
-            <input type="submit" value="<?php echo __('Add User'); ?>">
+        <span class="btn-group-sm pull-right">
+            <button type="reset" value="<?php echo __('Reset'); ?>">Reset</button>
+            <button type="submit" value="<?php echo __('Add User'); ?>">Add User</button>
         </span>
      </p>
 </form>

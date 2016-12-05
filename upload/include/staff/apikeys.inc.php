@@ -40,20 +40,20 @@ else
     $showing=__('No API keys found');
 
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="apikeys.php" method="POST" name="keys">
     <div class="sticky bar opaque">
         <div class="content">
-            <div class="pull-left flush-left">
+            <div class="pull-left">
                 <h2><?php echo __('API Keys');?></h2>
             </div>
             <div class="pull-right">
                 <a href="apikeys.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New API Key');?></a>
-                <span class="action-button" data-dropdown="#action-dropdown-more">
-                            <i class="icon-caret-down pull-right"></i>
+                <div class="btn-group">
+                <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
                             <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
                 </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul id="actions">
+                    <ul id="actions" class="bleed-left dropdown-menu">
                         <li>
                             <a class="confirm" data-name="enable" href="apikeys.php?a=enable">
                                 <i class="icon-ok-sign icon-fixed-width"></i>
@@ -81,9 +81,9 @@ else
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
 <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="46%"><a <?php echo $key_sort; ?> href="apikeys.php?<?php echo $qstr; ?>&sort=key"><?php echo __('API Key');?></a></th>
             <th width="12%"><a <?php echo $ip_sort; ?> href="apikeys.php?<?php echo $qstr; ?>&sort=ip"><?php echo __('IP Address');?></a></th>
@@ -120,9 +120,9 @@ else
         <td colspan="7">
             <?php if($res && $num){ ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No API keys found');
             } ?>
@@ -139,7 +139,8 @@ if($res && $num): //Show options..
 endif;
 ?>
 </form>
-<div style="display:none;" class="dialog" id="confirm-action">
+</div>
+    <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>
     <hr/>

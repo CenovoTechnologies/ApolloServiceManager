@@ -19,16 +19,22 @@ if (isset($_REQUEST['status'])) {
 $org_tickets = $thisclient->canSeeOrgTickets();
 if ($settings['keywords']) {
     // Don't show stat counts for searches
-    $openTickets = $closedTickets = -1;
+    $openTickets = $closedTickets  = $startedTickets = $resolvedTickets = -1;
 }
 elseif ($settings['topic_id']) {
     $openTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
         'open', $org_tickets);
+    $startedTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
+        'progress', $org_tickets);  
+    $resolvedTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
+        'resolved', $org_tickets);  
     $closedTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
         'closed', $org_tickets);
 }
 else {
     $openTickets = $thisclient->getNumOpenTickets($org_tickets);
+    $startedTickets = $thisclient->getNumStartedTickets($org_tickets);
+    $resolvedTickets = $thisclient->getNumResolvedTickets($org_tickets);
     $closedTickets = $thisclient->getNumClosedTickets($org_tickets);
 }
 
@@ -64,6 +70,14 @@ if ($settings['status'])
     default:
         $status = 'open';
     case 'open':
+    case 'progress':
+        $results_type = ($status == 'progress') ? __('Tickets in Progress') : __('Open Tickets');
+        $basic_filter->filter(array('status__state' => $status));
+        break;
+    case 'resolved':
+        $results_type = ($status == 'resolved') ? __('Resolved Tickets') : __('Open Tickets');
+        $basic_filter->filter(array('status__state' => $status));
+        break;
     case 'closed':
 		$results_type = ($status == 'closed') ? __('Closed Tickets') : __('Open Tickets');
         $basic_filter->filter(array('status__state' => $status));
@@ -177,11 +191,38 @@ foreach (Topic::getHelpTopics(true) as $id=>$name) {
         href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>">
     <?php echo _P('ticket-status', 'Open'); if ($openTickets > 0) echo sprintf(' (%d)', $openTickets); ?>
     </a>
+    <?php if ($startedTickets) { ?>
+    &nbsp;
+    <span style="color:lightgray">|</span>
+    <?php } ?>
+    <?php if ($resolvedTickets) { ?>
+    &nbsp;
+    <span style="color:lightgray">|</span>
+    <?php } ?>
     <?php if ($closedTickets) { ?>
     &nbsp;
     <span style="color:lightgray">|</span>
     <?php }
 }
+
+if ($startedTickets) {?>
+    &nbsp;
+    <i class="icon-file-text"></i>
+    <a class="state <?php if ($status == 'progress') echo 'active'; ?>"
+        href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'progress')); ?>">
+    <?php echo __('In Progress'); if ($startedTickets > 0) echo sprintf(' (%d)', $startedTickets); ?>
+    </a>
+<?php }
+
+if ($resolvedTickets) {?>
+    &nbsp;
+    <i class="icon-file-text"></i>
+    <a class="state <?php if ($status == 'resolved') echo 'active'; ?>"
+        href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'resolved')); ?>">
+    <?php echo __('Resolved'); if ($resolvedTickets > 0) echo sprintf(' (%d)', $resolvedTickets); ?>
+    </a>
+<?php }
+
 if ($closedTickets) {?>
     &nbsp;
     <i class="icon-file-text"></i>

@@ -30,7 +30,7 @@ if(OSTINSTALLED!=TRUE){
 }
 
 # Encrypt/Decrypt secret key - randomly generated during installation.
-define('SECRET_SALT','wOE2xtbYdX7eZEmvRmDK5OTqWZiJ8PVn');
+define('SECRET_SALT','WPVHw=yfz0EVfm6XA0bg2uBE3W=dtaaC');
 
 #Default admin email. Used only on db connection issues and related alerts.
 define('ADMIN_EMAIL','melissasmith358@gmail.com');
@@ -39,13 +39,13 @@ define('ADMIN_EMAIL','melissasmith358@gmail.com');
 # ---------------------------------------------------
 # Mysql Login info
 define('DBTYPE','mysql');
-define('DBHOST','localhost');
-define('DBNAME','apolloServiceManager');
+define('DBHOST','localhost:3306');
+define('DBNAME','asm');
 define('DBUSER','root');
-define('DBPASS','Smme7591');
+define('DBPASS','smme7591');
 
 # Table prefix
-define('TABLE_PREFIX','ost_');
+define('TABLE_PREFIX','asm_');
 
 #
 # SSL Options

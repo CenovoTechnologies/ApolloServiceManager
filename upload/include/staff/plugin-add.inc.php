@@ -1,4 +1,4 @@
-
+<div class="col-sm-12 col-md-12">
 <h2><?php echo __('Install a new plugin'); ?></h2>
 <p><?php echo __(
 'To add a plugin into the system, download and place the plugin into the <code>include/plugins</code> folder. Once in the plugin is in the <code>plugins/</code> folder, it will be shown in the list below.'
@@ -8,7 +8,7 @@
 <form method="post" action="?">
     <?php echo csrf_token(); ?>
     <input type="hidden" name="do" value="install"/>
-<table class="list" width="100%"><tbody>
+<table class="table table-condensed"><tbody>
 <?php
 
 $installed = $ost->plugins->allInstalled();
@@ -32,3 +32,4 @@ foreach ($ost->plugins->allInfos() as $info) {
 ?>
 </tbody></table>
 </form>
+    </div>

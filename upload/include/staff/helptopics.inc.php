@@ -11,24 +11,24 @@ $showing = $pageNav->showing().' '._N('help topic', 'help topics', $count);
 $order_by = 'sort';
 
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="helptopics.php" method="POST" name="topics">
     <div class="sticky bar opaque">
         <div class="content">
-            <div class="pull-left flush-left">
+            <div class="pull-left">
                 <h2><?php echo __('Help Topics');?></h2>
             </div>
-            <div class="pull-right flush-right">
+            <div class="pull-right">
                 <?php if ($cfg->getTopicSortMode() != 'a') { ?>
                 <button class="button no-confirm" type="submit" name="sort"><i class="icon-save"></i>
                 <?php echo __('Save'); ?></button>
                 <?php } ?>
                 <a href="helptopics.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New Help Topic');?></a>
-                <span class="action-button" data-dropdown="#action-dropdown-more">
-           <i class="icon-caret-down pull-right"></i>
+                <div class="btn-group">
+                <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
             <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
                 </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul id="actions">
+                    <ul id="actions" class="bleed-left dropdown-menu">
                         <li>
                             <a class="confirm" data-name="enable" href="helptopics.php?a=enable">
                                 <i class="icon-ok-sign icon-fixed-width"></i>
@@ -56,23 +56,23 @@ $order_by = 'sort';
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
 <input type="hidden" id="action" name="a" value="sort" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
 
     <thead>
-<tr><td colspan="7">
-    <div style="padding:3px" class="pull-right"><?php echo __('Sorting Mode'); ?>:
-    <select name="help_topic_sort_mode" onchange="javascript:
-    var $form = $(this).closest('form');
-    $form.find('input[name=a]').val('sort');
-    $form.submit();
-">
-<?php foreach (OsticketConfig::allTopicSortModes() as $i=>$m)
-    echo sprintf('<option value="%s"%s>%s</option>',
-        $i, $i == $cfg->getTopicSortMode() ? ' selected="selected"' : '', $m); ?>
-        </select>
-    </div>
-</td></tr>
-        <tr>
+        <tr class="table-heading"><td colspan="7">
+            <div style="padding:3px" class="pull-right"><?php echo __('Sorting Mode'); ?>:
+            <select name="help_topic_sort_mode" class="form-control-sm" onchange="javascript:
+            var $form = $(this).closest('form');
+            $form.find('input[name=a]').val('sort');
+            $form.submit();
+        ">
+        <?php foreach (OsticketConfig::allTopicSortModes() as $i=>$m)
+            echo sprintf('<option value="%s"%s>%s</option>',
+                $i, $i == $cfg->getTopicSortMode() ? ' selected="selected"' : '', $m); ?>
+                </select>
+            </div>
+        </td></tr>
+        <tr class="table-active">
             <th width="4%" style="height:20px;">&nbsp;</th>
             <th style="padding-left:4px;vertical-align:middle" width="36%"><?php echo __('Help Topic'); ?></th>
             <th style="padding-left:4px;vertical-align:middle" width="8%"><?php echo __('Status'); ?></th>
@@ -157,9 +157,9 @@ $order_by = 'sort';
         <td colspan="7">
             <?php if ($count) { ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No help topics found');
             } ?>
@@ -176,6 +176,7 @@ if ($count): //Show options..
 endif;
 ?>
 </form>
+</div>
 
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
@@ -197,11 +198,8 @@ endif;
     <div><?php echo __('Please confirm to continue.');?></div>
     <hr style="margin-top:1em"/>
     <p class="full-width">
-        <span class="buttons pull-left">
-            <input type="button" value="<?php echo __('No, Cancel');?>" class="close">
-        </span>
-        <span class="buttons pull-right">
-            <input type="button" value="<?php echo __('Yes, Do it!');?>" class="confirm">
+        <span class="btn-group-sm pull-right">
+            <button type="button" value="<?php echo __('Submit');?>" class="btn btn-outline-primary">Submit</button>
         </span>
      </p>
     <div class="clear"></div>

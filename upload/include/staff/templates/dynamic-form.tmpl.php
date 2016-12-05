@@ -9,9 +9,7 @@ if (isset($options['entry']) && $options['mode'] == 'edit'
 
 if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
 <tbody>
-<?php } ?>
-    <tr><td style="width:<?php echo $options['width'] ?: 150;?>px;"></td><td></td></tr>
-<?php
+<?php }
 // Keep up with the entry id in a hidden field to decide what to add and
 // delete when the parent form is submitted
 if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
@@ -19,8 +17,7 @@ if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
         echo $options['entry']->getId(); ?>" />
 <?php } ?>
 <?php if ($form->getTitle()) { ?>
-    <tr><th colspan="2">
-        <em>
+    <tr class="table-heading"><th colspan="2">
 <?php if ($options['mode'] == 'edit') { ?>
         <div class="pull-right">
     <?php if ($options['entry']
@@ -32,9 +29,8 @@ if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
             <i class="icon-sort" title="Drag to Sort"></i>
         </div>
 <?php } ?>
-        <strong><?php echo Format::htmlchars($form->getTitle()); ?></strong>:
-        <div><?php echo Format::display($form->getInstructions()); ?></div>
-        </em>
+        <div><strong><?php echo Format::htmlchars($form->getTitle()); ?></strong></div>
+<!--        <div>--><?php //echo Format::display($form->getInstructions()); ?><!--</div>-->
     </th></tr>
     <?php
     }
@@ -50,15 +46,14 @@ if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
         }
         ?>
         <tr><?php if ($field->isBlockLevel()) { ?>
-                <td colspan="2">
+
                 <?php
             }
             else { ?>
                 <td class="multi-line <?php if ($field->isRequiredForStaff() || $field->isRequiredForClose()) echo 'required';
-                ?>" style="min-width:120px;" <?php if ($options['width'])
-                    echo "width=\"{$options['width']}\""; ?>>
+                ?>" style="min-width:120px;" >
                 <?php echo Format::htmlchars($field->getLocal('label')); ?>:</td>
-                <td><div style="position:relative"><?php
+                <td><div style="..."><?php
             }
             $field->render($options); ?>
             <?php if (!$field->isBlockLevel() && $field->isRequiredForStaff()) { ?>
@@ -85,7 +80,7 @@ if (isset($options['entry']) && $options['mode'] == 'edit') { ?>
 ?><i class="icon-warning-sign help-tip warning"
     data-title="<?php echo __('Required to close ticket'); ?>"
     data-content="<?php echo __('Data is required in this field in order to close the related ticket'); ?>"
-/></i><?php
+</i><?php
             }
             if ($field->get('hint') && !$field->isBlockLevel()) { ?>
                 <br /><em style="color:gray;display:inline-block"><?php

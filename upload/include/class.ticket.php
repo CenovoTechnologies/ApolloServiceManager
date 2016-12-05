@@ -2964,7 +2964,7 @@ implements RestrictedAccess, Threadable {
         if ($teams = array_filter($staff->getTeams()))
             $assigned->add(array('team_id__in' => $teams));
 
-        $visibility = Q::any(new Q(array('status__state'=>'open, progress, resolved', $assigned)));
+        $visibility = Q::any(new Q(array('status__state__in'=>$states, $assigned)));
 
         // -- Routed to a department of mine
         if (!$staff->showAssignedOnly() && ($depts = $staff->getDepts()))
@@ -2992,9 +2992,9 @@ implements RestrictedAccess, Threadable {
                 $stats['progress'] += $S['count'];
             if ($S['status__state'] == 'resolved')
                 $stats['resolved'] += $S['count'];
-            if ($S['isoverdue'])
+            if ($S['isoverdue'] && ($S['status__state'] == 'open' || $S['status__state'] == 'progress'))
                 $stats['overdue'] += $S['count'];
-            if ($S['staff_id'] == $id)
+            if ($S['staff_id'] == $id && $S['status__state'] != 'closed')
                 $stats['assigned'] += $S['count'];
             elseif ($S['team_id']
                     && $S['staff_id'] == 0

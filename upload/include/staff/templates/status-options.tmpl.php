@@ -40,17 +40,11 @@ if (!$nextStatuses)
     return;
 ?>
 
-<span
-    class="action-button"
-    data-dropdown="#action-dropdown-statuses" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Change Status'); ?>">
-    <i class="icon-caret-down pull-right"></i>
-    <a class="tickets-action"
-        href="#statuses"><i
-        class="icon-flag"></i></a>
-</span>
-<div id="action-dropdown-statuses"
-    class="action-dropdown anchor-right">
-    <ul>
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('Change Status'); ?>" aria-haspopup="true" aria-expanded="false">
+        <i class="tickets-action icon-flag"></i>
+    </button>
+    <ul id="action-dropdown-statuses" class="dropdown-menu">
 <?php foreach ($nextStatuses as $status) { ?>
         <li>
             <a class="no-pjax <?php
@@ -75,3 +69,4 @@ if (!$nextStatuses)
     } ?>
     </ul>
 </div>
+

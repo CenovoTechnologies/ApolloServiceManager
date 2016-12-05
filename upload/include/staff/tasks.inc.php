@@ -280,40 +280,41 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
 
 ?>
 <!-- SEARCH FORM START -->
-<div id='basic_search'>
-  <div class="pull-right" style="height:25px">
-    <span class="valign-helper"></span>
-    <?php
-        require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
-    ?>
-   </div>
-    <form action="tasks.php" method="get" onsubmit="javascript:
-        $.pjax({
-        url:$(this).attr('action') + '?' + $(this).serialize(),
-        container:'#pjax-container',
-        timeout: 2000
-        });
-        return false;">
-        <input type="hidden" name="a" value="search">
-        <input type="hidden" name="search-type" value=""/>
-        <div class="attached input">
-            <input type="text" class="basic-search" data-url="ajax.php/tasks/lookup" name="query"
-                   autofocus size="30" value="<?php echo Format::htmlchars($_REQUEST['query'], true); ?>"
-                   autocomplete="off" autocorrect="off" autocapitalize="off">
-            <button type="submit" class="attached button"><i class="icon-search"></i>
-            </button>
-        </div>
-    </form>
-
-</div>
+<!--<div id='basic_search'>-->
+<!--  <div class="pull-right" style="height:25px">-->
+<!--    <span class="valign-helper"></span>-->
+<!--    --><?php
+//        require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
+//    ?>
+<!--   </div>-->
+<!--    <form action="tasks.php" method="get" onsubmit="javascript:-->
+<!--        $.pjax({-->
+<!--        url:$(this).attr('action') + '?' + $(this).serialize(),-->
+<!--        container:'#pjax-container',-->
+<!--        timeout: 2000-->
+<!--        });-->
+<!--        return false;">-->
+<!--        <input type="hidden" name="a" value="search">-->
+<!--        <input type="hidden" name="search-type" value=""/>-->
+<!--        <div class="attached input">-->
+<!--            <input type="text" class="basic-search" data-url="ajax.php/tasks/lookup" name="query"-->
+<!--                   autofocus size="30" value="--><?php //echo Format::htmlchars($_REQUEST['query'], true); ?><!--"-->
+<!--                   autocomplete="off" autocorrect="off" autocapitalize="off">-->
+<!--            <button type="submit" class="attached button"><i class="icon-search"></i>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </form>-->
+<!---->
+<!--</div>-->
 <!-- SEARCH FORM END -->
 <div class="clear"></div>
+<div class="col-sm-12 col-md-12">
 <div style="margin-bottom:20px; padding-top:5px;">
 <div class="sticky bar opaque">
     <div class="content">
         <div class="pull-left flush-left">
             <h2><a href="<?php echo $refresh_url; ?>"
-                title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
+                title="<?php echo __('Refresh'); ?>"> <?php echo
                 $results_type.$showing; ?></a></h2>
         </div>
         <div class="pull-right flush-right">
@@ -321,6 +322,13 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
            if ($count)
                 echo Task::getAgentActions($thisstaff, array('status' => $status));
             ?>
+        </div>
+        <div class="pull-right">
+            <span class="valign-helper"></span>
+            <?php
+            require STAFFINC_DIR.'templates/queue-sort.tmpl.php';
+            ?>
+        </div>
         </div>
     </div>
 </div>
@@ -331,9 +339,9 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
+ <table class="table table-condensed table-bordered table-hover table-striped" border="0" cellspacing="1" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <?php if ($thisstaff->canManageTickets()) { ?>
 	        <th width="4%">&nbsp;</th>
             <?php } ?>
@@ -438,9 +446,9 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
         <td colspan="6">
             <?php if($total && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-secondary btn-sm"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-secondary btn-sm"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo '<i>';
                 echo $ferror?Format::htmlchars($ferror):__('Query returned 0 results.');
@@ -481,6 +489,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
         </span>
      </p>
     <div class="clear"></div>
+</div>
 </div>
 <script type="text/javascript">
 $(function() {

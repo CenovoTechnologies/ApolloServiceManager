@@ -34,7 +34,7 @@ else {
     $qs += array('id' => $staff->getId());
 }
 ?>
-
+<div class="col-sm-12 col-md-12">
 <form action="staff.php?<?php echo Http::build_query($qs); ?>" method="post" id="save" autocomplete="off">
   <?php csrf_token(); ?>
   <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -47,28 +47,28 @@ else {
       <?php } ?>
 </h2>
 
-  <ul class="clean tabs">
-    <li class="active"><a href="#account"><i class="icon-user"></i> <?php echo __('Account'); ?></a></li>
-    <li><a href="#access"><?php echo __('Access'); ?></a></li>
-    <li><a href="#permissions"><?php echo __('Permisions'); ?></a></li>
-    <li><a href="#teams"><?php echo __('Teams'); ?></a></li>
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#account" role="tab"><i class="icon-user"></i> <?php echo __('Account'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#access" role="tab"><?php echo __('Access'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#permissions" role="tab"><?php echo __('Permissions'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#teams" role="tab"><?php echo __('Teams'); ?></a></li>
   </ul>
-
-  <div class="tab_content" id="account">
-    <table class="table two-column" width="940" border="0" cellspacing="0" cellpadding="2">
+  <div class="tab-content">
+  <div class="tab-pane active" role="tabpanel" id="account">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
       <tbody>
         <tr><td colspan="2"><div>
-        <div class="avatar pull-left" style="width: 100px; margin: 10px;">
+        <div class="avatar pull-left" style="margin: 10px;">
             <?php echo $staff->getAvatar(); ?>
         </div>
-        <table class="table two-column" border="0" cellspacing="2" cellpadding="2" style="width: 760px">
+        <table class="table table-condensed" border="0" cellspacing="2" cellpadding="2" style="width:85%">
         <tr>
           <td class="required"><?php echo __('Name'); ?>:</td>
           <td>
-            <input type="text" size="20" maxlength="64" style="width: 145px" name="firstname" class="auto first"
+            <input type="text" size="20" maxlength="64" name="firstname" class="form-control-sm auto first"
               autofocus value="<?php echo Format::htmlchars($staff->firstname); ?>"
               placeholder="<?php echo __("First Name"); ?>" />
-            <input type="text" size="20" maxlength="64" style="width: 145px" name="lastname" class="auto last"
+            <input type="text" size="20" maxlength="64" name="lastname" class="form-control-sm auto last"
               value="<?php echo Format::htmlchars($staff->lastname); ?>"
               placeholder="<?php echo __("Last Name"); ?>" />
             <div class="error"><?php echo $errors['firstname']; ?></div>
@@ -78,7 +78,7 @@ else {
         <tr>
           <td class="required"><?php echo __('Email Address'); ?>:</td>
           <td>
-            <input type="email" size="40" maxlength="64" style="width: 300px" name="email" class="auto email"
+            <input type="email" size="40" maxlength="64" name="email" class="form-control-sm auto email"
               value="<?php echo Format::htmlchars($staff->email); ?>"
               placeholder="<?php echo __('e.g. me@mycompany.com'); ?>" />
             <div class="error"><?php echo $errors['email']; ?></div>
@@ -87,10 +87,10 @@ else {
         <tr>
           <td><?php echo __('Phone Number');?>:</td>
           <td>
-            <input type="tel" size="18" name="phone" class="auto phone"
+            <input type="tel" size="18" name="phone" class="form-control-sm auto phone"
               value="<?php echo Format::htmlchars($staff->phone); ?>" />
             <?php echo __('Ext');?>
-            <input type="text" size="5" name="phone_ext"
+            <input type="text" class="form-control-sm" size="5" name="phone_ext"
               value="<?php echo Format::htmlchars($staff->phone_ext); ?>">
             <div class="error"><?php echo $errors['phone']; ?></div>
             <div class="error"><?php echo $errors['phone_ext']; ?></div>
@@ -99,7 +99,7 @@ else {
         <tr>
           <td><?php echo __('Mobile Number');?>:</td>
           <td>
-            <input type="tel" size="18" name="mobile" class="auto phone"
+            <input type="tel" size="18" name="mobile" class="form-control-sm auto phone"
               value="<?php echo Format::htmlchars($staff->mobile); ?>" />
             <div class="error"><?php echo $errors['mobile']; ?></div>
           </td>
@@ -108,7 +108,7 @@ else {
       </tbody>
       <!-- ================================================ -->
       <tbody>
-        <tr class="header">
+        <tr class="table-heading">
           <th colspan="2">
             <?php echo __('Authentication'); ?>
           </th>
@@ -117,8 +117,8 @@ else {
           <td class="required"><?php echo __('Username'); ?>:
             <span class="error">*</span></td>
           <td>
-            <input type="text" size="40" style="width:300px"
-              class="staff-username typeahead"
+            <input type="text" size="40"
+              class="form-control-sm staff-username typeahead"
               name="username" value="<?php echo Format::htmlchars($staff->username); ?>" />
 <?php if (!($bk = $staff->getAuthBackend()) || $bk->supportsPasswordChange()) { ?>
             <button type="button" class="action-button" onclick="javascript:
@@ -141,8 +141,8 @@ if (count($bks) > 1) {
         <tr>
           <td><?php echo __('Authentication Backend'); ?>:</td>
           <td>
-            <select name="backend" id="backend-selection"
-              style="width:300px" onchange="javascript:
+            <select name="backend" id="backend-selection" class="form-control-sm"
+              onchange="javascript:
                 if (this.value != '' && this.value != 'local')
                     $('#password-fields').hide();
                 else if (!$('#welcome-email').is(':checked'))
@@ -163,7 +163,7 @@ if (count($bks) > 1) {
       </tbody>
       <!-- ================================================ -->
       <tbody>
-        <tr class="header">
+        <tr class="table-heading">
           <th colspan="2">
             <?php echo __('Status and Settings'); ?>
           </th>
@@ -198,34 +198,29 @@ if (count($bks) > 1) {
     </table>
 
     <div style="padding:8px 3px; margin-top: 1.6em">
-        <strong class="big"><?php echo __('Internal Notes');?>: </strong>
+        <div class="big"><?php echo __('Internal Notes');?>: </div>
         <?php echo __("Be liberal, they're internal");?>
     </div>
 
-    <textarea name="notes" class="richtext">
+    <textarea name="notes" class="form-control-sm richtext">
       <?php echo Format::viewableImages($staff->notes); ?>
     </textarea>
   </div>
 
   <!-- ============== DEPARTMENT ACCESS =================== -->
 
-  <div class="hidden tab_content" id="access">
-    <table class="table two-column" width="940" border="0" cellspacing="0" cellpadding="2">
+  <div class="tab-pane" id="access" role="tabpanel">
+    <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
       <tbody>
-        <tr class="header">
+        <tr class="table-heading">
           <th colspan="3">
-            <?php echo __('Access'); ?>
-            <div><small><?php echo __(
-            "Select the departments the agent is allowed to access and the corresponding effective role."
-          ); ?>
-            </small></div><br>
             <div><?php echo __('Primary Department'); ?> <span
             class="error">*</span></div>
           </th>
         </tr>
         <tr>
           <td style="vertical-align:top">
-            <select name="dept_id" id="dept_id" data-quick-add="department">
+            <select name="dept_id" class="form-control-sm" id="dept_id" data-quick-add="department">
               <option value="0">&mdash; <?php echo __('Select Department');?> &mdash;</option>
               <?php
               foreach (Dept::getDepartments() as $id=>$name) {
@@ -239,7 +234,7 @@ if (count($bks) > 1) {
             <div class="error"><?php echo $errors['dept_id']; ?></div>
           </td>
           <td style="vertical-align:top">
-            <select name="role_id" data-quick-add="role">
+            <select name="role_id" class="form-control-sm" data-quick-add="role">
               <option value="0">&mdash; <?php echo __('Select Role');?> &mdash;</option>
               <?php
               foreach (Role::getRoles() as $id=>$name) {
@@ -272,7 +267,7 @@ if (count($bks) > 1) {
             <input type="hidden" data-name="dept_access[]" value="" />
           </td>
           <td>
-            <select data-name="dept_access_role" data-quick-add="role">
+            <select data-name="dept_access_role" class="form-control-sm" data-quick-add="role">
               <option value="0">&mdash; <?php echo __('Select Role');?> &mdash;</option>
               <?php
               foreach (Role::getRoles() as $id=>$name) {
@@ -293,7 +288,7 @@ if (count($bks) > 1) {
         </tr>
       </tbody>
       <tbody>
-        <tr class="header">
+        <tr class="table-heading">
           <th colspan="3">
             <?php echo __('Extended Access'); ?>
           </th>
@@ -306,8 +301,7 @@ foreach ($staff->dept_access as $dept_access) {
 ?>
         <tr id="add_extended_access">
           <td colspan="2">
-            <i class="icon-plus-sign"></i>
-            <select id="add_access" data-quick-add="department">
+            <select id="add_access" class="form-control-sm" data-quick-add="department">
               <option value="0">&mdash; <?php echo __('Select Department');?> &mdash;</option>
               <?php
               foreach ($depts as $id=>$name) {
@@ -316,7 +310,7 @@ foreach ($staff->dept_access as $dept_access) {
               ?>
               <option value="0" data-quick-add>&mdash; <?php echo __('Add New');?> &mdash;</option>
             </select>
-            <button type="button" class="green button">
+            <button type="button" class="btn btn-sm btn-secondary">
               <?php echo __('Add'); ?>
             </button>
           </td>
@@ -327,7 +321,7 @@ foreach ($staff->dept_access as $dept_access) {
 
   <!-- ================= PERMISSIONS ====================== -->
 
-  <div id="permissions" class="hidden">
+  <div id="permissions" class="tab-pane" role="tabpanel">
 <?php
     $permissions = array();
     foreach (RolePermission::allPermissions() as $g => $perms) {
@@ -340,21 +334,22 @@ foreach ($staff->dept_access as $dept_access) {
         }
     }
 ?>
-    <ul class="alt tabs">
+    <ul class="nav nav-tabs">
 <?php
     $first = true;
     foreach ($permissions as $g => $perms) { ?>
-      <li <?php if ($first) { echo 'class="active"'; $first=false; } ?>>
-        <a href="#<?php echo Format::slugify($g); ?>"><?php echo Format::htmlchars(__($g));?></a>
+      <li class="nav-item">
+        <a <?php if ($first) { echo 'class="nav-link active"'; $first=false; }else{ echo 'class="nav-link"';} ?> data-toggle="tab" href="#<?php echo Format::slugify($g); ?>" role="tab"><?php echo Format::htmlchars(__($g));?></a>
       </li>
 <?php } ?>
     </ul>
+    <div class="tab-content">
 <?php
     $first = true;
     foreach ($permissions as $g => $perms) { ?>
-    <div class="tab_content <?php if (!$first) { echo 'hidden'; } else { $first = false; }
-      ?>" id="<?php echo Format::slugify($g); ?>">
-      <table class="table">
+    <div class="tab-pane <?php if ($first) { echo 'active'; } else { $first = false; }
+      ?>" id="<?php echo Format::slugify($g); ?>" role="tabpanel">
+      <table class="table table-condensed">
 <?php foreach ($perms as $k => $v) { ?>
         <tr>
           <td>
@@ -374,20 +369,17 @@ foreach ($staff->dept_access as $dept_access) {
       </table>
     </div>
 <?php } ?>
+    </div>
   </div>
 
   <!-- ============== TEAM MEMBERSHIP =================== -->
 
-  <div class="hidden tab_content" id="teams">
-    <table class="table two-column" width="100%">
+  <div class="tab-pane" id="teams" role="tabpanel">
+    <table class="table table-condensed">
       <tbody>
-        <tr class="header">
+        <tr class="table-heading">
           <th colspan="2">
             <?php echo __('Assigned Teams'); ?>
-            <div><small><?php echo __(
-            "Agent will have access to tickets assigned to a team they belong to regardless of the ticket's department. Alerts can be enabled for each associated team."
-            ); ?>
-            </small></div>
           </th>
         </tr>
 <?php
@@ -398,8 +390,7 @@ foreach ($staff->teams as $TM) {
 ?>
         <tr id="join_team">
           <td colspan="2">
-            <i class="icon-plus-sign"></i>
-            <select id="add_team" data-quick-add="team">
+            <select id="add_team" class="form-control-sm" data-quick-add="team">
               <option value="0">&mdash; <?php echo __('Select Team');?> &mdash;</option>
               <?php
               foreach ($teams as $id=>$name) {
@@ -408,7 +399,7 @@ foreach ($staff->teams as $TM) {
               ?>
               <option value="0" data-quick-add>&mdash; <?php echo __('Add New');?> &mdash;</option>
             </select>
-            <button type="button" class="green button">
+            <button type="button" class="btn btn-sm btn-outline-success">
               <?php echo __('Add'); ?>
             </button>
           </td>
@@ -431,14 +422,14 @@ foreach ($staff->teams as $TM) {
       </tbody>
     </table>
   </div>
-
-  <p style="text-align:center;">
-      <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+  </div>
+  <p style="text-align:left; padding-top: 5px;">
+      <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>"><?php echo $submit_text; ?></button>
       <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
       <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="window.history.go(-1);">
   </p>
 </form>
-
+</div>
 <script type="text/javascript">
 var addAccess = function(daid, name, role, alerts, error) {
   if (!daid) return;
@@ -455,7 +446,7 @@ var addAccess = function(daid, name, role, alerts, error) {
     .prop('checked', alerts);
   copy.find('td:first').append(document.createTextNode(name));
   copy.attr('id', '').show().insertBefore($('#add_extended_access'));
-  copy.removeClass('hidden')
+  copy.removeClass('hidden');
   if (error)
       $('<div class="error">').text(error).appendTo(copy.find('td:last'));
   copy.find('a.drop-access').click(function() {

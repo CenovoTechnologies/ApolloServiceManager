@@ -2,26 +2,25 @@
 if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path');
 
 ?>
-<table width="940" cellpadding="2" cellspacing="0" border="0">
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
     <tr>
-        <td width="50%" class="has_bottom_border">
-             <h2><a href="orgs.php?id=<?php echo $org->getId(); ?>"
-             title="Reload"><i class="icon-refresh"></i> <?php echo $org->getName(); ?></a></h2>
+        <td width="50%">
+             <h2 style="vertical-align: bottom"><a href="orgs.php?id=<?php echo $org->getId(); ?>"
+             title="Name"></i> <?php echo $org->getName(); ?></a></h2>
         </td>
-        <td width="50%" class="right_align has_bottom_border">
+        <td width="50%" class="right_align">
 <?php if ($thisstaff->hasPerm(Organization::PERM_DELETE)) { ?>
             <a id="org-delete" class="red button action-button org-action"
             href="#orgs/<?php echo $org->getId(); ?>/delete"><i class="icon-trash"></i>
             <?php echo __('Delete Organization'); ?></a>
 <?php } ?>
 <?php if ($thisstaff->hasPerm(Organization::PERM_EDIT)) { ?>
-            <span class="action-button" data-dropdown="#action-dropdown-more">
-                <i class="icon-caret-down pull-right"></i>
+            <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
                 <span ><i class="icon-cog"></i> <?php echo __('More'); ?></span>
-            </span>
+            </button>
 <?php } ?>
-            <div id="action-dropdown-more" class="action-dropdown anchor-right">
-              <ul>
+              <ul class="dropdown-menu">
 <?php if ($thisstaff->hasPerm(Organization::PERM_EDIT)) { ?>
                 <li><a href="#ajax.php/orgs/<?php echo $org->getId();
                     ?>/forms/manage" onclick="javascript:
@@ -35,12 +34,12 @@ if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path')
         </td>
     </tr>
 </table>
-<table class="ticket_info" cellspacing="0" cellpadding="0" width="940" border="0">
+<table class="table table-condensed" cellspacing="0" cellpadding="0" border="0">
     <tr>
         <td width="50%">
             <table border="0" cellspacing="" cellpadding="4" width="100%">
                 <tr>
-                    <th width="150"><?php echo __('Name'); ?>:</th>
+                    <th width="30%"><?php echo __('Name'); ?>:</th>
                     <td>
 <?php if ($thisstaff->hasPerm(Organization::PERM_EDIT)) { ?>
                     <b><a href="#orgs/<?php echo $org->getId();
@@ -62,7 +61,7 @@ if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path')
         <td width="50%" style="vertical-align:top">
             <table border="0" cellspacing="" cellpadding="4" width="100%">
                 <tr>
-                    <th width="150"><?php echo __('Created'); ?>:</th>
+                    <th width="30%"><?php echo __('Created'); ?>:</th>
                     <td><?php echo Format::datetime($org->getCreateDate()); ?></td>
                 </tr>
                 <tr>
@@ -75,27 +74,27 @@ if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path')
 </table>
 <br>
 <div class="clear"></div>
-<ul class="clean tabs" id="orgtabs">
-    <li class="active"><a href="#users"><i
+<ul class="nav nav-tabs" id="orgtabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#users" role="tab"><i
     class="icon-user"></i>&nbsp;<?php echo __('Users'); ?></a></li>
-    <li><a href="#tickets"><i
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tickets" role="tab"><i
     class="icon-list-alt"></i>&nbsp;<?php echo __('Tickets'); ?></a></li>
-    <li><a href="#notes"><i
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notes" role="tab"><i
     class="icon-pushpin"></i>&nbsp;<?php echo __('Notes'); ?></a></li>
 </ul>
-<div id="orgtabs_container">
-<div class="tab_content" id="users">
+<div id="orgtabs_container" class="tab-content">
+<div class="tab-pane active" id="users" role="tabpanel">
 <?php
 include STAFFINC_DIR . 'templates/users.tmpl.php';
 ?>
 </div>
-<div class="hidden tab_content" id="tickets">
+<div class="tab-pane" id="tickets" role="tabpanel">
 <?php
 include STAFFINC_DIR . 'templates/tickets.tmpl.php';
 ?>
 </div>
 
-<div class="hidden tab_content" id="notes">
+<div class="tab-pane" id="notes" role="tabpanel">
 <?php
 $notes = QuickNote::forOrganization($org);
 $create_note_url = 'orgs/'.$org->getId().'/note';

@@ -83,43 +83,44 @@ if($res && ($num=db_num_rows($res)))
 else
     $showing=__('No logs found');
 ?>
-
+<div class="col-sm-12 col-md-12">
 <div id="basic_search">
     <div style="height:25px">
         <div id='filter' >
-            <form action="logs.php" method="get">
-                <div style="padding-left:2px;">
+            <form action="logs.php" method="get" class="form-inline">
+                <div style="padding-left:2px;" class="form-group">
                     <i class="help-tip icon-question-sign" href="#date_span"></i>
                     <?php echo __('Between'); ?>:
-                    <input class="dp" id="sd" size=15 name="startDate" value="<?php echo Format::htmlchars($_REQUEST['startDate']); ?>" autocomplete=OFF>
+                    <input id="sd" size=15 class="form-control-sm dp" name="startDate" placeholder="Start Date" value="<?php echo Format::htmlchars($_REQUEST['startDate']); ?>" autocomplete=OFF>
                     &nbsp;&nbsp;
-                    <input class="dp" id="ed" size=15 name="endDate" value="<?php echo Format::htmlchars($_REQUEST['endDate']); ?>" autocomplete=OFF>
+                    <input id="ed" size=15 class="form-control-sm dp" name="endDate" placeholder="End Date" value="<?php echo Format::htmlchars($_REQUEST['endDate']); ?>" autocomplete=OFF>
                     &nbsp;<?php echo __('Log Level'); ?>:&nbsp;<i class="help-tip icon-question-sign" href="#type"></i>
-                    <select name='type'>
+                    <select name='type' class="form-control-sm">
                         <option value="" selected><?php echo __('All');?></option>
                         <option value="Error" <?php echo ($type=='Error')?'selected="selected"':''; ?>><?php echo __('ERROR');?></option>
                         <option value="Warning" <?php echo ($type=='Warning')?'selected="selected"':''; ?>><?php echo __('WARN');?></option>
                         <option value="Debug" <?php echo ($type=='Debug')?'selected="selected"':''; ?>><?php echo __('DEBUG');?></option>
                     </select>
                     &nbsp;&nbsp;
-                    <input type="submit" Value="<?php echo __('Go!');?>" />
+                    <button type="submit" class="btn btn-secondary btn-sm" Value="<?php echo __('Go');?>" >Go</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 <div class="clear"></div>
 <form action="logs.php" method="POST" name="logs">
     <div style="margin-bottom:20px; padding-top:5px;">
         <div class="sticky bar opaque">
             <div class="content">
-                <div class="pull-left flush-left">
+                <div class="pull-left">
                     <h2><?php echo __('System Logs');?>
             <i class="help-tip icon-question-sign" href="#system_logs"></i>
             </h2>
                 </div>
-                <div id="actions" class="pull-right flush-right">
-                    <button class="red button" type="submit" name="delete"><i class="icon-trash"></i>
+                <div id="actions" class="pull-right">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete"><i class="icon-trash"></i>
                         <?php echo __( 'Delete Selected Entries');?>
                     </button>
                 </div>
@@ -129,9 +130,9 @@ else
 <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
  <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed table-bordered table-striped" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="40%"><a <?php echo $title_sort; ?> href="logs.php?<?php echo $qstr; ?>&sort=title"><?php echo __('Log Title');?></a></th>
             <th width="11%"><a  <?php echo $type_sort; ?> href="logs.php?<?php echo $qstr; ?>&sort=type"><?php echo __('Log Type');?></a></th>
@@ -167,9 +168,9 @@ else
         <td colspan="6">
             <?php if($res && $num){ ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>&nbsp;&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>&nbsp;&nbsp;
+            <button class="btn btn-secondary btn-sm"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No logs found');
             } ?>
@@ -186,7 +187,7 @@ if($res && $num): //Show options..
 endif;
 ?>
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

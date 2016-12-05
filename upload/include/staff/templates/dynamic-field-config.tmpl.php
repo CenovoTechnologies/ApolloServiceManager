@@ -3,13 +3,13 @@
     <hr/>
     <form method="post" action="#form/field-config/<?php
             echo $field->get('id'); ?>">
-<ul class="tabs" id="fieldtabs">
-    <li class="active"><a href="#config"><i class="icon-cogs"></i> <?php echo __('Field Setup'); ?></a></li>
-    <li><a href="#visibility"><i class="icon-beaker"></i> <?php echo __('Settings'); ?></a></li>
+<ul class="nav nav-tabs" id="fieldtabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#config" role="tab"><i class="icon-cogs"></i> <?php echo __('Field Setup'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#visibility" role="tab"><i class="icon-wrench"></i> <?php echo __('Settings'); ?></a></li>
 </ul>
-
-<div class="hidden tab_content" id="visibility">
-    <div>
+<div class="tab-content">
+<div class="tab-pane" id="visibility" role="tabpanel">
+    <div class="padding-top:0.2em">
     <div class="span4">
         <div style="margin-bottom:5px"><strong><?php echo __('Enabled'); ?></strong>
         <i class="help-tip icon-question-sign"
@@ -117,7 +117,8 @@
     </div>
 </div>
 
-<div class="tab_content" id="config">
+<div class="tab-pane active" id="config" role="tabpanel">
+        <div style="padding-top:0.2em"></div>
         <?php
         echo csrf_token();
         $form = $field->getConfigurationForm();
@@ -134,8 +135,8 @@
             </label>
             <?php
             if ($f->get('hint')) { ?>
-                <br/><em style="color:gray;display:inline-block"><?php
-                    echo Format::viewableImages($f->get('hint')); ?></em>
+                <br/><div style="color:gray;display:inline-block"><?php
+                    echo Format::viewableImages($f->get('hint')); ?></div>
             <?php
             } ?>
             </div><div>
@@ -156,25 +157,24 @@
         <label for="hint"
             style="vertical-align:top;padding-top:0.2em"><?php echo __('Help Text') ?>:</label>
             <br />
-            <em style="color:gray;display:inline-block">
-                <?php echo __('Help text shown with the field'); ?></em>
+            <div style="color:gray;display:inline-block">
+                <?php echo __('Help text shown with the field'); ?></div>
         </div>
         <div style="width:100%">
-        <textarea style="width:90%; width:calc(100% - 20px)" name="hint" rows="2" cols="40"
+        <textarea style="width:calc(100% - 20px)" name="hint" rows="2" cols="40"
             class="richtext small no-bar"
             data-translate-tag="<?php echo $field->getTranslateTag('hint'); ?>"><?php
             echo Format::htmlchars($field->get('hint')); ?></textarea>
         </div>
         </div>
 </div>
+</div>
         <hr>
         <p class="full-width">
-            <span class="buttons pull-left">
-                <input type="reset" value="<?php echo __('Reset'); ?>">
-                <input type="button" value="<?php echo __('Cancel'); ?>" class="close">
-            </span>
-            <span class="buttons pull-right">
-                <input type="submit" value="<?php echo __('Save'); ?>">
+            <span class="btn-group-sm pull-right">
+                <button type="reset" class="btn btn-secondary" value="<?php echo __('Reset'); ?>">Reset</button>
+<!--                <input type="button" value="--><?php //echo __('Cancel'); ?><!--" class="close">-->
+                <button type="submit" class="btn btn-outline-primary" value="<?php echo __('Save'); ?>">Save</button>
             </span>
          </p>
     </form>

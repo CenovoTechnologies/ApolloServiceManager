@@ -23,9 +23,8 @@ foreach ($forms as $e) { ?>
 <?php } ?>
 </div>
 <hr/>
-<div>
-<i class="icon-plus"></i>&nbsp;
-<select name="new-form" onchange="javascript:
+<div class="input-group">
+<select name="new-form" class="form-control" onchange="javascript:
     $(this).parent().find('button').trigger('click');">
 <option selected="selected" disabled="disabled"><?php
     echo __('Add a form'); ?></option>
@@ -39,7 +38,7 @@ foreach ($forms as $e) { ?>
     echo $f->getTitle(); ?></option><?php
 } ?>
 </select>
-<button type="button" class="inline green button" onclick="javascript:
+<button type="button" class="btn btn-outline-success inline" onclick="javascript:
     var select = $(this).parent().find('select'),
         $sel = select.find('option:selected'),
         id = $sel.val();
@@ -78,13 +77,9 @@ foreach ($forms as $e) { ?>
 </div>
     <hr>
     <p class="full-width">
-        <span class="buttons pull-left">
-            <input type="reset" value="<?php echo __('Reset'); ?>">
-            <input type="button" name="cancel" class="<?php
-                echo $user ? 'cancel' : 'close' ?>" value="<?php echo __('Cancel'); ?>">
-        </span>
-        <span class="buttons pull-right">
-            <input type="submit" value="<?php echo __('Save Changes'); ?>">
+        <span class="btn-group-sm pull-right">
+            <button type="reset" class="btn btn-default" value="<?php echo __('Reset'); ?>">Reset</button>
+            <button type="submit" class="btn btn-outline-primary" value="<?php echo __('Save Changes'); ?>">Save Changes</button>
         </span>
      </p>
 

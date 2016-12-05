@@ -80,6 +80,7 @@ class Form {
                 return $f;
         if (isset($fields[$name]))
             return $fields[$name];
+        return $name;
     }
 
     function hasField($name) {
@@ -3073,7 +3074,7 @@ class TextboxWidget extends Widget {
         $placeholder = sprintf('placeholder="%s"', $this->field->getLocal('placeholder',
             $config['placeholder']));
         ?>
-        <input type="<?php echo $type; ?>"
+        <input type="<?php echo $type; ?>" class="form-control-sm" style="width:95%"
             id="<?php echo $this->id; ?>"
             <?php echo implode(' ', array_filter(array(
                 $size, $maxlength, $classes, $autocomplete, $disabled,
@@ -3145,11 +3146,11 @@ class TextareaWidget extends Widget {
         if (isset($config['context']))
             $attrs['data-root-context'] = '"'.$config['context'].'"';
         ?>
-        <span style="display:inline-block;width:100%">
+        <span style="display:inline-block;width:95%">
         <textarea <?php echo $rows." ".$cols." ".$maxlength." ".$class
                 .' '.Format::array_implode('=', ' ', $attrs)
                 .' placeholder="'.$config['placeholder'].'"'; ?>
-            id="<?php echo $this->id; ?>"
+            id="<?php echo $this->id; ?>" class="form-control-sm" style="width:100%"
             name="<?php echo $this->name; ?>"><?php
                 echo Format::htmlchars($this->value);
             ?></textarea>
@@ -3178,13 +3179,13 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-        <input id="<?php echo $this->id; ?>" type="tel" name="<?php echo $this->name; ?>" value="<?php
+        <input id="<?php echo $this->id; ?>" class="form-control-sm" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
         echo Format::htmlchars($phone); ?>"/><?php
         // Allow display of extension field even if disabled if the phone
         // number being edited has an extension
         if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
             <input type="text" name="<?php
-            echo $this->name; ?>-ext" value="<?php echo Format::htmlchars($ext);
+            echo $this->name; ?>-ext" class="form-control-sm" style="width:20%" value="<?php echo Format::htmlchars($ext);
                 ?>" size="5"/>
         <?php }
     }
@@ -3611,7 +3612,7 @@ class ThreadEntryWidget extends Widget {
 
         list($draft, $attrs) = Draft::getDraftAndDataAttrs($namespace, $object_id, $this->value);
         ?>
-        <textarea style="width:100%;" name="<?php echo $this->field->get('name'); ?>"
+        <textarea style="width:95%;" name="<?php echo $this->field->get('name'); ?>"
             placeholder="<?php echo Format::htmlchars($this->field->get('placeholder')); ?>"
             class="<?php if ($config['html']) echo 'richtext';
                 ?> draft draft-delete" <?php echo $attrs; ?>

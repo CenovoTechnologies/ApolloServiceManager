@@ -39,6 +39,7 @@ $def_dept_id = $cfg->getDefaultDeptId();
 $def_dept_name = $cfg->getDefaultDept()->getName();
 $def_priority = $cfg->getDefaultPriority()->getDesc();
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="emails.php" method="POST" name="emails">
     <div class="sticky bar opaque">
         <div class="content">
@@ -47,12 +48,11 @@ $def_priority = $cfg->getDefaultPriority()->getDesc();
             </div>
             <div class="pull-right flush-right">
                 <a href="emails.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New Email');?></a>
-                <span class="action-button" data-dropdown="#action-dropdown-more">
-                            <i class="icon-caret-down pull-right"></i>
-                            <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-                </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul id="actions">
+                <div class="btn-group">
+                    <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
+                        <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
+                    </span>
+                    <ul id="actions" class="bleed-left dropdown-menu">
                         <li class="danger">
                             <a class="confirm" data-name="delete" href="emails.php?a=delete">
                                 <i class="icon-trash icon-fixed-width"></i>
@@ -68,9 +68,9 @@ $def_priority = $cfg->getDefaultPriority()->getDesc();
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
  <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="38%"><a <?php echo $email_sort; ?> href="emails.php?<?php echo $qstr; ?>&sort=email"><?php echo __('Email');?></a></th>
             <th width="8%"><a  <?php echo $priority_sort; ?> href="emails.php?<?php echo $qstr; ?>&sort=priority"><?php echo __('Priority');?></a></th>
@@ -123,9 +123,9 @@ $def_priority = $cfg->getDefaultPriority()->getDesc();
         <td colspan="6">
             <?php if ($count){ ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No emails found!');
             } ?>
@@ -142,7 +142,7 @@ if ($count):
 endif;
 ?>
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

@@ -20,6 +20,7 @@ if($sla && $_REQUEST['a']!='add'){
 }
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="slas.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -30,37 +31,37 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     — <?php echo $info['name']; ?></small>
      <?php } ?>
 </h2>
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Tickets are marked overdue on grace period violation.');?></em>
+                <?php echo __('Tickets are marked overdue on grace period violation.');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180" class="required">
+            <td class="required" style="width:15%">
               <?php echo __('Name');?>:
             </td>
             <td>
-                <input type="text" size="30" name="name" value="<?php echo $info['name']; ?>"
+                <input type="text" class="form-control-sm" size="30" name="name" value="<?php echo $info['name']; ?>"
                     autofocus data-translate-tag="<?php echo $trans['name']; ?>"/>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>&nbsp;<i class="help-tip icon-question-sign" href="#name"></i>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
               <?php echo __('Grace Period');?>:
             </td>
             <td>
-                <input type="text" size="10" name="grace_period" value="<?php echo $info['grace_period']; ?>">
+                <input type="text" class="form-control-sm" size="10" name="grace_period" value="<?php echo $info['grace_period']; ?>">
                 <em>( <?php echo __('in hours');?> )</em>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['grace_period']; ?></span>&nbsp;<i class="help-tip icon-question-sign" href="#grace_period"></i>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Status');?>:
             </td>
             <td>
@@ -70,7 +71,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Transient'); ?>:
             </td>
             <td>
@@ -80,7 +81,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Ticket Overdue Alerts');?>:
             </td>
             <td>
@@ -89,23 +90,23 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     <em><?php echo __('(Override global setting)'); ?></em>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __("Be liberal, they're internal");?>
-                </em>
+                <strong><?php echo __('Internal Notes');?></strong>: <?php echo __("Be liberal, they're internal");?>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="notes" cols="21"
-                    rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
+                <textarea class=" form-control-sm richtext no-bar" name="notes" cols="21"
+                    rows="8"><?php echo $info['notes']; ?></textarea>
             </td>
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+<p style="text-align:left;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Add Plan</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="slas.php"'>
 </p>
 </form>
+</div>

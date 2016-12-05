@@ -18,6 +18,7 @@ if ($role) {
 $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $info);
 
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="" method="post" id="save">
     <?php csrf_token(); ?>
     <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -28,27 +29,28 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
     — <?php echo $info['name']; ?></small>
         <?php } ?>
     </h2>
-    <ul class="clean tabs">
-        <li class="active"><a href="#definition"><i class="icon-file"></i> <?php echo __('Definition'); ?></a></li>
-        <li><a href="#permissions"><i class="icon-lock"></i> <?php echo __('Permissions'); ?></a></li>
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#definition" role="tab"><i class="icon-file"></i> <?php echo __('Definition'); ?></a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#permissions" role="tab"><i class="icon-lock"></i> <?php echo __('Permissions'); ?></a></li>
     </ul>
-    <div id="definition" class="tab_content">
-        <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content">
+    <div id="definition" class="tab-pane active" role="tabpanel">
+        <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
             <thead>
-                <tr>
+                <tr class="table-heading">
                     <th colspan="2">
-                        <em><?php echo __(
+                        <?php echo __(
                         'Roles are used to define agents\' permissions'
                         ); ?>&nbsp;<i class="help-tip icon-question-sign"
-                        href="#roles"></i></em>
+                        href="#roles"></i>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td width="180" class="required"><?php echo __('Name'); ?>:</td>
+                    <td class="required"><?php echo __('Name'); ?>:</td>
                     <td>
-                        <input size="50" type="text" name="name" value="<?php echo
+                        <input size="50" class="form-control-sm" type="text" name="name" value="<?php echo
                         $info['name']; ?>" data-translate-tag="<?php echo $trans['name']; ?>"
                         autofocus/>
                         <span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
@@ -56,13 +58,13 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
                 </tr>
             </tbody>
             <tbody>
-                <tr>
+                <tr class="table-heading">
                     <th colspan="7">
-                        <em><strong><?php echo __('Internal Notes'); ?></strong> </em>
+                        <?php echo __('Internal Notes'); ?>
                     </th>
                 </tr>
                 <tr>
-                    <td colspan="7"><textarea name="notes" class="richtext no-bar"
+                    <td colspan="7"><textarea name="notes" class="form-control-sm richtext no-bar"
                         rows="6" cols="80"><?php
                         echo $info['notes']; ?></textarea>
                     </td>
@@ -70,7 +72,7 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
             </tbody>
         </table>
     </div>
-    <div id="permissions" class="hidden">
+    <div id="permissions" class="tab-pane" role="tabpanel">
         <?php
             $setting = $role ? $role->getPermissionInfo() : array();
             // Eliminate groups without any department-specific permissions
@@ -82,21 +84,22 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
                     $buckets[$g][$k] = $v;
             }
         } ?>
-        <ul class="alt tabs">
+        <ul class="nav nav-tabs">
             <?php
                 $first = true;
                 foreach ($buckets as $g => $perms) { ?>
-                    <li <?php if ($first) { echo 'class="active"'; $first=false; } ?>>
-                        <a href="#<?php echo Format::slugify($g); ?>"><?php echo Format::htmlchars(__($g));?></a>
+                    <li class="nav-item">
+                        <a <?php if ($first) { echo 'class="nav-link active"'; $first=false; }else{ echo 'class="nav-link"';} ?> data-toggle="tab" href="#<?php echo Format::slugify($g); ?>" role="tab"><?php echo Format::htmlchars(__($g));?></a>
                     </li>
             <?php } ?>
         </ul>
+        <div class="tab-content">
         <?php
         $first = true;
         foreach ($buckets as $g => $perms) { ?>
-        <div class="tab_content <?php if (!$first) { echo 'hidden'; } else { $first = false; }
-            ?>" id="<?php echo Format::slugify($g); ?>">
-            <table class="table">
+        <div class="tab-pane <?php if ($first) { echo 'active'; } else { $first = false; }
+            ?>" role="tabpanel" id="<?php echo Format::slugify($g); ?>">
+            <table class="table table-condensed">
                 <?php foreach ($perms as $k => $v) { ?>
                 <tr>
                     <td>
@@ -107,8 +110,8 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
                             &nbsp;
                             <?php echo Format::htmlchars(__($v['title'])); ?>
                             —
-                            <em><?php echo Format::htmlchars(__($v['desc']));
-                            ?></em>
+                            <?php echo Format::htmlchars(__($v['desc']));
+                            ?>
                         </label>
                     </td>
                 </tr>
@@ -116,11 +119,14 @@ $info = Format::htmlchars(($errors && $_POST) ? array_merge($info, $_POST) : $in
             </table>
         </div>
         <?php } ?>
+        </div>
     </div>
-    <p class="centered">
-        <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+    </div>
+    <p style="float:left">
+        <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>"><?php echo $submit_text; ?></button>
         <input type="reset"  name="reset"  value="<?php echo __('Reset'); ?>">
         <input type="button" name="cancel" value="<?php echo __('Cancel'); ?>"
             onclick='window.location.href="?"'>
     </p>
 </form>
+</div>

@@ -20,7 +20,7 @@
                 ?></div>
 <?php       } ?>
             </div>
-            <div style="display:inline-block;max-width:73%"><?php
+            <div style="display:inline-block;max-width:100%"><?php
         }
         $field->render($options);
         foreach ($field->errors() as $e) { ?>

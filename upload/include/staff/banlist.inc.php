@@ -48,18 +48,19 @@ $qstr.='&amp;order='.($order=='DESC'?'ASC':'DESC');
 $query="$select $from $where ORDER BY $order_by LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
 //echo $query;
 ?>
-<div id='basic_search'>
-    <div style="height:25px">
-        <form action="banlist.php" method="GET" name="filter">
-            <input type="hidden" name="a" value="filter" >
-            <div class="attached input">
-                <input name="q" type="text" class="basic-search" size="30" autofocus
-                       value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
-                <button type="submit" class="attached button"><i class="icon-search"></i></button>
-            </div>
-        </form>
-    </div>
-</div>
+<div class="col-sm-12 col-md-12">
+<!--<div id='basic_search'>-->
+<!--    <div style="height:25px">-->
+<!--        <form action="banlist.php" method="GET" name="filter">-->
+<!--            <input type="hidden" name="a" value="filter" >-->
+<!--            <div class="attached input">-->
+<!--                <input name="q" type="text" class="basic-search" size="30" autofocus-->
+<!--                       value="--><?php //echo Format::htmlchars($_REQUEST['q']); ?><!--">-->
+<!--                <button type="submit" class="attached button"><i class="icon-search"></i></button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
 <div class="clear"></div>
 <form action="banlist.php" method="POST" name="banlist">
     <div style="margin-bottom:20px; padding-top:5px;">
@@ -73,11 +74,11 @@ $query="$select $from $where ORDER BY $order_by LIMIT ".$pageNav->getStart().","
                 <div class="pull-right flush-right">
                     <a href="banlist.php?a=add" class="red button action-button">
                         <i class="icon-ban-circle"></i> <?php echo __('Ban New Email');?></a>
-                    <span class="action-button" data-dropdown="#action-dropdown-more">
-                        <i class="icon-caret-down pull-right"></i>
-                    <span ><i class="icon-cog"></i> <?php echo __('More');?></span>                        </span>
-                    <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                        <ul id="actions">
+                    <div class="btn-group">
+                        <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
+                            <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
+                        </span>
+                        <ul id="actions" class="bleed-left dropdown-menu">
                             <li><a class="confirm" data-name="enable" href="banlist.php?a=enable">
                                 <i class="icon-ok-sign icon-fixed-width"></i>
                                 <?php echo __('Enable'); ?></a></li>
@@ -106,13 +107,13 @@ $query="$select $from $where ORDER BY $order_by LIMIT ".$pageNav->getStart().","
     <?php csrf_token(); ?>
     <input type="hidden" name="do" value="mass_process" >
     <input type="hidden" id="action" name="a" value="" >
-    <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+    <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
         <thead>
-            <tr>
+            <tr class="table-heading">
                 <th width="4%">&nbsp;</th>
-                <th width="56%"><a <?php echo $email_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=email"><?php echo __('Email Address');?></a></th>
-                <th width="10%"><a  <?php echo $status_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=status"><?php echo __('Ban Status');?></a></th>
-                <th width="10%"><a <?php echo $created_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
+                <th width="36%"><a <?php echo $email_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=email"><?php echo __('Email Address');?></a></th>
+                <th width="20%"><a  <?php echo $status_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=status"><?php echo __('Ban Status');?></a></th>
+                <th width="20%"><a <?php echo $created_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
                 <th width="20%"><a <?php echo $updated_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
             </tr>
         </thead>
@@ -142,9 +143,9 @@ $query="$select $from $where ORDER BY $order_by LIMIT ".$pageNav->getStart().","
             <td colspan="5">
                 <?php if($res && $num){ ?>
                 <?php echo __('Select');?>:&nbsp;
-                <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-                <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-                <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+                <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+                <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+                <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
                 <?php }else{
                     echo __('No banned emails found!');
                 } ?>
@@ -160,6 +161,7 @@ $query="$select $from $where ORDER BY $order_by LIMIT ".$pageNav->getStart().","
         endif;
     ?>
 </form>
+    </div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

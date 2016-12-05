@@ -25,6 +25,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
 if ($_POST)
     $info['duedate'] = Format::date(strtotime($info['duedate']), false, false, 'UTC');
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="tickets.php?a=open" method="post" id="save"  enctype="multipart/form-data">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="create">
@@ -34,18 +35,13 @@ if ($_POST)
         <h2><?php echo __('Open a New Ticket');?></h2>
     </div>
 </div>
- <table class="form_table fixed" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-    <!-- This looks empty - but beware, with fixed table layout, the user
-         agent will usually only consult the cells in the first row to
-         construct the column widths of the entire toable. Therefore, the
-         first row needs to have two cells -->
-        <tr><td style="padding:0;"></td><td style="padding:0;"></td></tr>
     </thead>
     <tbody>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('User Information'); ?></strong>: </em>
+                <?php echo __('User Information'); ?>:
                 <div class="error"><?php echo $errors['user']; ?></div>
             </th>
         </tr>
@@ -53,7 +49,7 @@ if ($_POST)
         if ($user) { ?>
         <tr><td><?php echo __('User'); ?>:</td><td>
             <div id="user-info">
-                <input type="hidden" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
+                <input type="hidden" class="form-control-sm" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
             <a href="#" onclick="javascript:
                 $.userLookup('ajax.php/users/<?php echo $user->getId(); ?>/edit',
                         function (user) {
@@ -65,7 +61,7 @@ if ($_POST)
                 <span id="user-name"><?php echo Format::htmlchars($user->getName()); ?></span>
                 &lt;<span id="user-email"><?php echo $user->getEmail(); ?></span>&gt;
                 </a>
-                <a class="inline button" style="overflow:inherit" href="#"
+                <a class="btn btn-sm btn-secondary" style="overflow:inherit" href="#"
                     onclick="javascript:
                         $.userLookup('ajax.php/users/select/'+$('input#uid').val(),
                             function(user) {
@@ -81,11 +77,11 @@ if ($_POST)
         } else { //Fallback: Just ask for email and name
             ?>
         <tr>
-            <td width="160" class="required"> <?php echo __('Email Address'); ?>: </td>
+            <td class="required"> <?php echo __('Email Address'); ?>: </td>
             <td>
                 <div class="attached input">
                     <input type="text" size=45 name="email" id="user-email" class="attached"
-                        autocomplete="off" autocorrect="off" value="<?php echo $info['email']; ?>" /> </span>
+                        autocomplete="off" value="<?php echo $info['email']; ?>" />
                 <a href="?a=open&amp;uid={id}" data-dialog="ajax.php/users/lookup/form"
                     class="attached button"><i class="icon-search"></i></a>
                 </div>
@@ -94,10 +90,10 @@ if ($_POST)
             </td>
         </tr>
         <tr>
-            <td width="160" class="required"> <?php echo __('Full Name'); ?>: </td>
+            <td class="required"> <?php echo __('Full Name'); ?>: </td>
             <td>
                 <span style="display:inline-block;">
-                    <input type="text" size=45 name="name" id="user-name" value="<?php echo $info['name']; ?>" /> </span>
+                    <input type="text" class="form-control-sm" size=45 name="name" id="user-name" value="<?php echo $info['name']; ?>" /> </span>
                 <span class="error">*</span>
                 <div class="error"><?php echo $errors['name']; ?></div>
             </td>
@@ -108,7 +104,7 @@ if ($_POST)
         <?php
         if($cfg->notifyONNewStaffTicket()) {  ?>
         <tr>
-            <td width="160"><?php echo __('Ticket Notice'); ?>:</td>
+            <td><?php echo __('Ticket Notice'); ?>:</td>
             <td>
             <input type="checkbox" name="alertuser" <?php echo (!$errors || $info['alertuser'])? 'checked="checked"': ''; ?>><?php
                 echo __('Send alert to user.'); ?>
@@ -118,17 +114,17 @@ if ($_POST)
         } ?>
     </tbody>
     <tbody>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Ticket Information and Options');?></strong>:</em>
+                <?php echo __('Ticket Information and Options');?>:
             </th>
         </tr>
         <tr>
-            <td width="160" class="required">
+            <td class="required">
                 <?php echo __('Ticket Source');?>:
             </td>
             <td>
-                <select name="source">
+                <select name="source" class="form-control-sm">
                     <?php
                     $source = $info['source'] ?: 'Phone';
                     $sources = Ticket::getSources();
@@ -144,11 +140,11 @@ if ($_POST)
             </td>
         </tr>
         <tr>
-            <td width="160" class="required">
+            <td class="required">
                 <?php echo __('Help Topic'); ?>:
             </td>
             <td>
-                <select name="topicId" onchange="javascript:
+                <select name="topicId" class="form-control-sm" onchange="javascript:
                         var data = $(':input[name]', '#dynamic-form').serialize();
                         $.ajax(
                           'ajax.php/form/help-topic/' + this.value,
@@ -183,11 +179,11 @@ if ($_POST)
             </td>
         </tr>
         <tr>
-            <td width="160">
+            <td>
                 <?php echo __('Department'); ?>:
             </td>
             <td>
-                <select name="deptId">
+                <select name="deptId" class="form-control-sm">
                     <option value="" selected >&mdash; <?php echo __('Select Department'); ?>&mdash;</option>
                     <?php
                     if($depts=Dept::getDepartments(array('dept_id' => $thisstaff->getDepts()))) {
@@ -209,11 +205,11 @@ if ($_POST)
         </tr>
 
          <tr>
-            <td width="160">
+            <td>
                 <?php echo __('SLA Plan');?>:
             </td>
             <td>
-                <select name="slaId">
+                <select name="slaId" class="form-control-sm">
                     <option value="0" selected="selected" >&mdash; <?php echo __('System Default');?> &mdash;</option>
                     <?php
                     if($slas=SLA::getSLAs()) {
@@ -229,11 +225,11 @@ if ($_POST)
          </tr>
 
          <tr>
-            <td width="160">
+            <td>
                 <?php echo __('Due Date');?>:
             </td>
             <td>
-                <input class="dp" id="duedate" name="duedate" value="<?php echo Format::htmlchars($info['duedate']); ?>" size="12" autocomplete=OFF>
+                <input class="dp" id="duedate" class="form-control-sm" name="duedate" value="<?php echo Format::htmlchars($info['duedate']); ?>" size="12" autocomplete=OFF>
                 &nbsp;&nbsp;
                 <?php
                 $min=$hr=null;
@@ -243,16 +239,16 @@ if ($_POST)
                 echo Misc::timeDropdown($hr, $min, 'time');
                 ?>
                 &nbsp;<font class="error">&nbsp;<?php echo $errors['duedate']; ?> &nbsp; <?php echo $errors['time']; ?></font>
-                <em><?php echo __('Time is based on your time zone');?> (GMT <?php echo Format::date(false, false, 'ZZZ'); ?>)</em>
+                <?php echo __('Time is based on your time zone');?> (GMT <?php echo Format::date(false, false, 'ZZZ'); ?>)
             </td>
         </tr>
 
         <?php
         if($thisstaff->hasPerm(TicketModel::PERM_ASSIGN, false)) { ?>
         <tr>
-            <td width="160"><?php echo __('Assign To');?>:</td>
+            <td><?php echo __('Assign To');?>:</td>
             <td>
-                <select id="assignId" name="assignId">
+                <select id="assignId" name="assignId" class="form-control-sm">
                     <option value="0" selected="selected">&mdash; <?php echo __('Select an Agent OR a Team');?> &mdash;</option>
                     <?php
                     if(($users=Staff::getAvailableStaffMembers())) {
@@ -292,9 +288,9 @@ if ($_POST)
         <?php
         //is the user allowed to post replies??
         if ($thisstaff->getRole()->hasPerm(TicketModel::PERM_REPLY)) { ?>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Response');?></strong>: <?php echo __('Optional response to the above issue.');?></em>
+                <?php echo __('Response');?>: <?php echo __('Optional response to the above issue.');?>
             </th>
         </tr>
         <tr>
@@ -304,7 +300,7 @@ if ($_POST)
                 ?>
                 <div style="margin-top:0.3em;margin-bottom:0.5em">
                     <?php echo __('Canned Response');?>:&nbsp;
-                    <select id="cannedResp" name="cannedResp">
+                    <select id="cannedResp" name="cannedResp" class="form-control-sm">
                         <option value="0" selected="selected">&mdash; <?php echo __('Select a canned response');?> &mdash;</option>
                         <?php
                         foreach($cannedResponses as $id =>$title) {
@@ -337,11 +333,11 @@ print $response_form->getField('attachments')->render();
 ?>
                     </div>
 
-                <table border="0" cellspacing="0" cellpadding="2" width="100%">
+                <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
             <tr>
-                <td width="100"><?php echo __('Ticket Status');?>:</td>
+                <td><?php echo __('Ticket Status');?>:</td>
                 <td>
-                    <select name="statusId">
+                    <select name="statusId" class="form-control-sm">
                     <?php
                     $statusId = $info['statusId'] ?: $cfg->getDefaultTicketStatusId();
                     $states = array('open');
@@ -362,7 +358,7 @@ print $response_form->getField('attachments')->render();
                 </td>
             </tr>
              <tr>
-                <td width="100"><?php echo __('Signature');?>:</td>
+                <td><?php echo __('Signature');?>:</td>
                 <td>
                     <?php
                     $info['signature']=$info['signature']?$info['signature']:$thisstaff->getDefaultSignatureType();
@@ -384,10 +380,10 @@ print $response_form->getField('attachments')->render();
         <?php
         } //end canPostReply
         ?>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Internal Note');?></strong>
-                <font class="error">&nbsp;<?php echo $errors['note']; ?></font></em>
+                <?php echo __('Internal Note');?>
+                <font class="error">&nbsp;<?php echo $errors['note']; ?></font>
             </th>
         </tr>
         <tr>
@@ -404,8 +400,8 @@ print $response_form->getField('attachments')->render();
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>">
+<p style="text-align:left;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo _P('action-button', 'Open');?>">Open</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="javascript:
         $('.richtext').each(function() {
@@ -417,7 +413,8 @@ print $response_form->getField('attachments')->render();
     ">
 </p>
 </form>
-<script type="text/javascript">
+</div>
+    <script type="text/javascript">
 $(function() {
     $('input#user-email').typeahead({
         source: function (typeahead, query) {

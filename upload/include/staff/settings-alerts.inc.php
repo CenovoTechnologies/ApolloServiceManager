@@ -1,10 +1,10 @@
-<table class="form_table settings_table" width="940" border="0" cellspacing="0" cellpadding="2">
+<table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <tbody>
-        <tr><th><em><b><?php echo __('New Ticket Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('New Ticket Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#ticket_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>:</b>
                 <input type="radio" name="ticket_alert_active"  value="1"
                 <?php echo $config['ticket_alert_active']?'checked':''; ?>
                 /> <?php echo __('Enable'); ?>
@@ -37,11 +37,11 @@
                 <?php echo __('Organization Account Manager'); ?>
             </td>
         </tr>
-        <tr><th><em><b><?php echo __('New Message Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('New Message Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#message_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>:</b> &nbsp;
               <input type="radio" name="message_alert_active"  value="1"
               <?php echo $config['message_alert_active']?'checked':''; ?>
               /> <?php echo __('Enable'); ?>
@@ -76,11 +76,11 @@
                 <?php echo __('Organization Account Manager'); ?>
             </td>
         </tr>
-        <tr><th><em><b><?php echo __('New Internal Activity Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('New Internal Activity Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#internal_note_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>:</b>
               <input type="radio" name="note_alert_active"  value="1"   <?php echo $config['note_alert_active']?'checked':''; ?> />
                 <?php echo __('Enable'); ?>
               &nbsp;&nbsp;
@@ -107,11 +107,11 @@
                 <?php echo __('Department Manager'); ?>
             </td>
         </tr>
-        <tr><th><em><b><?php echo __('Ticket Assignment Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('Ticket Assignment Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#assignment_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>: </b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>: </b> &nbsp;
               <input name="assigned_alert_active" value="1" type="radio"
                 <?php echo $config['assigned_alert_active']?'checked="checked"':''; ?>> <?php echo __('Enable'); ?>
               &nbsp;&nbsp;
@@ -138,11 +138,11 @@
                 <?php echo __('Team Members'); ?>
             </td>
         </tr>
-        <tr><th><em><b><?php echo __('Ticket Transfer Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('Ticket Transfer Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#transfer_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>:</b> &nbsp;
             <input type="radio" name="transfer_alert_active"  value="1"   <?php echo $config['transfer_alert_active']?'checked':''; ?> />
                 <?php echo __('Enable'); ?>
             <input type="radio" name="transfer_alert_active"  value="0"   <?php echo !$config['transfer_alert_active']?'checked':''; ?> />
@@ -168,11 +168,11 @@
                 <?php echo __('Department Members'); ?>
             </td>
         </tr>
-        <tr><th><em><b><?php echo __('Overdue Ticket Alert'); ?></b>:
+        <tr class="table-heading"><th><b><?php echo __('Overdue Ticket Alert'); ?></b>:
             <i class="help-tip icon-question-sign" href="#overdue_alert"></i>
-            </em></th></tr>
+            </th></tr>
         <tr>
-            <td><em><b><?php echo __('Status'); ?>:</b></em> &nbsp;
+            <td><b><?php echo __('Status'); ?>:</b> &nbsp;
               <input type="radio" name="overdue_alert_active"  value="1"
                 <?php echo $config['overdue_alert_active']?'checked':''; ?> /> <?php echo __('Enable'); ?>
               <input type="radio" name="overdue_alert_active"  value="0"
@@ -198,8 +198,8 @@
                 echo $config['overdue_alert_dept_members']?'checked':''; ?>> <?php echo __('Department Members'); ?>
             </td>
         </tr>
-        <tr><th>
-            <em><b><?php echo __('System Alerts'); ?></b>: <i class="help-tip icon-question-sign" href="#system_alerts"></i></em></th></tr>
+        <tr class="table-heading"><th>
+            <b><?php echo __('System Alerts'); ?></b>: <i class="help-tip icon-question-sign" href="#system_alerts"></i></th></tr>
         <tr>
             <td>
               <input type="checkbox" name="send_sys_errors" checked="checked" disabled="disabled">

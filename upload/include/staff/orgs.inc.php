@@ -57,20 +57,21 @@ $_SESSION[':Q:orgs'] = $orgs;
 $orgs->values('id', 'name', 'created', 'updated');
 $orgs->order_by($order . $order_column);
 ?>
-<div id="basic_search">
-    <div style="min-height:25px;">
-        <form action="orgs.php" method="get">
-            <?php csrf_token(); ?>
-            <div class="attached input">
-            <input type="hidden" name="a" value="search">
-            <input type="search" class="basic-search" id="basic-org-search" name="query" autofocus size="30" value="<?php echo Format::htmlchars($_REQUEST['query']); ?>" autocomplete="off" autocorrect="off" autocapitalize="off">
-                <button type="submit" class="attached button"><i class="icon-search"></i>
-                </button>
-            <!-- <td>&nbsp;&nbsp;<a href="" id="advanced-user-search">[advanced]</a></td> -->
-            </div>
-        </form>
-    </div>
-</div>
+<div class="col-sm-12 col-md-12">
+<!--<div id="basic_search">-->
+<!--    <div style="min-height:25px;">-->
+<!--        <form action="orgs.php" method="get">-->
+<!--            --><?php //csrf_token(); ?>
+<!--            <div class="attached input">-->
+<!--            <input type="hidden" name="a" value="search">-->
+<!--            <input type="search" class="basic-search" id="basic-org-search" name="query" autofocus size="30" value="--><?php //echo Format::htmlchars($_REQUEST['query']); ?><!--" autocomplete="off" autocorrect="off" autocapitalize="off">-->
+<!--                <button type="submit" class="attached button"><i class="icon-search"></i>-->
+<!--                </button>-->
+<!--            <!-- <td>&nbsp;&nbsp;<a href="" id="advanced-user-search">[advanced]</a></td> -->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
 <div style="margin-bottom:20px; padding-top:5px;">
     <div class="sticky bar opaque">
         <div class="content">
@@ -86,13 +87,11 @@ $orgs->order_by($order . $order_column);
                 </a>
                 <?php }
             if ($thisstaff->hasPerm(Organization::PERM_DELETE)) { ?>
-                <span class="action-button" data-dropdown="#action-dropdown-more"
-                      style="/*DELME*/ vertical-align:top; margin-bottom:0">
-                    <i class="icon-caret-down pull-right"></i>
-                    <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-                </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('More');?>" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-cog"></i> <?php echo __('More');?>
+                    </button>
+                    <ul id="actions" class="dropdown-menu">
                         <li class="danger"><a class="orgs-action" href="#delete">
                             <i class="icon-trash icon-fixed-width"></i>
                             <?php echo __('Delete'); ?></a></li>
@@ -112,14 +111,15 @@ else
     $showing .= __('No organizations found!');
 
 ?>
+
 <form id="orgs-list" action="orgs.php" method="POST" name="staff" >
  <?php csrf_token(); ?>
  <input type="hidden" name="a" value="mass_process" >
  <input type="hidden" id="action" name="do" value="" >
  <input type="hidden" id="selected-count" name="count" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed table-bordered table-hover table-striped" border="0" cellspacing="1" cellpadding="0" width="940">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th nowrap width="4%">&nbsp;</th>
             <th width="45%"><a <?php echo $name_sort; ?> href="orgs.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name'); ?></a></th>
             <th width="11%"><a <?php echo $users_sort; ?> href="orgs.php?<?php echo $qstr; ?>&sort=users"><?php echo __('Users'); ?></a></th>
@@ -177,7 +177,7 @@ if ($total): //Show options..
 endif;
 ?>
 </form>
-
+</div>
 <script type="text/javascript">
 $(function() {
     $('input#basic-org-search').typeahead({

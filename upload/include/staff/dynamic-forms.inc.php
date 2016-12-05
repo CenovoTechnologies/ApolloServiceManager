@@ -1,19 +1,20 @@
+<div class="col-sm-12 col-md-12">
 <form action="forms.php" method="POST" name="forms">
 
 <div class="sticky bar opaque">
     <div class="content">
-        <div class="pull-left flush-left">
+        <div class="pull-left">
             <h2><?php echo __('Custom Forms'); ?></h2>
         </div>
-        <div class="pull-right flush-right">
+        <div class="pull-right">
             <a href="forms.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php
                     echo __('Add New Custom Form'); ?></a>
-            <span class="action-button" data-dropdown="#action-dropdown-more">
-                    <i class="icon-caret-down pull-right"></i>
+            <div class="btn-group">
+            <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
                     <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
             </span>
-            <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                <ul id="actions">
+<!--            <div id="action-dropdown-more" class="action-dropdown anchor-right">-->
+                <ul id="actions" class="bleed-left dropdown-menu">
                     <li class="danger">
                         <a class="confirm" data-name="delete" href="forms.php?a=delete">
                             <i class="icon-trash icon-fixed-width"></i>
@@ -42,9 +43,9 @@ $showing=$pageNav->showing().' '._N('form','forms',$count);
 <?php csrf_token(); ?>
 <input type="hidden" name="do" value="mass_process" >
 <input type="hidden" id="action" name="a" value="" >
-<table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+<table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="50%"><?php echo __('Built-in Forms'); ?></th>
             <th><?php echo __('Last Updated'); ?></th>
@@ -72,7 +73,7 @@ $showing=$pageNav->showing().' '._N('form','forms',$count);
     </tbody>
     <tbody>
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th><?php echo __('Custom Forms'); ?></th>
             <th><?php echo __('Last Updated'); ?></th>
@@ -119,7 +120,7 @@ if ($count) //Show options..
 ?>
 
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm'); ?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>
@@ -133,11 +134,9 @@ if ($count) //Show options..
     <div><?php echo __('Please confirm to continue.'); ?></div>
     <hr style="margin-top:1em"/>
     <p class="full-width">
-        <span class="buttons pull-left">
-            <input type="button" value="No, Cancel" class="close">
-        </span>
-        <span class="buttons pull-right">
-            <input type="button" value="Yes, Do it!" class="confirm">
+        <span class="btn-group-sm pull-right">
+            <input type="button" value="Cancel" class="close">
+            <input type="button" value="Yes" class="confirm">
         </span>
      </p>
     <div class="clear"></div>

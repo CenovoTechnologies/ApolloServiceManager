@@ -9,12 +9,12 @@
 <hr/>
 
 <?php if ($hasProperties) { ?>
-<ul class="tabs" id="item_tabs">
-    <li class="active">
-        <a href="#value"><i class="icon-reorder"></i>
+<ul class="nav nav-tabs" id="item_tabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#value" role="tab"><i class="icon-reorder"></i>
         <?php echo __('Value'); ?></a>
     </li>
-    <li><a href="#item-properties"><i class="icon-asterisk"></i>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#item-properties" role="tab"><i class="icon-asterisk"></i>
         <?php echo __('Item Properties'); ?></a>
     </li>
 </ul>
@@ -25,15 +25,15 @@
     echo csrf_token();
     $internal = $item ? $item->isInternal() : false;
 ?>
-
-<div class="tab_content" id="value">
+<div class="tab-content">
+<div class="tab-pane active" role="tabpanel" id="value">
 <?php
     $form = $item_form;
     include 'dynamic-form-simple.tmpl.php';
 ?>
 </div>
 
-<div class="tab_content hidden" id="item-properties">
+<div class="tab-pane" role="tabpanel" id="item-properties">
 <?php
     if ($hasProperties) {
         $form = $properties_form;
@@ -41,15 +41,12 @@
     }
 ?>
 </div>
-
+</div>
 <hr>
 <p class="full-width">
-    <span class="buttons pull-left">
+    <span class="btn-group-sm pull-right">
         <input type="reset" value="<?php echo __('Reset'); ?>">
-        <input type="button" value="<?php echo __('Cancel'); ?>" class="close">
-    </span>
-    <span class="buttons pull-right">
-        <input type="submit" value="<?php echo __('Save'); ?>">
+        <button type="submit" class="btn btn-outline-primary" value="<?php echo __('Save'); ?>">Save</button>
     </span>
  </p>
 </form>

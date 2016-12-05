@@ -57,7 +57,7 @@ else
 
 ?>
 <form action="orgs.php?id=<?php echo $org->getId(); ?>" method="POST" name="users" >
-
+<div style="padding-top: 12px;">
 <div style="margin-top:5px;" class="pull-left"><b><?php echo $showing; ?></b></div>
 <?php if ($thisstaff->hasPerm(User::PERM_EDIT)) { ?>
 <div class="pull-right flush-right" style="margin-bottom:10px;">
@@ -68,6 +68,7 @@ else
     <?php echo __('Import'); ?></a>
     <button id="actions" class="red button action-button" type="submit" name="remove-users"><i class="icon-trash"></i> <?php echo __('Remove'); ?></button>
 </div>
+</div>
 <?php } ?>
 <div class="clear"></div>
 <?php
@@ -76,9 +77,9 @@ if ($num) { ?>
  <input type="hidden" name="do" value="mass_process" >
  <input type="hidden" id="id" name="id" value="<?php echo $org->getId(); ?>" >
  <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed table-bordered" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="38%"><?php echo __('Name'); ?></th>
             <th width="35%"><?php echo __('Email'); ?></th>

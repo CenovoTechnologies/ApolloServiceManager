@@ -50,24 +50,27 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
     <div style="margin:8px 0"><strong><?php echo __('Category Type');?>:</strong>
         <span class="error">*</span></div>
-    <div style="margin-left:5px">
-    <input type="radio" name="ispublic" value="2" <?php echo $info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Featured');?></b> <?php echo __('(on front-page sidebar)');?>
-    <br/>
-    <input type="radio" name="ispublic" value="1" <?php echo $info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Public');?></b> <?php echo __('(publish)');?>
-    <br/>
-    <input type="radio" name="ispublic" value="0" <?php echo !$info['ispublic']?'checked="checked"':''; ?>><?php echo __('Private');?> <?php echo __('(internal)');?>
-    <br/>
+    <div class="btn-group" style="margin-left:20px">
+        <label class="form-check-inline">
+    <input type="radio" class="form-check-input" name="ispublic" value="2" <?php echo $info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Featured');?></b> <?php echo __('(on front-page sidebar)');?>
+        </label>
+        <label class="form-check-inline">
+    <input type="radio" class="form-check-input" name="ispublic" value="1" <?php echo $info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Public');?></b> <?php echo __('(publish)');?>
+        </label>
+        <label class="form-check-inline">
+    <input type="radio" class="form-check-input" name="ispublic" value="0" <?php echo !$info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Private');?></b> <?php echo __('(internal)');?>
+        </label>
     <div class="error"><?php echo $errors['ispublic']; ?></div>
     </div>
 
 <div style="margin-top:20px"></div>
 
-<ul class="tabs clean" style="margin-top:9px;">
-    <li class="active"><a href="#info"><?php echo __('Category Information'); ?></a></li>
-    <li><a href="#notes"><?php echo __('Internal Notes'); ?></a></li>
+<ul class="nav nav-tabs" style="margin-top:9px;" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info" role="tab"><?php echo __('Category Information'); ?></a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notes" role="tab"><?php echo __('Internal Notes'); ?></a></li>
 </ul>
 
-<div class="tab_content" id="info">
+<div class="tab-content">
 
 <?php
 $langs = Internationalization::getConfiguredSystemLanguages();
@@ -85,10 +88,7 @@ if (count($langs) > 1) { ?>
 <?php } ?>
     </ul>
 <?php
-} ?>
-
-
-<?php foreach ($langs as $tag=>$i) {
+} foreach ($langs as $tag=>$i) {
     $code = $i['code'];
     $cname = 'name';
     $dname = 'description';
@@ -102,45 +102,40 @@ if (count($langs) > 1) { ?>
         $cname = "trans[$code][$cname]";
         $dname = "trans[$code][$dname]";
     } ?>
-    <div class="tab_content <?php
-        if ($code != $cfg->getPrimaryLanguage()) echo "hidden";
-      ?>" id="lang-<?php echo $tag; ?>"
-      <?php if ($i['direction'] == 'rtl') echo 'dir="rtl" class="rtl"'; ?>
-    >
-    <div style="padding-bottom:8px;">
-        <b><?php echo __('Category Name');?></b>:
-        <span class="error">*</span>
-        <div class="faded"><?php echo __('Short descriptive name.');?></div>
-    </div>
-    <input type="text" size="70" style="font-size:110%;width:100%;box-sizing:border-box"
-        name="<?php echo $cname; ?>" value="<?php echo $category; ?>">
-    <div class="error"><?php echo $errors['name']; ?></div>
+    <div class="tab-pane active" id="info" role="tabpanel">
+        <div style="padding-top: 12px; padding-bottom:8px;">
+            <b><?php echo __('Category Name');?></b>:
+            <span class="error">*</span>
+            <div class="faded"><em><?php echo __('Short descriptive name.');?></em></div>
+        </div>
+        <input type="text" class="form-control" size="70" style="font-size:110%;width:100%;box-sizing:border-box"
+            name="<?php echo $cname; ?>" value="<?php echo $category; ?>">
+        <div class="error"><?php echo $errors['name']; ?></div>
 
-    <div style="padding:8px 0;">
-        <b><?php echo __('Category Description');?></b>:
-        <span class="error">*</span>
-        <div class="faded"><?php echo __('Summary of the category.');?></div>
-        <div class="error"><?php echo $errors['description']; ?></div>
-    </div>
-    <textarea class="richtext" name="<?php echo $dname; ?>" cols="21" rows="12"
-        style="width:100%;"><?php
-        echo $desc; ?></textarea>
+        <div style="padding:8px 0;">
+            <b><?php echo __('Category Description');?></b>:
+            <span class="error">*</span>
+            <div class="faded"><em><?php echo __('Summary of the category.');?></em></div>
+            <div class="error"><?php echo $errors['description']; ?></div>
+        </div>
+        <textarea class="richtext no-bar form-control" name="<?php echo $dname; ?>" cols="21" rows="12"
+            style="width:100%;"><?php
+            echo $desc; ?></textarea>
     </div>
 <?php } ?>
+
+    <div class="tab-pane" id="notes" role="tabpanel" style="padding-top:12px;">
+        <b><?php echo __('Internal Notes');?></b>:
+        <span class="faded"><em><?php echo __("Be liberal, they're internal");?></em></span>
+        <textarea class="richtext no-bar form-control" name="notes" cols="21"
+            rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
+    </div>
 </div>
 
 
-<div class="tab_content" id="notes" style="display:none;">
-    <b><?php echo __('Internal Notes');?></b>:
-    <span class="faded"><?php echo __("Be liberal, they're internal");?></span>
-    <textarea class="richtext no-bar" name="notes" cols="21"
-        rows="8" style="width: 80%;"><?php echo $info['notes']; ?></textarea>
-</div>
-
-
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
-    <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
-    <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="categories.php"'>
+<p class="btn-group-sm" style="text-align:left; padding-top:12px;">
+    <button type="submit" class="btn btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>">Save Changes</button>
+    <button type="reset"  class="btn btn-outline-secondary" name="reset"  value="<?php echo __('Reset');?>">Reset</button>
+    <button type="button" class="btn btn-outline-secondary" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="categories.php"'>Cancel</button>
 </p>
 </form>

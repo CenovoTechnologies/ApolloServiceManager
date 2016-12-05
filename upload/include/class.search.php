@@ -127,7 +127,7 @@ class SearchInterface {
                 array(
                     'title'=>       Format::searchable($model->getSubject()),
                     'number'=>      $model->getNumber(),
-                    'status'=>      $model->getStatus(),
+                    'status'=>      $model->getStatus()->asArray,
                     'topic_id'=>    $model->getTopicId(),
                     'priority_id'=> $model->getPriorityId(),
                     // Stats (comments, attachments)
@@ -475,7 +475,7 @@ class MysqlSearchBackend extends SearchBackend {
 
         // THREADS ----------------------------------
         $sql = "SELECT A1.`id`, A1.`title`, A1.`body`, A1.`format` FROM `".THREAD_ENTRY_TABLE."` A1
-            LEFT JOIN `".TABLE_PREFIX."_search` A2 ON (A1.`id` = A2.`object_id` AND A2.`object_type`='H')
+            LEFT JOIN `".TABLE_PREFIX."_search` A2 ON (A1.`id` IN (A2.`object_id`) AND A2.`object_type`='H')
             WHERE A2.`object_id` IS NULL AND (A1.poster <> 'SYSTEM')
             AND (LENGTH(A1.`title`) + LENGTH(A1.`body`) > 0)
             ORDER BY A1.`id` DESC";
@@ -496,7 +496,7 @@ class MysqlSearchBackend extends SearchBackend {
         // TICKETS ----------------------------------
 
         $sql = "SELECT A1.`ticket_id` FROM `".TICKET_TABLE."` A1
-            LEFT JOIN `".TABLE_PREFIX."_search` A2 ON (A1.`ticket_id` = A2.`object_id` AND A2.`object_type`='T')
+            LEFT JOIN `".TABLE_PREFIX."_search` A2 ON (A1.`ticket_id` = (A2.`object_id`) AND A2.`object_type` = ('T'))
             WHERE A2.`object_id` IS NULL
             ORDER BY A1.`ticket_id` DESC";
         if (!($res = db_query_unbuffered($sql, $auto_create)))

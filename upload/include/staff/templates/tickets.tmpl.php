@@ -107,9 +107,9 @@ if ($total) { ?>
 <?php csrf_token(); ?>
  <input type="hidden" name="a" value="mass_process" >
  <input type="hidden" name="do" id="action" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
+ <table class="table table-condensed table-bordered" border="0" cellspacing="1" cellpadding="2"
     <thead>
-        <tr>
+        <tr class="table-heading">
             <?php
             if (0) {?>
             <th width="4%">&nbsp;</th>

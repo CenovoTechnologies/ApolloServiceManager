@@ -55,26 +55,27 @@ require(STAFFINC_DIR.'header.inc.php');
 
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="emailtest.php" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
  <h2><?php echo __('Test Outgoing Email');?></h2>
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Use the following form to test whether your <strong>Outgoing Email</strong> settings are properly established.');
-                    ?>&nbsp;<i class="help-tip icon-question-sign" href="#test_outgoing_email"></i></em>
+                <?php echo __('Use the following form to test whether your Outgoing Email settings are properly established.');
+                    ?>&nbsp;<i class="help-tip icon-question-sign" href="#test_outgoing_email"></i>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="120" class="required">
+            <td class="required">
                 <?php echo __('From');?>:
             </td>
             <td>
-                <select name="email_id">
+                <select name="email_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('Select FROM Email');?> &mdash;</option>
                     <?php
                     $sql='SELECT email_id,email,name,smtp_active FROM '.EMAIL_TABLE.' email ORDER by name';
@@ -95,29 +96,29 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
             </td>
         </tr>
         <tr>
-            <td width="120" class="required">
+            <td class="required">
                 <?php echo __('To');?>:
             </td>
             <td>
-                <input type="text" size="60" name="email" value="<?php echo $info['email']; ?>"
+                <input type="text" class="form-control-sm" size="60" name="email" value="<?php echo $info['email']; ?>"
                     autofocus>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['email']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="120" class="required">
+            <td class="required">
                 <?php echo __('Subject');?>:
             </td>
             <td>
-                <input type="text" size="60" name="subj" value="<?php echo $info['subj']; ?>">
+                <input type="text" class="form-control-sm" size="60" name="subj" value="<?php echo $info['subj']; ?>">
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['subj']; ?></span>
             </td>
         </tr>
         <tr>
             <td colspan=2>
                 <div style="padding-top:0.5em;padding-bottom:0.5em">
-                <em><strong><?php echo __('Message');?></strong>: <?php echo __('email message to send.');?></em>&nbsp;<span class="error">*&nbsp;<?php echo $errors['message']; ?></span></div>
-                <textarea class="richtext draft draft-delete" name="message" cols="21"
+                <?php echo __('Message');?>: <?php echo __('email message to send.');?>&nbsp;<span class="error">*&nbsp;<?php echo $errors['message']; ?></span></div>
+                <textarea class="form-control-sm richtext draft draft-delete" name="message" cols="21"
                     rows="10" style="width: 90%;" <?php
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('email.diag', false, $info['message']);
     echo $attrs; ?>><?php echo $draft ?: $info['message'];
@@ -126,8 +127,8 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
     </tbody>
 </table>
-<p style="text-align:center;">
-    <input type="submit" name="submit" value="<?php echo __('Send Message');?>">
+<p style="text-align:left;">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo __('Send Message');?>">Send Message</button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick='window.location.href="emails.php"'>
 </p>
@@ -135,3 +136,4 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 <?php
 include(STAFFINC_DIR.'footer.inc.php');
 ?>
+</div>

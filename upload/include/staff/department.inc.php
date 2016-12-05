@@ -26,6 +26,7 @@ if($dept && $_REQUEST['a']!='add') {
 
 $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="departments.php?<?php echo Http::build_query($qs); ?>" method="post" id="save">
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="<?php echo $action; ?>">
@@ -36,28 +37,29 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
     — <?php echo $info['name']; ?></small>
     <?php } ?>
 </h2>
-<ul class="clean tabs">
-    <li class="active"><a href="#settings">
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#deptSettings" role="tab">
         <i class="icon-file"></i> <?php echo __('Settings'); ?></a></li>
-    <li><a href="#access">
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#deptAccess" role="tab">
       <i class="icon-user"></i> <?php echo __('Access'); ?></a></li>
 </ul>
-<div id="settings" class="tab_content">
- <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
+    <div class="tab-content">
+<div id="deptSettings" class="tab-pane active" role="tabpanel">
+ <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><?php echo __('Department Information');?></em>
+                <?php echo __('Department Information');?>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Parent');?>:
             </td>
             <td>
-                <select name="pid">
+                <select name="pid" class="form-control-sm">
                     <option value="">&mdash; <?php echo __('Top-Level Department'); ?> &mdash;</option>
 <?php foreach (Dept::getDepartments() as $id=>$name) {
     if ($info['id'] && $id == $info['id'])
@@ -70,18 +72,18 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Name');?>:
             </td>
             <td>
                 <input data-translate-tag="<?php echo $dept ? $dept->getTranslateTag() : '';
-                ?>" type="text" size="30" name="name" value="<?php echo $info['name']; ?>"
+                ?>" type="text" size="30" class="form-control-sm" name="name" value="<?php echo $info['name']; ?>"
                 autofocus>
                 &nbsp;<span class="error">*&nbsp;<?php echo $errors['name']; ?></span>
             </td>
         </tr>
         <tr>
-            <td width="180" class="required">
+            <td class="required">
                 <?php echo __('Type');?>:
             </td>
             <td>
@@ -96,11 +98,11 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('SLA'); ?>:
             </td>
             <td>
-                <select name="sla_id">
+                <select name="sla_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     if($slas=SLA::getSLAs()) {
@@ -115,12 +117,12 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Manager'); ?>:
             </td>
             <td>
                 <span>
-                <select name="manager_id">
+                <select name="manager_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('None'); ?> &mdash;</option>
                     <?php
                     $sql='SELECT staff_id,CONCAT_WS(", ",lastname, firstname) as name '
@@ -166,17 +168,17 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
 
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Outgoing Email Settings'); ?></strong>:</em>
+                <?php echo __('Outgoing Email Settings'); ?>:
             </th>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Outgoing Email'); ?>:
             </td>
             <td>
-                <select name="email_id">
+                <select name="email_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     $sql='SELECT email_id,email,name FROM '.EMAIL_TABLE.' email ORDER by name';
@@ -194,11 +196,11 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Template Set'); ?>:
             </td>
             <td>
-                <select name="tpl_id">
+                <select name="tpl_id" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
                     $sql='SELECT tpl_id,name FROM '.EMAIL_TEMPLATE_GRP_TABLE.' tpl WHERE isactive=1 ORDER by name';
@@ -213,27 +215,27 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
                 &nbsp;<span class="error">&nbsp;<?php echo $errors['tpl_id']; ?></span>&nbsp;<i class="help-tip icon-question-sign" href="#template"></i>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Autoresponder Settings'); ?></strong>:
-                <i class="help-tip icon-question-sign" href="#auto_response_settings"></i></em>
+                <?php echo __('Autoresponder Settings'); ?>:
+                <i class="help-tip icon-question-sign" href="#auto_response_settings"></i>
             </th>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('New Ticket');?>:
             </td>
             <td>
                 <label>
                 <input type="checkbox" name="ticket_auto_response" value="0" <?php echo !$info['ticket_auto_response']?'checked="checked"':''; ?> >
 
-                <?php echo __('<strong>Disable</strong> for this Department'); ?>
+                <?php echo __('Disable for this Department'); ?>
                 </label>
                 <i class="help-tip icon-question-sign" href="#new_ticket"></i>
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('New Message');?>:
             </td>
             <td>
@@ -245,12 +247,12 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
             </td>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Auto-Response Email'); ?>:
             </td>
             <td>
                 <span>
-                <select name="autoresp_email_id">
+                <select name="autoresp_email_id" class="form-control-sm">
                     <option value="0" selected="selected">&mdash; <?php echo __('Department Email'); ?> &mdash;</option>
                     <?php
                     $sql='SELECT email_id,email,name FROM '.EMAIL_TABLE.' email ORDER by name';
@@ -271,19 +273,19 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
                 </span>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Alerts and Notices'); ?>:</strong>
-                <i class="help-tip icon-question-sign" href="#group_membership"></i></em>
+                <?php echo __('Alerts and Notices'); ?>:
+                <i class="help-tip icon-question-sign" href="#group_membership"></i>
             </th>
         </tr>
         <tr>
-            <td width="180">
+            <td>
                 <?php echo __('Recipients'); ?>:
             </td>
             <td>
                 <span>
-                <select name="group_membership">
+                <select name="group_membership" class="form-control-sm">
 <?php foreach (array(
     Dept::ALERTS_DISABLED =>        __("No one (disable Alerts and Notices)"),
     Dept::ALERTS_DEPT_ONLY =>       __("Department members only"),
@@ -298,16 +300,16 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
                 </span>
             </td>
         </tr>
-        <tr>
+        <tr class="table-heading">
             <th colspan="2">
-                <em><strong><?php echo __('Department Signature'); ?></strong>:
+                <?php echo __('Department Signature'); ?>:
                 <span class="error">&nbsp;<?php echo $errors['signature']; ?></span>
-                <i class="help-tip icon-question-sign" href="#department_signature"></i></em>
+                <i class="help-tip icon-question-sign" href="#department_signature"></i>
             </th>
         </tr>
         <tr>
             <td colspan=2>
-                <textarea class="richtext no-bar" name="signature" cols="21"
+                <textarea class="form-control-sm richtext no-bar" name="signature" cols="21"
                     rows="5" style="width: 60%;"><?php echo $info['signature']; ?></textarea>
             </td>
         </tr>
@@ -315,32 +317,30 @@ $info = Format::htmlchars(($errors && $_POST) ? $_POST : $info);
 </table>
 </div>
 
-<div id="access" class="hidden tab_content">
-  <table class="two-column table" width="100%">
+<div id="deptAccess" class="tab-pane" role="tabpanel">
+  <table class="table table-condensed">
     <tbody>
-        <tr class="header" id="primary-members">
+        <tr class="table-heading" id="primary-members">
             <td colspan="2">
                 <?php echo __('Department Members'); ?>
-                <div><small>
-                <?php echo __('Agents who are primary members of this department'); ?>
-                </small></div>
+
             </td>
         </tr>
         <?php
         if (!count($dept->members)) { ?>
-        <tr><td colspan=2><em><?php
+        <tr><td colspan=2><?php
             echo __('Department does not have primary members'); ?>
-           </em> </td>
+           </td>
         </tr>
         <?php
         } ?>
      </tbody>
      <tbody>
-        <tr class="header" id="extended-access-members">
+        <tr class="table-heading" id="extended-access-members">
             <td colspan="2">
-                <div><small>
+                <div>
                 <?php echo __('Agents who have extended access to this department'); ?>
-                </small></div>
+                </div>
             </td>
         </tr>
 <?php
@@ -350,8 +350,7 @@ foreach ($dept->getMembers() as $member) {
 } ?>
       <tr id="add_extended_access">
         <td colspan="2">
-          <i class="icon-plus-sign"></i>
-          <select id="add_access" data-quick-add="staff">
+          <select id="add_access" class="form-control-sm" data-quick-add="staff">
             <option value="0">&mdash; <?php echo __('Select Agent');?> &mdash;</option>
             <?php
             foreach ($agents as $id=>$name) {
@@ -360,7 +359,7 @@ foreach ($dept->getMembers() as $member) {
             ?>
             <option value="0" data-quick-add>&mdash; <?php echo __('Add New');?> &mdash;</option>
           </select>
-          <button type="button" class="action-button">
+          <button type="button" class="btn btn-sm btn-outline-success">
             <?php echo __('Add'); ?>
           </button>
         </td>
@@ -372,7 +371,7 @@ foreach ($dept->getMembers() as $member) {
           <input type="hidden" data-name="members[]" value="" />
         </td>
         <td>
-          <select data-name="member_role" data-quick-add="role">
+          <select data-name="member_role" class="form-control-sm" data-quick-add="role">
             <option value="0">&mdash; <?php echo __('Select Role');?> &mdash;</option>
             <?php
             foreach (Role::getRoles() as $id=>$name) {
@@ -393,15 +392,15 @@ foreach ($dept->getMembers() as $member) {
     </tbody>
   </table>
 </div>
-
-<p style="text-align:center">
-    <input type="submit" name="submit" value="<?php echo $submit_text; ?>">
+    </div>
+<p style="text-align:left">
+    <button type="submit" class="btn btn-sm btn-outline-primary" name="submit" value="<?php echo $submit_text; ?>"><?php echo $submit_text; ?></button>
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>"
         onclick='window.location.href="?"'>
 </p>
 </form>
-
+</div>
 <script type="text/javascript">
 var addAccess = function(staffid, name, role, alerts, primary, error) {
 

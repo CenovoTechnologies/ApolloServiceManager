@@ -4,7 +4,8 @@ $TZ_ALLOW_DEFAULT = isset($TZ_ALLOW_DEFAULT) ? $TZ_ALLOW_DEFAULT : true;
 $TZ_PLACEHOLDER = @$TZ_PLACEHOLDER ?: __('System Default');
 $TZ_TIMEZONE = @$TZ_TIMEZONE ?: '';
 ?>
-<select name="<?php echo $TZ_NAME; ?>" id="timezone-dropdown"
+
+<select name="<?php echo $TZ_NAME; ?>" class="form-control" id="timezone-dropdown"
         data-placeholder="<?php echo $TZ_PLACEHOLDER; ?>">
 <?php if ($TZ_ALLOW_DEFAULT) { ?>
         <option value=""></option>
@@ -16,7 +17,7 @@ $TZ_TIMEZONE = @$TZ_TIMEZONE ?: '';
         ?>><?php echo str_replace('/',' / ',$zone); ?></option>
 <?php } ?>
     </select>
-    <button type="button" class="action-button" onclick="javascript:
+    <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:
 $('head').append($('<script>').attr('src', '<?php
     echo ROOT_PATH; ?>js/jstz.min.js'));
 var recheck = setInterval(function() {
@@ -33,7 +34,7 @@ return false;" style="vertical-align:middle"><i class="icon-map-marker"></i> <?p
 $(function() {
     $('#timezone-dropdown').select2({
         allowClear: <?php echo $TZ_ALLOW_DEFAULT ? 'true' : 'false'; ?>,
-        width: '300px'
+        width: '73%'
     });
 });
 </script>

@@ -19,7 +19,7 @@ if ($info['error']) {
 } elseif ($info['msg']) {
     echo sprintf('<p id="msg_notice">%s</p>', $info['msg']);
 } ?>
-<div><p id="msg_info"><i class="icon-info-sign"></i>&nbsp;<?php
+<div><p id="msg_info" class="alert alert-info" role="alert"><i class="icon-info-sign"></i>&nbsp;<?php
 echo sprintf(__(
 'Complete the form below to create a user account for <b>%s</b>.'
 ), Format::htmlchars($user->getName()->getOriginal())
@@ -29,17 +29,17 @@ echo sprintf(__(
     <form method="post" class="user"
         action="#users/<?php echo $user->getId(); ?>/register">
         <input type="hidden" name="id" value="<?php echo $user->getId(); ?>" />
-        <table width="100%">
+        <table class="table table-condensed">
         <tbody>
             <tr>
                 <th colspan="2">
-                    <em><strong><?php echo __('User Account Login'); ?></strong></em>
+                    <strong><?php echo __('User Account Login'); ?></strong>
                 </th>
             </tr>
             <tr>
-                <td><?php echo __('Authentication Sources'); ?>:</td>
+                <td style="width:32%"><?php echo __('Authentication Sources'); ?>:</td>
                 <td>
-            <select name="backend" id="backend-selection" onchange="javascript:
+            <select name="backend" id="backend-selection" class="form-control" onchange="javascript:
                 if (this.value != '' && this.value != 'client') {
                     $('#activation').hide();
                     $('#password').hide();
@@ -64,11 +64,11 @@ echo sprintf(__(
                 </td>
             </tr>
             <tr>
-                <td width="180">
+                <td>
                     <?php echo __('Username'); ?>:
                 </td>
                 <td>
-                    <input type="text" size="35" name="username" value="<?php echo $info['username'] ?: $user->getEmail(); ?>">
+                    <input type="text" size="35" name="username"  class="form-control" value="<?php echo $info['username'] ?: $user->getEmail(); ?>">
                     &nbsp;<span class="error">&nbsp;<?php echo $errors['username']; ?></span>
                 </td>
             </tr>
@@ -79,7 +79,7 @@ echo sprintf(__(
                     <?php echo __('Status'); ?>:
                 </td>
                 <td>
-                  <input type="checkbox" id="sendemail" name="sendemail" value="1"
+                  <input type="checkbox" class="form-check-input" id="sendemail" name="sendemail" value="1"
                     <?php echo $info['sendemail'] ? 'checked="checked"' :
                     ''; ?> ><?php echo sprintf(__(
                     'Send account activation email to %s.'), $user->getEmail()); ?>
@@ -94,7 +94,7 @@ echo sprintf(__(
                     <?php echo __('Temporary Password'); ?>:
                 </td>
                 <td>
-                    <input type="password" size="35" name="passwd1" value="<?php echo $info['passwd1']; ?>">
+                    <input type="password" class="form-control" size="35" name="passwd1" value="<?php echo $info['passwd1']; ?>">
                     &nbsp;<span class="error">&nbsp;<?php echo
                     $errors['passwd1']; ?></span>
                 </td>
@@ -104,7 +104,7 @@ echo sprintf(__(
                    <?php echo __('Confirm Password'); ?>:
                 </td>
                 <td>
-                    <input type="password" size="35" name="passwd2" value="<?php echo $info['passwd2']; ?>">
+                    <input type="password" class="form-control" size="35" name="passwd2" value="<?php echo $info['passwd2']; ?>">
                     &nbsp;<span class="error">&nbsp;<?php echo $errors['passwd2']; ?></span>
                 </td>
             </tr>
@@ -113,11 +113,11 @@ echo sprintf(__(
                     <?php echo __('Password Change'); ?>:
                 </td>
                 <td colspan=2>
-                    <input type="checkbox" name="pwreset-flag" value="1" <?php
+                    <input type="checkbox" class="form-check-input" name="pwreset-flag" value="1" <?php
                         echo $info['pwreset-flag'] ?  'checked="checked"' : ''; ?>>
                         <?php echo __('Require password change on login'); ?>
                     <br/>
-                    <input type="checkbox" name="forbid-pwreset-flag" value="1" <?php
+                    <input type="checkbox" class="form-check-input" name="forbid-pwreset-flag" value="1" <?php
                         echo $info['forbid-pwreset-flag'] ?  'checked="checked"' : ''; ?>>
                         <?php echo __('User cannot change password'); ?>
                 </td>
@@ -125,8 +125,8 @@ echo sprintf(__(
         </tbody>
         <tbody>
             <tr>
-                <th colspan="2"><em><strong><?php echo
-                    __('User Preferences'); ?></strong></em></th>
+                <th colspan="2"><strong><?php echo
+                    __('User Preferences'); ?></strong></th>
             </tr>
                 <td><?php echo __('Time Zone'); ?>:</td>
                 <td>
@@ -141,12 +141,9 @@ echo sprintf(__(
         </table>
         <hr>
         <p class="full-width">
-            <span class="buttons pull-left">
-                <input type="reset" value="<?php echo __('Reset'); ?>">
-                <input type="button" name="cancel" class="close" value="<?php echo __('Cancel'); ?>">
-            </span>
-            <span class="buttons pull-right">
-                <input type="submit" value="<?php echo __('Create Account'); ?>">
+            <span class="btn-group-sm pull-right">
+                <button type="reset" class="btn btn-default" value="<?php echo __('Reset'); ?>">Reset</button>
+                <button type="submit" class="btn btn-outline-primary" value="<?php echo __('Create Account'); ?>">Create Account</button>
             </span>
          </p>
     </form>

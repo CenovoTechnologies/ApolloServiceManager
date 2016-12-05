@@ -39,20 +39,20 @@ $pageNav->setURL('slas.php', $qs);
 $showing = $pageNav->showing().' '._N('Service Level Agreement', 'Service Level Agreements', $count);
 $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
 ?>
+<div class="col-sm-12 col-md-12">
 <form action="slas.php" method="POST" name="slas">
     <div class="sticky bar opaque">
         <div class="content">
-            <div class="pull-left flush-left">
+            <div class="pull-left">
                 <h2><?php echo __('Service Level Agreements');?></h2>
             </div>
-            <div class="pull-right flush-right">
+            <div class="pull-right ">
                 <a href="slas.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New SLA Plan');?></a>
-                <span class="action-button" data-dropdown="#action-dropdown-more">
-                    <i class="icon-caret-down pull-right"></i>
+                <div class="btn-group">
+                <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
                     <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
                 </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul id="actions">
+                    <ul id="actions" class="bleed-left dropdown-menu">
                         <li>
                             <a class="confirm" data-name="enable" href="slas.php?a=enable">
                                 <i class="icon-ok-sign icon-fixed-width"></i>
@@ -80,13 +80,13 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
 <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="38%"><a <?php echo $name_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
             <th width="8%"><a <?php echo $status_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=status"><?php echo __('Status');?></a></th>
-            <th><a <?php echo $period_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=period"><?php echo __('Grace Period (hrs)');?></a></th>
+            <th width="20%"><a <?php echo $period_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=period"><?php echo __('Grace Period (hrs)');?></a></th>
             <th width="15%" nowrap><a <?php echo $created_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
             <th width="20%" nowrap><a <?php echo $updated_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
         </tr>
@@ -135,9 +135,9 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
         <td colspan="6">
             <?php if ($count) { ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No SLA plans found' /* SLA is abbreviation for Service Level Agreement */);
             } ?>
@@ -154,7 +154,7 @@ if ($count): //Show options..
 endif;
 ?>
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>

@@ -80,24 +80,25 @@ $qstr .= '&amp;order='.($order=='-' ? 'ASC' : 'DESC');
 // add limits.
 $agents->limit($pageNav->getLimit())->offset($pageNav->getStart());
 ?>
+<div class="col-sm-12 col-md-12">
 <div id="basic_search">
     <div style="min-height:25px;">
         <div class="pull-left">
             <form action="staff.php" method="GET" name="filter">
                 <input type="hidden" name="a" value="filter">
-                <select name="did" id="did">
+                <select name="did" id="did" class="form-control-sm">
                     <option value="0">&mdash;
                         <?php echo __( 'All Departments');?> &mdash;</option>
                     <?php if (($depts=Dept::getDepartments())) { foreach ($depts as $id=> $name) { $sel=($_REQUEST['did'] && $_REQUEST['did']==$id)?'selected="selected"':''; echo sprintf('
                     <option value="%d" %s>%s</option>',$id,$sel,$name); } } ?>
                 </select>
-                <select name="tid" id="tid">
+                <select name="tid" id="tid" class="form-control-sm">
                     <option value="0">&mdash;
                         <?php echo __( 'All Teams');?> &mdash;</option>
                     <?php if (($teams=Team::getTeams())) { foreach ($teams as $id=> $name) { $sel=($_REQUEST['tid'] && $_REQUEST['tid']==$id)?'selected="selected"':''; echo sprintf('
                     <option value="%d" %s>%s</option>',$id,$sel,$name); } } ?>
                 </select>
-                <input type="submit" name="submit" class="button muted" value="<?php echo __('Apply');?>" />
+                <button type="submit" name="submit" class="btn btn-sm muted" value="<?php echo __('Apply');?>" >Apply</button>
             </form>
         </div>
     </div>
@@ -113,12 +114,11 @@ $agents->limit($pageNav->getLimit())->offset($pageNav->getStart());
                     <i class="icon-plus-sign"></i>
                     <?php echo __( 'Add New Agent'); ?>
                 </a>
-                <span class="action-button" data-dropdown="#action-dropdown-more">
-                <i class="icon-caret-down pull-right"></i>
-                <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
-                </span>
-                <div id="action-dropdown-more" class="action-dropdown anchor-right">
-                    <ul id="actions">
+                <div class="btn-group">
+                    <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
+                        <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
+                    </span>
+                    <ul id="actions" class="bleed-left dropdown-menu">
                         <li>
                             <a class="confirm" data-form-id="mass-actions" data-name="enable" href="staff.php?a=enable">
                                 <i class="icon-ok-sign icon-fixed-width"></i>
@@ -167,9 +167,9 @@ $agents->limit($pageNav->getLimit())->offset($pageNav->getStart());
  <?php csrf_token(); ?>
  <input type="hidden" name="do" value="mass_process" >
  <input type="hidden" id="action" name="a" value="" >
- <table class="list" border="0" cellspacing="1" cellpadding="0" width="940">
+ <table class="table table-condensed" border="0" cellspacing="1" cellpadding="0">
     <thead>
-        <tr>
+        <tr class="table-heading">
             <th width="4%">&nbsp;</th>
             <th width="28%"><a <?php echo $name_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
             <th width="16%"><a <?php echo $username_sort; ?> href="staff.php?<?php echo $qstr; ?>&sort=username"><?php echo __('Username');?></a></th>
@@ -213,9 +213,9 @@ $agents->limit($pageNav->getLimit())->offset($pageNav->getStart());
         <td colspan="8">
             <?php if ($count) { ?>
             <?php echo __('Select');?>:&nbsp;
-            <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
-            <a id="selectNone" href="#ckb"><?php echo __('None');?></a>&nbsp;&nbsp;
-            <a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a>&nbsp;&nbsp;
+            <button class="btn btn-sm btn-secondary"><a id="selectAll" href="#ckb"><?php echo __('All');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectNone" href="#ckb"><?php echo __('None');?></a></button>
+            <button class="btn btn-sm btn-secondary"><a id="selectToggle" href="#ckb"><?php echo __('Toggle');?></a></button>
             <?php }else{
                 echo __('No agents found!');
             } ?>
@@ -229,7 +229,7 @@ if ($count) { //Show options..
 }
 ?>
 </form>
-
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>
