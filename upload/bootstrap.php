@@ -318,9 +318,9 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('THIS_VERSION', 'v1.10-rc.3'); // Set by installer
+define('THIS_VERSION', 'v1.0.2'); // Set by installer
 define('GIT_VERSION', '907ec36'); // Set by installer
-define('MAJOR_VERSION', '1.10');
+define('MAJOR_VERSION', '1.0');
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))

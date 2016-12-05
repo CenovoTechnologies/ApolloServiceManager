@@ -370,7 +370,7 @@ class DynamicForm extends VerySimpleModel {
             .' FROM '.FORM_ENTRY_TABLE.' entry
             JOIN '.FORM_ANSWER_TABLE.' ans ON ans.entry_id = entry.id
             JOIN '.FORM_FIELD_TABLE." field ON field.id=ans.field_id
-            WHERE entry.object_type='$object_type' GROUP BY entry.object_id";
+            WHERE entry.object_type IN ('$object_type') GROUP BY entry.object_id";
     }
 
     // Materialized View for custom data (MySQL FlexViews would be nice)
