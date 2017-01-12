@@ -81,11 +81,11 @@ if ($count) { ?>
         $assigned='';
         if ($task->staff)
             $assigned=sprintf('<span class="Icon staffAssigned">%s</span>',
-                    Format::truncate($task->staff->getName(),40));
+                    $task->staff->getName());
 
         $status = $task->isOpen() ? '<strong>open</strong>': 'closed';
 
-        $title = Format::htmlchars(Format::truncate($task->getTitle(),40));
+        $title = $task->getTitle();
         $threadcount = $task->getThread() ?
             $task->getThread()->getNumEntries() : 0;
 
@@ -107,7 +107,7 @@ if ($count) { ?>
                 data-preview="#tasks/<?php echo $id; ?>/preview"
                 ><?php echo $task->getNumber(); ?></a></td>
             <td align="center" nowrap><?php echo
-            Format::datetime($task->created); ?></td>
+            $task->created; ?></td>
             <td><?php echo $status; ?></td>
             <td>
                 <?php
@@ -129,7 +129,7 @@ if ($count) { ?>
                         echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                 ?>
             </td>
-            <td><?php echo Format::truncate($task->dept->getName(), 40); ?></td>
+            <td><?php echo $task->dept->getName(); ?></td>
             <td>&nbsp;<?php echo $assigned; ?></td>
         </tr>
    <?php
@@ -180,8 +180,7 @@ $(function() {
         $.dialog(url, [201], function (xhr) {
             var tid = parseInt(xhr.responseText);
             if (tid) {
-                var url = 'ajax.php/tickets/'+<?php echo $ticket->getId();
-                ?>+'/tasks';
+                //var url = 'ajax.php/tickets/'+<?php echo $ticket->getId();?>+'/tasks';
                 var $container = $('div#task_content');
                 $container.load(url+'/'+tid+'/view', function () {
                     $('.tip_box').remove();

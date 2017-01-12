@@ -17,7 +17,7 @@ if ($user && $cfg->isAvatarsEnabled())
 <div class="thread-entry <?php
     echo $entry->isSystem() ? 'system' : $entryTypes[$entry->type]; ?> <?php if ($avatar) echo 'avatar'; ?>">
 <?php if ($avatar) { ?>
-    <span class="<?php echo ($entry->type == 'M') ? 'pull-right' : 'pull-left'; ?> avatar">
+    <span class="pull-left avatar">
 <?php echo $avatar; ?>
     </span>
 <?php } ?>
@@ -46,7 +46,7 @@ if ($user && $cfg->isAvatarsEnabled())
         <span class="textra light">
 <?php   if ($entry->flags & ThreadEntry::FLAG_EDITED) { ?>
             <span class="label label-bare" title="<?php
-            echo sprintf(__('Edited on %s by %s'), Format::datetime($entry->updated),
+            echo sprintf(__('Edited on %s by %s'), $entry->updated,
                 ($editor = $entry->getEditor()) ? $editor->getName() : '');
                 ?>"><?php echo __('Edited'); ?></span>
 <?php   }
@@ -64,13 +64,13 @@ if ($user && $cfg->isAvatarsEnabled())
                 datetime="%s" data-toggle="tooltip" title="%s">%s</time></a>',
                 $entry->id,
                 $timeFormat ? 'class="relative"' : '',
-                date(DateTime::W3C, Misc::db2gmtime($entry->created)),
-                Format::daydatetime($entry->created),
-                $timeFormat ? $timeFormat($entry->created) : Format::datetime($entry->created)
+                date(DateTime::W3C, $entry->created),
+                $entry->created,
+                $timeFormat ? $timeFormat($entry->created) : $entry->created
             )
         ); ?>
-        <span style="max-width:400px" class="faded title truncate"><?php
-            echo $entry->title; ?></span>
+        <span class="faded title truncate"><?php
+            echo $entry->title; ?>
         </span>
     </div>
     <div class="thread-body no-pjax">

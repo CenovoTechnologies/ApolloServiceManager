@@ -24,9 +24,9 @@ do {
 <dt>
     <a href="#"><i class="icon-copy"></i>
     <strong><?php if ($E->title)
-        echo Format::htmlchars($E->title).' — '; ?></strong>
+        echo $E->title.' — '; ?></strong>
     <em><?php if (strpos($E->updated, '0000-') === false)
-        echo sprintf(__('Edited on %s by %s'), Format::datetime($E->updated),
+        echo sprintf(__('Edited on %s by %s'), $E->updated,
             ($editor = $E->getEditor()) ? $editor->getName() : '');
     else
         echo __('Original'); ?></em>

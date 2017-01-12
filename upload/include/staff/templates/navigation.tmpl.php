@@ -3,7 +3,7 @@
 if(($tabs=$nav->getTabs()) && is_array($tabs)){
     foreach($tabs as $name =>$tab) {
         if ($tab['href'][0] != '/')
-            echo "<div class='card'>";
+            echo "<div class='card card-body'>";
             echo "<div role='tab' id='heading.$name'>";
         echo sprintf('<li><a class="btn btn-block %s" data-toggle="%s" data-parent="#nav" href="%s" aria-expanded="%s" aria-controls="%s">%s</a></li>',
             @$tab['class'] ?: '',

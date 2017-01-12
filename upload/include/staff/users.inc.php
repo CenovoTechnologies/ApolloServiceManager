@@ -198,8 +198,8 @@ else
                     ?>
                 </td>
                 <td><?php echo $status; ?></td>
-                <td><?php echo Format::date($U['created']); ?></td>
-                <td><?php echo Format::datetime($U['updated']); ?>&nbsp;</td>
+                <td><?php echo $U['created']; ?></td>
+                <td><?php echo $U['updated']; ?>&nbsp;</td>
                </tr>
 <?php   } //end of foreach. ?>
     </tbody>
@@ -254,7 +254,7 @@ $(function() {
             var url = window.location.href;
             if (user && user.id)
                 url = 'users.php?id='+user.id;
-            $.pjax({url: url, container: '#pjax-container'})
+            $.pjax({url: url, container: '#pjax-container'});
             return false;
          });
 

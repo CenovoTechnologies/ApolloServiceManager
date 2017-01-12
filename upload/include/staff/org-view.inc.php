@@ -62,11 +62,11 @@ if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path')
             <table border="0" cellspacing="" cellpadding="4" width="100%">
                 <tr>
                     <th width="30%"><?php echo __('Created'); ?>:</th>
-                    <td><?php echo Format::datetime($org->getCreateDate()); ?></td>
+                    <td><?php echo $org->getCreateDate(); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo __('Last Updated'); ?>:</th>
-                    <td><?php echo Format::datetime($org->getUpdateDate()); ?></td>
+                    <td><?php echo $org->getUpdateDate(); ?></td>
                 </tr>
             </table>
         </td>
@@ -77,30 +77,30 @@ if(!defined('OSTSCPINC') || !$thisstaff || !is_object($org)) die('Invalid path')
 <ul class="nav nav-tabs" id="orgtabs" role="tablist">
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#users" role="tab"><i
     class="icon-user"></i>&nbsp;<?php echo __('Users'); ?></a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tickets" role="tab"><i
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#org-tickets" role="tab"><i
     class="icon-list-alt"></i>&nbsp;<?php echo __('Tickets'); ?></a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notes" role="tab"><i
     class="icon-pushpin"></i>&nbsp;<?php echo __('Notes'); ?></a></li>
 </ul>
 <div id="orgtabs_container" class="tab-content">
-<div class="tab-pane active" id="users" role="tabpanel">
-<?php
-include STAFFINC_DIR . 'templates/users.tmpl.php';
-?>
-</div>
-<div class="tab-pane" id="tickets" role="tabpanel">
-<?php
-include STAFFINC_DIR . 'templates/tickets.tmpl.php';
-?>
-</div>
+    <div class="tab-pane active" id="users" role="tabpanel">
+    <?php
+    include STAFFINC_DIR . 'templates/users.tmpl.php';
+    ?>
+    </div>
+    <div class="tab-pane" id="org-tickets" role="tabpanel">
+    <?php
+    include STAFFINC_DIR . 'templates/tickets.tmpl.php';
+    ?>
+    </div>
 
-<div class="tab-pane" id="notes" role="tabpanel">
-<?php
-$notes = QuickNote::forOrganization($org);
-$create_note_url = 'orgs/'.$org->getId().'/note';
-include STAFFINC_DIR . 'templates/notes.tmpl.php';
-?>
-</div>
+    <div class="tab-pane" id="notes" role="tabpanel">
+    <?php
+    $notes = QuickNote::forOrganization($org);
+    $create_note_url = 'orgs/'.$org->getId().'/note';
+    include STAFFINC_DIR . 'templates/notes.tmpl.php';
+    ?>
+    </div>
 </div>
 
 <script type="text/javascript">

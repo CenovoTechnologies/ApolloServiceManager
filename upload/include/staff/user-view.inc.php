@@ -149,19 +149,19 @@ if ($thisstaff->hasPerm(User::PERM_EDIT)) { ?>
 <br>
 <div class="clear"></div>
 <ul class="nav nav-tabs" id="user-view-tabs" role="tablist">
-    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tickets" role="tab"><i
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tickets-tab" role="tab"><i
     class="icon-list-alt"></i>&nbsp;<?php echo __('User Tickets'); ?></a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#notes" role="tab"><i
     class="icon-pushpin"></i>&nbsp;<?php echo __('Notes'); ?></a></li>
 </ul>
-<div id="user-view-tabs_container" class="tab-content">
-    <div id="tickets" class="tab-pane active" role="tabpanel">
+<div class="tab-content">
+    <div id="tickets-tab" class="tab-pane active" role="tabpanel">
     <?php
     include STAFFINC_DIR . 'templates/tickets.tmpl.php';
     ?>
     </div>
 
-    <div class="tab-pane" id="notes" role="tabpanel">
+    <div id="notes" class="tab-pane" role="tabpanel">
     <?php
     $notes = QuickNote::forUser($user);
     $create_note_url = 'users/'.$user->getId().'/note';

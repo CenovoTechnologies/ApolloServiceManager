@@ -181,7 +181,7 @@ a time {
   height: 25px;
 }
 
-.card {
+.card-body {
     background-color: #eeeeee;
     border: none;
 }
@@ -305,6 +305,30 @@ a time {
     visibility: visible;
     opacity: 1;
     transition-delay: 0.25s;
+}
+
+.sidebar-heading {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom:1px solid #bebebe;
+    border-top:1px solid #bebebe;
+}
+
+.sidebar-label {
+
+}
+
+.sidebar-detail {
+    padding-top:0;
+    padding-bottom: 0;
+}
+
+.spacer {
+   padding: 0.5em;
+}
+
+.nav-no-padding {
+    padding: 8px 0;
 }
 
 .ieshadow {
@@ -983,10 +1007,6 @@ a#post-note:hover {
 .thread-entry.avatar {
     margin-left: 60px;
 }
-.thread-entry.message.avatar {
-    margin-right: 60px;
-    margin-left: 0;
-}
 .thread-entry > .avatar {
     margin-left: -60px;
     display:inline-block;
@@ -995,10 +1015,6 @@ a#post-note:hover {
 }
 .avatar {
     border-radius: 12%;
-}
-.thread-entry.message > .avatar {
-    margin-left: initial;
-    margin-right: -60px;
 }
 img.avatar {
     border-radius: inherit;
@@ -1043,15 +1059,12 @@ img.avatar {
 .thread-entry.message .header {
     background:#C3D9FF;
 }
-.thread-entry.avatar.message .header:after {
-    border-left: 7px solid #C3D9FF;
-    margin-right: 1px;
-}
 
 .thread-entry.response .header {
     background:#FFE0B3;
 }
 .thread-entry.avatar.response .header:before,
+.thread-entry.avatar.message .header:before,
 .thread-entry.avatar.note .header:before {
     top: 7px;
     left: -8px;
@@ -1066,10 +1079,14 @@ img.avatar {
 .thread-entry.avatar.response .header:before {
     border-right-color: #ccb3af;
 }
+.thread-entry.avatar.message .header:before {
+    border-right-color: #C3D9FF;
+}
 .thread-entry.avatar.note .header:before {
     border-right-color: #ccccb0;
 }
 .thread-entry.avatar.response .header:after,
+.thread-entry.avatar.message .header:after,
 .thread-entry.avatar.note .header:after {
     top: 7px;
     left: -8px;
@@ -1084,6 +1101,9 @@ img.avatar {
 }
 .thread-entry.avatar.note .header:after {
     border-right-color: #FFE;
+}
+.thread-entry.avatar.message .header:after {
+    border-right-color: #C3D9FF;
 }
 .thread-entry .header .title {
     max-width: 500px;
@@ -1795,7 +1815,7 @@ time.faq {
 }
 
 .row {
-    display: table-row;
+    margin-bottom:2px;
 }
 
 .row .span6 {
@@ -2703,7 +2723,6 @@ td.indented {
   width: 36px;
   height: 36px;
   margin-right: 10px;
-  background-image: url(../images/oscar-avatars.png);
   background-repeat: no-repeat;
   background-size: 180px 72px;
 }
