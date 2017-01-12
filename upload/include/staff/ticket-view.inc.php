@@ -337,7 +337,7 @@ if($ticket->isOverdue())
             </div>
             <div class="tab-pane card-block" id="close-incident" role="tabpanel">
                 <div class="col-md-8">
-
+                    <strong>Closing Action Items</strong>
                 </div>
                 <div class="col-md-4" style="padding-right:0;">
                     <div class="d-inline">
