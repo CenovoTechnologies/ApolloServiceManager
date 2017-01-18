@@ -162,7 +162,7 @@ class ModelMeta implements ArrayAccess {
         $constraint = array();
         if (isset($j['reverse'])) {
             list($fmodel, $key) = explode('.', $j['reverse']);
-            // NOTE: It's ok if the forein meta data is not yet inspected.
+            // NOTE: It's ok if the foreign meta data is not yet inspected.
             $info = $fmodel::$meta['joins'][$key];
             if (!is_array($info['constraint']))
                 throw new OrmConfigurationException(sprintf(__(
@@ -176,7 +176,7 @@ class ModelMeta implements ArrayAccess {
             if (!isset($j['list']))
                 $j['list'] = true;
             if (!isset($j['null']))
-                // By default, reverse releationships can be empty lists
+                // By default, reverse relationships can be empty lists
                 $j['null'] = true;
         }
         else {
@@ -383,7 +383,7 @@ class VerySimpleModel {
             get_class($this), $field));
     }
     function __get($field) {
-        return $this->get($field, null);
+        return $this->get($field, false);
     }
 
     function getByPath($path) {
@@ -1705,7 +1705,7 @@ implements IteratorAggregate {
         if ($this->map) {
             if ($this->model != $this->map[0][1])
                 throw new OrmException('Internal select_related error');
-
+            $model = $this->model;
             $offset = 0;
             foreach ($this->map as $info) {
                 @list($fields, $model_class, $path) = $info;

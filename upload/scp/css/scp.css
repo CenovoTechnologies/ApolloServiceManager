@@ -1856,7 +1856,6 @@ time.faq {
   margin-left: 45px;
 }
 
-input[type="submit"],
 input[type="reset"],
 input[type="button"],
 .action-button,
@@ -1990,7 +1989,7 @@ select + .button {
   text-decoration: none;
 }
 
-button[type=submit], input[type="submit"], .primary.button {
+.primary.button {
     font-weight: normal;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.45) inset;
     background-color: rgba(0,0,0,0.07);
@@ -2011,7 +2010,7 @@ input[type=reset]:hover, input[type=reset]:active {
     background-color: rgba(0, 0, 0, 0.08);
 }
 
-button[type=submit]:hover, input[type=submit]:hover, input[type=submit]:active {
+input[type=submit]:hover, input[type=submit]:active {
   color: white;
   box-shadow: 0 0 0 2px rgba(0,0,0,0.7) inset;
   background-color: #888;
@@ -2019,7 +2018,7 @@ button[type=submit]:hover, input[type=submit]:hover, input[type=submit]:active {
 }
 
 .button:disabled, .action-button:disabled,
-button[type=submit]:disabled, input[type=submit]:disabled {
+input[type=submit]:disabled {
   opacity: 0.6;
 }
 

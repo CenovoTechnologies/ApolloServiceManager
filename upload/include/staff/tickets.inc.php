@@ -456,8 +456,7 @@ $tickets->constrain(array('lock' => array(
 <?php csrf_token(); ?>
  <input type="hidden" name="a" value="mass_process" >
  <input type="hidden" name="do" id="action" value="" >
- <input type="hidden" name="status" value="<?php echo
- Format::htmlchars($_REQUEST['status'], true); ?>" >
+ <input type="hidden" name="status" value="<?php echo $_REQUEST['status'], true; ?>" >
  <table class="table table-condensed table-bordered table-hover table-striped" border="0" cellspacing="1" cellpadding="2" style="width:100%">
     <thead>
         <tr class="table-heading">

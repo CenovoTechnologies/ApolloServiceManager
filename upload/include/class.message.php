@@ -142,7 +142,7 @@ class SimpleMessage implements Message {
     }
 
     function __toString() {
-        return $this->msg;
+        return (string) $this->msg;
     }
 }
 

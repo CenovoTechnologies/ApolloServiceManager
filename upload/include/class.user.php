@@ -1252,14 +1252,14 @@ class UserAccountStatus {
     function __toString() {
 
         if ($this->isLocked())
-            return __('Locked (Administrative)');
+            return (string) __('Locked (Administrative)');
 
         if (!$this->isConfirmed())
-            return __('Locked (Pending Activation)');
+            return (string) __('Locked (Pending Activation)');
 
         // ... Other flags here (password reset, etc).
 
-        return __('Active (Registered)');
+        return (string) __('Active (Registered)');
     }
 }
 

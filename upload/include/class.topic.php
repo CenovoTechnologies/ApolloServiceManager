@@ -271,7 +271,7 @@ implements TemplateVariable {
     }
 
     function __toString() {
-        return $this->getFullName();
+        return (string) $this->getFullName();
     }
 
     /*** Static functions ***/

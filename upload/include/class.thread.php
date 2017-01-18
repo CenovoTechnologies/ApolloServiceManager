@@ -2427,6 +2427,17 @@ implements TemplateVariable {
         return $entries->first();
     }
 
+    function getFirstMessage() {
+        $entries = clone $this->getEntries();
+        $entries->filter(array(
+            'type' => MessageThreadEntry::ENTRY_TYPE
+        ));
+
+        $entries->order_by('id');
+
+        return $entries->first();
+    }
+
     function getLastEmailMessage($criteria=array()) {
 
         $criteria += array(

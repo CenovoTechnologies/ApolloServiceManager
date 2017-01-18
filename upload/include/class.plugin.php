@@ -551,8 +551,9 @@ abstract class Plugin {
         $sig = $P->getSignature();
         $info = array();
         $ignored = null;
+        $boolean = true;
         if ($r = dns_get_record($sig['hash'].'.'.self::$verify_domain.'.',
-            DNS_TXT, $ignored, $ignored, true)
+            DNS_TXT, $ignored, $ignored, $boolean)
         ) {
             foreach ($r as $rec) {
                 foreach (explode(';', $rec['txt']) as $kv) {

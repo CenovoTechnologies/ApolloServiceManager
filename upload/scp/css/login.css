@@ -4,7 +4,7 @@ input:focus {
     outline: none;
 }
 
-:-webkit-input-placeholder {
+.-webkit-input-placeholder {
     color:#888;
     font-style:italic;
 }

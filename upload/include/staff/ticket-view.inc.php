@@ -1,5 +1,7 @@
 <?php
 //Note that ticket obj is initiated in tickets.php.
+/** @var Staff $thisstaff */
+/** @var Ticket $ticket */
 if(!defined('OSTSCPINC') || !$thisstaff || !is_object($ticket) || !$ticket->getId()) die('Invalid path');
 
 //Make sure the staff is allowed to access the page.
@@ -18,6 +20,7 @@ $sla   = $ticket->getSLA();
 $lock  = $ticket->getLock();  //Ticket lock obj
 if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
     $lock = $ticket->acquireLock($thisstaff->getId());
+/** @var Lock $mylock */
 $mylock = ($lock && $lock->getStaffId() == $thisstaff->getId()) ? $lock : null;
 $id    = $ticket->getId();    //Ticket ID.
 
@@ -51,6 +54,27 @@ $unbannable=($emailBanned) ? BanList::includes($ticket->getEmail()) : false;
 if($ticket->isOverdue())
     $warn.='&nbsp;&nbsp;<span class="Icon overdueTicket">'.__('Marked overdue!').'</span>';
 
+$info=array();
+$info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
+
+if (!$info['topicId'])
+    $info['topicId'] = $cfg->getDefaultTopicId();
+
+$forms = array();
+if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
+    /** @var DynamicForm $F */
+    /** @var Topic $topic */
+    foreach ($topic->getForms() as $F) {
+        if (!$F->hasAnyVisibleFields())
+            continue;
+        if ($_POST) {
+            $F = $F->instanciate();
+            $F->isValidForClient();
+        }
+        $forms[] = $F;
+    }
+}
+
 ?>
 <div class="col-sm-12 col-md-12">
     <div class="sticky bar">
@@ -69,6 +93,7 @@ if($ticket->isOverdue())
                <?php // Status change options
                echo TicketStatus::status_options();
                // Assign
+               /** @var Ticket $ticket */
                if (($ticket->isOpen() || $ticket->isStarted() || $ticket->isResolved()) && $role->hasPerm(TicketModel::PERM_ASSIGN)) {?>
                    <div class="btn-group">
                        <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title=" <?php echo $ticket->isAssigned() ? __('Assign') : __('Reassign'); ?>">
@@ -123,6 +148,8 @@ if($ticket->isOverdue())
                    </a>
                    <?php
                }
+               /** @var Staff $thisstaff */
+               /** @var Role $role */
                if ($thisstaff->hasPerm(Email::PERM_BANLIST)
                    || $role->hasPerm(TicketModel::PERM_EDIT)
                    || ($dept && $dept->isManager($thisstaff))) { ?>
@@ -225,25 +252,59 @@ if($ticket->isOverdue())
         </div>
         <div class="tab-content">
             <div class="tab-pane card-block active" id="record-incident" role="tabpanel">
-                <form>
+                <form action="tickets.php?id=<?php echo $ticket->getId(); ?>&a=record" method="post" id="saveRecord"  enctype="multipart/form-data">
+                    <?php csrf_token(); ?>
+                    <input type="hidden" name="do" value="recordIncident">
+                    <input type="hidden" name="a" value="record">
+                    <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
                     <div class="col-md-8">
                         <div class="row">
-                            <label style="width:49%;">
-                                <input class="form-control" name="incident-customer-input" type="text" id="incident-service-input" placeholder="Customer">
+                            <label style="margin-bottom:0.1em;">
+                                <div class="input-group">
+                                    <input type="hidden" class="form-control" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
+                                    <input class="form-control required" name="user-name" type="text" id="client-name" aria-describedby="user-lookup"
+                                           value="<?php /** @var User $user */
+                                           echo $user->getName(); ?>  (<?php echo $user->getEmail(); ?>)" placeholder="Customer">
+                                    <span class="input-group-btn" id="user-lookup">
+                                        <a type="button" class="btn btn-secondary user-search" id="customer-lookup"
+                                           href="#" onclick="javascript:
+                                                $.userLookup('ajax.php/tickets/<?php echo $ticket->getId(); ?>/change-user',
+                                                function(user) {
+                                                $('input#user_id').val(user.id);
+                                                $('#client-name').text(user.name);
+                                                $('#client-email').text('<'+user.email+'>');
+                                                });
+                                                return false;">
+                                           <span class="icon-search"></span>
+                                        </a>
+                                    </span>
+                                </div>
                             </label>
+                        </div>
+                        <div class="row">
                             <label style="width:50%;">
-                                <input class="form-control" name="incident-source-input" type="text" id="incident-source-input" placeholder="Source">
+                                <select class="form-control required" name="source" type="text" id="source">
+                                    <option value="" selected >&mdash; <?php
+                                        echo __('Select Source');?> &mdash;</option>
+                                    <?php
+                                    $source = $info['source'] ?: 'Phone';
+                                    foreach (Ticket::getSources() as $k => $v) {
+                                        echo sprintf('<option value="%s" %s>%s</option>',
+                                            $k,
+                                            ($source == $k ) ? 'selected="selected"' : '',
+                                            $v);
+                                    }
+                                    ?>
+                                </select>
                             </label>
                         </div>
-                        <div class="row">
-                            <label style="width:100%;">
-                                <input class="form-control" name="incident-description-input" type="text" id="incident-description-input" placeholder="Description">
-                            </label>
-                        </div>
-                        <div class="row">
-                            <label style="width:100%;">
-                                <textarea class="form-control" name="incident-long-desc" type="text" id="incident-long-desc" placeholder="Detailed Description"></textarea>
-                            </label>
+                        <div id="dynamic-form">
+                            <?php
+                            foreach ($forms as $form) {
+                                print $form->getForm()->getMedia();
+                                include(STAFFINC_DIR .  'templates/dynamic-form-incident.tmpl.php');
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="col-md-4" style="padding-right:0;">
@@ -255,6 +316,9 @@ if($ticket->isOverdue())
                         </div>
                         <div class="row" style="padding:0 15px;">
                             <button class="btn btn-sm btn-secondary" style="width:100%" type="button" id="first-resolution-btn" title="First Contact Resolution">First Contact Resolution</button>
+                        </div>
+                        <div class="row" style="padding:0 15px;">
+                            <input class="btn btn-sm btn-outline-primary" style="width:100%" type="submit" id="record-submit" name="submit" value="<?php echo __('Save');?>">
                         </div>
                     </div>
                 </form>
@@ -414,11 +478,10 @@ if($ticket->isOverdue())
                             </tbody>
                         </table>
                     <?php } ?>
-                    <h4 class="card-title">Incident Title</h4>
-                    <p class="card-text"><?php $subject_field = TicketForm::getInstance()->getField('subject');
-                        echo $subject_field->display($ticket->getSubject()); ?></p>
-                    <h4 class="card-title">Incident Description</h4>
-                    <p class="card-text">Ticket description here.</p>
+                    <h4 class="card-title"><?php $subject_field = TicketForm::getInstance()->getField('subject');
+                        echo $subject_field->display($ticket->getSubject()); ?></h4>
+                    <p class="card-text"><?php $message_field = TicketForm::getInstance()->getField('message');
+                        echo $ticket->getFirstMessage(); ?></p>
                 </div>
             </div>
             <div class="tab-pane card-block" id="ticket-thread" role="tabpanel">
@@ -743,7 +806,7 @@ if($ticket->isOverdue())
         </div>
         <div class="flush-left">
             <h5><a href="tickets.php?id=<?php echo $ticket->getId(); ?>"
-                   title="<?php echo __('Reload'); ?>">
+                   title="<?php echo __('Incident'); ?>">
                     <?php echo sprintf(__('Ticket #%s'), $ticket->getNumber()); ?></a>
             </h5>
         </div>
@@ -969,6 +1032,56 @@ if($ticket->isOverdue())
     </form>
     <div class="clear"></div>
 </div>
+<div class="modal fade" id="chooseIncidentTmpl">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Choose Incident Template
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h5>
+            </div>
+            <div class="modal-body">
+                <label>
+                    <select name="topicId" class="form-control-sm" onchange="javascript:
+            var data = $(':input[name]', '#dynamic-form').serialize();
+            $.ajax(
+            'ajax.php/form/help-topic/' + this.value,{
+             data: data,
+             dataType: 'json',
+             success: function(json) {
+                $('#dynamic-form').empty().append(json.html);
+                $(document.head).append(json.media);
+             }
+             });">
+                        <?php
+                        if ($topics=Topic::getHelpTopics(false, false, true)) {
+                            if (count($topics) == 1)
+                                $selected = 'selected="selected"';
+                            else { ?>
+                                <option value="" selected >&mdash; <?php echo __('Select Incident Template'); ?> &mdash;</option>
+                            <?php                   }
+                            foreach($topics as $id =>$name) {
+                                echo sprintf('<option value="%d" %s %s>%s</option>',
+                                    $id, ($info['topicId']==$id)?'selected="selected"':'',
+                                    $selected, $name);
+                            }
+                            if (count($topics) == 1 && !$forms) {
+                                if (($T = Topic::lookup($id)))
+                                    $forms =  $T->getForms();
+                            }
+                        }
+                        ?>
+                    </select>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm');?></h3>
     <a class="close" href=""><i class="icon-remove-circle"></i></a>
@@ -1033,6 +1146,7 @@ $(function() {
         var tid = <?php echo $ticket->getOwnerId(); ?>;
         var cid = <?php echo $ticket->getOwnerId(); ?>;
         var url = 'ajax.php/'+$(this).attr('href').substr(1);
+        console.log(url);
         $.userLookup(url, function(user) {
             if(cid!=user.id
                     && $('.dialog#confirm-action #changeuser-confirm').length) {
@@ -1070,6 +1184,10 @@ $(function() {
         }
 
         return false;
+    });
+
+    $('#select-template-btn').click(function() {
+       $('#chooseIncidentTmpl').modal('show');
     });
 
     $('#opt1').click(function() {

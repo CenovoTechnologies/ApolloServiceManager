@@ -1911,7 +1911,7 @@ class DatetimeField extends FormField {
                 "{$name}__lt" => $r
             ));
         case 'nequal':
-            $l = clone $value;
+            $l = $value;
             $r = $value->add(new DateInterval('P1D'));
             return Q::any(array(
                 "{$name}__lt" => $l,
@@ -3001,10 +3001,16 @@ class InlineFormWidget extends Widget {
 class Widget {
     static $media = null;
 
+    /**
+     * Widget constructor.
+     * @param $field
+     */
     function __construct($field) {
         $this->field = $field;
         $this->name = $field->getFormName();
         $this->id = '_' . $this->name;
+        $this->value = $this->getValue();
+        $this->label = $this->field->get('label');
     }
 
     function parseValue() {
@@ -3074,13 +3080,18 @@ class TextboxWidget extends Widget {
         $placeholder = sprintf('placeholder="%s"', $this->field->getLocal('placeholder',
             $config['placeholder']));
         ?>
-        <input type="<?php echo $type; ?>" class="form-control-sm" style="width:95%"
-            id="<?php echo $this->id; ?>"
-            <?php echo implode(' ', array_filter(array(
-                $size, $maxlength, $classes, $autocomplete, $disabled,
-                $translatable, $placeholder, $autofocus))); ?>
-            name="<?php echo $this->name; ?>"
-            value="<?php echo Format::htmlchars($this->value); ?>"/>
+        <div class="row">
+            <label style="width:100%">
+                <input type="<?php echo $type; ?>" class="form-control required"
+                    id="<?php echo $this->id; ?>"
+                    <?php echo implode(' ', array_filter(array(
+                        $size, $maxlength, $classes, $autocomplete, $disabled,
+                        $translatable, $autofocus))); ?>
+                    placeholder="<?php echo $this->label;?>"
+                    name="<?php echo $this->name; ?>"
+                    value="<?php echo $this->value; ?>"/>
+            </label>
+        </div>
         <?php
     }
 }
@@ -3146,15 +3157,18 @@ class TextareaWidget extends Widget {
         if (isset($config['context']))
             $attrs['data-root-context'] = '"'.$config['context'].'"';
         ?>
-        <span style="display:inline-block;width:95%">
-        <textarea <?php echo $rows." ".$cols." ".$maxlength." ".$class
-                .' '.Format::array_implode('=', ' ', $attrs)
-                .' placeholder="'.$config['placeholder'].'"'; ?>
-            id="<?php echo $this->id; ?>" class="form-control-sm" style="width:100%"
-            name="<?php echo $this->name; ?>"><?php
-                echo Format::htmlchars($this->value);
-            ?></textarea>
-        </span>
+        <div class="row">
+            <label style="width:100%">
+                <textarea <?php echo $rows." ".$cols." ".$maxlength." ".$class
+                        .' '.Format::array_implode('=', ' ', $attrs)
+                        .' placeholder="'.$config['placeholder'].'"'; ?>
+                    id="<?php echo $this->id; ?>" class="form-control"
+                    name="<?php echo $this->name; ?>"><?php
+                        echo $this->value;
+                    ?>
+                </textarea>
+            </label>
+        </div>
         <?php
     }
 
@@ -3179,14 +3193,18 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-        <input id="<?php echo $this->id; ?>" class="form-control-sm" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
-        echo Format::htmlchars($phone); ?>"/><?php
-        // Allow display of extension field even if disabled if the phone
-        // number being edited has an extension
-        if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
-            <input type="text" name="<?php
-            echo $this->name; ?>-ext" class="form-control-sm" style="width:20%" value="<?php echo Format::htmlchars($ext);
-                ?>" size="5"/>
+          <div class="row">
+              <label style="width:100%">
+                <input id="<?php echo $this->id; ?>" class="form-control" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
+                echo Format::htmlchars($phone); ?>"/><?php
+                // Allow display of extension field even if disabled if the phone
+                // number being edited has an extension
+                if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
+                    <input type="text" name="<?php
+                    echo $this->name; ?>-ext" class="form-control" style="width:20%" value="<?php echo Format::htmlchars($ext);
+                        ?>" size="5"/>
+              </label>
+                    </div>
         <?php }
     }
 
@@ -3590,9 +3608,9 @@ class DatetimePickerWidget extends Widget {
 class SectionBreakWidget extends Widget {
     function render($options=array()) {
         ?><div class="form-header section-break"><h3><?php
-        echo Format::htmlchars($this->field->getLocal('label'));
-        ?></h3><em><?php echo Format::htmlchars($this->field->getLocal('hint'));
-        ?></em></div>
+        echo $this->field->getLocal('label');
+        ?></h3><?php echo $this->field->getLocal('hint');
+        ?></div>
         <?php
     }
 }
@@ -3612,12 +3630,17 @@ class ThreadEntryWidget extends Widget {
 
         list($draft, $attrs) = Draft::getDraftAndDataAttrs($namespace, $object_id, $this->value);
         ?>
-        <textarea style="width:95%;" name="<?php echo $this->field->get('name'); ?>"
-            placeholder="<?php echo Format::htmlchars($this->field->get('placeholder')); ?>"
-            class="<?php if ($config['html']) echo 'richtext';
-                ?> draft draft-delete" <?php echo $attrs; ?>
-            cols="21" rows="8" style="width:80%;"><?php echo
-            Format::htmlchars($this->value) ?: $draft; ?></textarea>
+          <div class="row">
+              <label style="width:100%">
+                <textarea name="<?php echo $this->field->get('name'); ?>"
+                    placeholder="<?php echo $this->field->get('placeholder'); ?>"
+                    class="<?php if ($config['html']) echo 'richtext';
+                        ?> draft draft-delete" <?php echo $attrs; ?>
+                    cols="21" rows="8"><?php echo
+                    $this->value ?: $draft; ?>
+                </textarea>
+              </label>
+          </div>
     <?php
         if (!$config['attachments'])
             return;
@@ -3699,16 +3722,20 @@ class FileUploadWidget extends Widget {
                 'download_url' => $file->getDownloadUrl(),
             );
         }
-        ?><div id="<?php echo $id;
-            ?>" class="filedrop"><div class="files"></div>
-            <div class="dropzone"><i class="icon-upload"></i>
-            <?php echo sprintf(
-                __('Drop files here or %s choose them %s'),
-                '<a href="#" class="manual">', '</a>'); ?>
-        <input type="file" multiple="multiple"
-            id="file-<?php echo $id; ?>" style="display:none;"
-            accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
-        </div></div>
+        ?>
+          <div class="row">
+            <div id="<?php echo $id; ?>" class="filedrop">
+                <div class="files"></div>
+                <div class="dropzone"><i class="icon-upload"></i>
+                <?php echo sprintf(
+                    __('Drop files here or %s choose them %s'),
+                    '<a href="#" class="manual">', '</a>'); ?>
+            <input type="file" multiple="multiple"
+                id="file-<?php echo $id; ?>" style="display:none;"
+                accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
+                </div>
+            </div>
+          </div>
         <script type="text/javascript">
         $(function(){$('#<?php echo $id; ?> .dropzone').filedropbox({
           url: 'ajax.php/form/upload/<?php echo $this->field->get('id') ?>',

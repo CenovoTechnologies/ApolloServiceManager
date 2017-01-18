@@ -217,9 +217,8 @@ if ($entries = $task->getThreadEntries($types)) {
                     <span style="padding:0 1em" class="faded title"><?php
                         echo Format::truncate($entry->title, 100); ?></span>
                 </td>
-                <td class="flush-right faded title" style="white-space:no-wrap">
-                    <?php
-                        echo Format::htmlchars($entry->getName()); ?></span>
+                <td class="flush-right faded title" style="white-space:nowrap">
+                    <span><?php echo $entry->getName(); ?></span>
                 </td>
             </tr></table>
             <div class="thread-body">

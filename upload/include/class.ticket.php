@@ -859,6 +859,12 @@ implements RestrictedAccess, Threadable {
         return $this->getThread()->getNumNotes();
     }
 
+    function getFirstMessage() {
+        /** @var ThreadEntry $msg */
+        $msg = $this->getThread()->getFirstMessage();
+        return $msg->getBody();
+    }
+
     function getMessages() {
         return $this->getThreadEntries(array('M'));
     }
@@ -1188,6 +1194,8 @@ implements RestrictedAccess, Threadable {
     function setStatus($status, $comments='', &$errors=array(), $set_closing_agent=true) {
         global $thisstaff;
 
+        /** @var Role $role */
+        /** @var Staff $thisstaff */
         if ($thisstaff && !($role = $thisstaff->getRole($this->getDeptId())))
             return false;
 
@@ -1364,6 +1372,7 @@ implements RestrictedAccess, Threadable {
 
         /* ------ SEND OUT NEW TICKET AUTORESP && ALERTS ----------*/
 
+        /** @var Dept $dept */
         if(!$cfg
             || !($dept=$this->getDept())
             || !($tpl = $dept->getTemplate())
@@ -1479,6 +1488,7 @@ implements RestrictedAccess, Threadable {
             return true;
 
         //Send notice to user.
+        /** @var Dept $dept */
         if (($dept = $this->getDept())
             && ($tpl=$dept->getTemplate())
             && ($msg=$tpl->getOverlimitMsgTemplate())
@@ -1639,6 +1649,7 @@ implements RestrictedAccess, Threadable {
             return;  //no autoresp or alerts.
         }
 
+        /** @var Dept $dept */
         $dept = $this->getDept();
         $email = $dept->getAutoRespEmail();
 
@@ -1654,6 +1665,7 @@ implements RestrictedAccess, Threadable {
                 )
             );
             $options = array('thread' => $message);
+            /** @var MessageThreadEntry $message */
             if ($message->getEmailMessageId()) {
                 $options += array(
                         'inreplyto' => $message->getEmailMessageId(),
@@ -1777,6 +1789,7 @@ implements RestrictedAccess, Threadable {
         if (!$alert || !$cfg->alertONAssignment())
             return true; //No alerts!
 
+        /** @var Dept $dept */
         $dept = $this->getDept();
         if (!$dept
             || !($tpl = $dept->getTemplate())
@@ -1827,13 +1840,19 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
-   function onOverdue($whine=true, $comments="") {
+    /**
+     * @param bool $whine
+     * @param string $comments
+     * @return bool
+     */
+    function onOverdue($whine=true, $comments="") {
         global $cfg;
 
         if ($whine && ($sla = $this->getSLA()) && !$sla->alertOnOverdue())
             $whine = false;
 
         // Check if we need to send alerts.
+        /** @var Dept $dept */
         if (!$whine
             || !$cfg->alertONOverdueTicket()
             || !($dept = $this->getDept())
@@ -2180,6 +2199,12 @@ implements RestrictedAccess, Threadable {
         return $this->assignToStaff($assignee, $form->getComments(), false);
     }
 
+    /**
+     * @param $staff
+     * @param $note
+     * @param bool $alert
+     * @return bool
+     */
     function assignToStaff($staff, $note, $alert=true) {
 
         if(!is_object($staff) && !($staff = Staff::lookup($staff)))
@@ -2277,7 +2302,7 @@ implements RestrictedAccess, Threadable {
             return true;
 
         // We can only unassigned OPEN tickets.
-        if ($this->isClosed() || $thid->isResolved())
+        if ($this->isClosed() || $this->isResolved())
             return false;
 
         // Unassign staff (if any)
@@ -2453,6 +2478,12 @@ implements RestrictedAccess, Threadable {
         return $message;
     }
 
+    /**
+     * @param $canned
+     * @param $message
+     * @param bool $alert
+     * @return bool|HtmlThreadEntryBody|null|TextThreadEntryBody
+     */
     function postCannedReply($canned, $message, $alert=true) {
         global $ost, $cfg;
 
@@ -2488,6 +2519,7 @@ implements RestrictedAccess, Threadable {
         if (!$alert)
             return $response;
 
+        /** @var Dept $dept */
         $dept = $this->getDept();
 
         if (($email=$dept->getEmail())
@@ -2782,13 +2814,69 @@ implements RestrictedAccess, Threadable {
         return parent::save($this->dirty || $refetch);
     }
 
+    /**
+     * @param $vars
+     * @param $errors
+     * @return bool
+     */
+    function recordIncident($vars, &$errors) {
+        global $cfg, $thisstaff;
+
+        if (!$cfg || !($this->checkStaffPerm($thisstaff, TicketModel::PERM_EDIT))) {
+            return false;
+        }
+        $fields = array();
+        $fields['source']  = array('type'=>'text',      'required'=>1, 'error'=>__('Source selection is required'));
+        $fields['user_id']  = array('type'=>'int',      'required'=>1, 'error'=>__('Invalid user-id'));
+
+        if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
+            $errors['err'] = sprintf('%s — %s',
+                __('Missing or poop data'),
+                __('Correct any errors below and try again'));
+
+        $changes = array();
+        foreach ($this->dirty as $F=>$old) {
+            switch ($F) {
+                case 'user_id':
+                case 'source':
+                    $changes[$F] = array($old, $this->{$F});
+            }
+        }
+
+        if (!$this->save())
+            return false;
+
+        if ($vars['note'])
+            $this->logNote(_S('Ticket Updated'), $vars['note'], $thisstaff);
+
+        // Update dynamic meta-data
+        $forms = DynamicFormEntry::forTicket($this->getId());
+        foreach ($forms as $f) {
+            /** @var DynamicFormEntry $f */
+            if ($C = $f->getChanges())
+                $changes['fields'] = ($changes['fields'] ?: array()) + $C;
+            // Drop deleted forms
+            $idx = array_search($f->getId(), $vars['forms']);
+            if ($idx === false) {
+                $f->delete();
+            }
+            else {
+                $f->set('sort', $idx);
+                $f->save();
+            }
+        }
+
+        if ($changes)
+            $this->logEvent('edited', $changes);
+
+        Signal::send('model.updated', $this);
+        return $this->save();
+    }
+
     function update($vars, &$errors) {
         global $cfg, $thisstaff;
 
-        if (!$cfg
-            || !($this->checkStaffPerm($thisstaff,
-                TicketModel::PERM_EDIT))
-        ) {
+        if (!$cfg || !($this->checkStaffPerm($thisstaff, TicketModel::PERM_EDIT))) {
             return false;
         }
 
@@ -3162,6 +3250,7 @@ implements RestrictedAccess, Threadable {
                 $fields['deptId']   = array('type'=>'int',  'required'=>0, 'error'=>__('Department selection is required'));
                 $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Help topic selection is required'));
                 $fields['duedate']  = array('type'=>'date', 'required'=>0, 'error'=>__('Invalid date format - must be MM/DD/YY'));
+                break;
             case 'api':
                 $fields['source']   = array('type'=>'string', 'required'=>1, 'error'=>__('Indicate ticket source'));
                 break;

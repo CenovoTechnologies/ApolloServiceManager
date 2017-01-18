@@ -140,7 +140,7 @@ h2, .subject {
 .clear {
   clear: both;
   height: 1px;
-  visibility: none;
+  visibility: hidden;
 }
 .hidden {
   display: none;

@@ -439,7 +439,7 @@ implements TemplateVariable {
     }
 
     function __toString() {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
     function getParent() {

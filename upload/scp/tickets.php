@@ -79,16 +79,73 @@ if($_POST && !$errors):
         $lock = $ticket->getLock(); //Ticket lock if any
         $role = $thisstaff->getRole($ticket->getDeptId());
         switch(strtolower($_POST['a'])):
-        case 'reply':
-            if (!$role || !$role->hasPerm(TicketModel::PERM_REPLY)) {
-                $errors['err'] = __('Action denied. Contact admin for access');
-            }
-            else {
+            case 'reply':
+                if (!$role || !$role->hasPerm(TicketModel::PERM_REPLY)) {
+                    $errors['err'] = __('Action denied. Contact admin for access');
+                }
+                else {
+                    $vars = $_POST;
+                    $vars['cannedattachments'] = $response_form->getField('attachments')->getClean();
+                    $vars['response'] = ThreadEntryBody::clean($vars['response']);
+                    if(!$vars['response'])
+                        $errors['response']=__('Response required');
+
+                    if ($cfg->getLockTime()) {
+                        if (!$lock) {
+                            $errors['err'] = __('This action requires a lock. Please try again');
+                        }
+                        // Use locks to avoid double replies
+                        elseif ($lock->getStaffId()!=$thisstaff->getId()) {
+                            $errors['err'] = __('Action Denied. Ticket is locked by someone else!');
+                        }
+                        // Attempt to renew the lock if possible
+                        elseif (($lock->isExpired() && !$lock->renew())
+                            ||($lock->getCode() != $_POST['lockCode'])
+                        ) {
+                            $errors['err'] = __('Your lock has expired. Please try again');
+                        }
+                    }
+
+                    //Make sure the email is not banned
+                    if(!$errors['err'] && Banlist::isBanned($ticket->getEmail()))
+                        $errors['err']=__('Email is in banlist. Must be removed to reply.');
+                }
+
+                if(!$errors && ($response=$ticket->postReply($vars, $errors, $_POST['emailreply']))) {
+                    $msg = sprintf(__('%s: Reply posted successfully'),
+                            sprintf(__('Ticket #%s'),
+                                sprintf('<a href="tickets.php?id=%d">%s</a>',
+                                    $ticket->getId(), $ticket->getNumber()))
+                            );
+
+                    // Clear attachment list
+                    $response_form->setSource(array());
+                    $response_form->getField('attachments')->reset();
+
+                    // Remove staff's locks
+                    $ticket->releaseLock($thisstaff->getId());
+
+                    // Cleanup response draft for this user
+                    Draft::deleteForNamespace(
+                        'ticket.response.' . $ticket->getId(),
+                        $thisstaff->getId());
+
+                    // Go back to the ticket listing page on reply
+                    $ticket = null;
+                    $redirect = 'tickets.php';
+
+                } elseif(!$errors['err']) {
+                    $errors['err']=sprintf('%s %s',
+                        __('Unable to post the reply.'),
+                        __('Correct any errors below and try again.'));
+                }
+                break;
+            case 'postnote': /* Post Internal Note */
                 $vars = $_POST;
-                $vars['cannedattachments'] = $response_form->getField('attachments')->getClean();
-                $vars['response'] = ThreadEntryBody::clean($vars['response']);
-                if(!$vars['response'])
-                    $errors['response']=__('Response required');
+                $attachments = $note_form->getField('attachments')->getClean();
+                $vars['cannedattachments'] = array_merge(
+                    $vars['cannedattachments'] ?: array(), $attachments);
+                $vars['note'] = ThreadEntryBody::clean($vars['note']);
 
                 if ($cfg->getLockTime()) {
                     if (!$lock) {
@@ -98,115 +155,74 @@ if($_POST && !$errors):
                     elseif ($lock->getStaffId()!=$thisstaff->getId()) {
                         $errors['err'] = __('Action Denied. Ticket is locked by someone else!');
                     }
-                    // Attempt to renew the lock if possible
-                    elseif (($lock->isExpired() && !$lock->renew())
-                        ||($lock->getCode() != $_POST['lockCode'])
-                    ) {
+                    elseif ($lock->getCode() != $_POST['lockCode']) {
                         $errors['err'] = __('Your lock has expired. Please try again');
                     }
                 }
 
-                //Make sure the email is not banned
-                if(!$errors['err'] && Banlist::isBanned($ticket->getEmail()))
-                    $errors['err']=__('Email is in banlist. Must be removed to reply.');
-            }
+                $wasOpen = ($ticket->isOpen());
+                if(($note=$ticket->postNote($vars, $errors, $thisstaff))) {
 
-            if(!$errors && ($response=$ticket->postReply($vars, $errors, $_POST['emailreply']))) {
-                $msg = sprintf(__('%s: Reply posted successfully'),
-                        sprintf(__('Ticket #%s'),
-                            sprintf('<a href="tickets.php?id=%d">%s</a>',
-                                $ticket->getId(), $ticket->getNumber()))
-                        );
+                    $msg=__('Internal note posted successfully');
+                    // Clear attachment list
+                    $note_form->setSource(array());
+                    $note_form->getField('attachments')->reset();
 
-                // Clear attachment list
-                $response_form->setSource(array());
-                $response_form->getField('attachments')->reset();
+                    // Remove staff's locks
+                    $ticket->releaseLock($thisstaff->getId());
 
-                // Remove staff's locks
-                $ticket->releaseLock($thisstaff->getId());
+                    if($wasOpen && $ticket->isClosed())
+                        $ticket = null; //Going back to main listing.
+                    else
+                        // Ticket is still open -- clear draft for the note
+                        Draft::deleteForNamespace('ticket.note.'.$ticket->getId(),
+                            $thisstaff->getId());
 
-                // Cleanup response draft for this user
-                Draft::deleteForNamespace(
-                    'ticket.response.' . $ticket->getId(),
-                    $thisstaff->getId());
+                     $redirect = 'tickets.php';
+                } else {
 
-                // Go back to the ticket listing page on reply
-                $ticket = null;
-                $redirect = 'tickets.php';
+                    if(!$errors['err'])
+                        $errors['err'] = __('Unable to post internal note - missing or invalid data.');
 
-            } elseif(!$errors['err']) {
-                $errors['err']=sprintf('%s %s',
-                    __('Unable to post the reply.'),
-                    __('Correct any errors below and try again.'));
-            }
-            break;
-        case 'postnote': /* Post Internal Note */
-            $vars = $_POST;
-            $attachments = $note_form->getField('attachments')->getClean();
-            $vars['cannedattachments'] = array_merge(
-                $vars['cannedattachments'] ?: array(), $attachments);
-            $vars['note'] = ThreadEntryBody::clean($vars['note']);
-
-            if ($cfg->getLockTime()) {
-                if (!$lock) {
-                    $errors['err'] = __('This action requires a lock. Please try again');
+                    $errors['postnote'] = sprintf('%s %s',
+                        __('Unable to post the note.'),
+                        __('Correct any errors below and try again.'));
                 }
-                // Use locks to avoid double replies
-                elseif ($lock->getStaffId()!=$thisstaff->getId()) {
-                    $errors['err'] = __('Action Denied. Ticket is locked by someone else!');
+                break;
+            case 'record':
+                if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
+                    $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
+                elseif($ticket->recordIncident($_POST,$errors)) {
+                    $msg=__('Ticket updated successfully');
+                    $redirect = 'tickets.php?id='.$ticket->getId();
+                    $_REQUEST['a'] = null; //Clear edit action - going back to view.
+                    //Check to make sure the staff STILL has access post-update (e.g dept change).
+                    if(!$ticket->checkStaffPerm($thisstaff))
+                        $ticket=null;
+                } elseif(!$errors['err']) {
+                    $errors['err']=sprintf(
+                        __('Unable to update %s. Correct any errors below and try again.'),
+                        __('ticket'));
                 }
-                elseif ($lock->getCode() != $_POST['lockCode']) {
-                    $errors['err'] = __('Your lock has expired. Please try again');
+                break;
+            case 'edit':
+            case 'update':
+                if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
+                    $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
+                elseif($ticket->update($_POST,$errors)) {
+                    $msg=__('Ticket updated successfully');
+                    $redirect = 'tickets.php?id='.$ticket->getId();
+                    $_REQUEST['a'] = null; //Clear edit action - going back to view.
+                    //Check to make sure the staff STILL has access post-update (e.g dept change).
+                    if(!$ticket->checkStaffPerm($thisstaff))
+                        $ticket=null;
+                } elseif(!$errors['err']) {
+                    $errors['err']=sprintf(
+                        __('Unable to update %s. Correct any errors below and try again.'),
+                        __('ticket'));
                 }
-            }
-
-            $wasOpen = ($ticket->isOpen());
-            if(($note=$ticket->postNote($vars, $errors, $thisstaff))) {
-
-                $msg=__('Internal note posted successfully');
-                // Clear attachment list
-                $note_form->setSource(array());
-                $note_form->getField('attachments')->reset();
-
-                // Remove staff's locks
-                $ticket->releaseLock($thisstaff->getId());
-
-                if($wasOpen && $ticket->isClosed())
-                    $ticket = null; //Going back to main listing.
-                else
-                    // Ticket is still open -- clear draft for the note
-                    Draft::deleteForNamespace('ticket.note.'.$ticket->getId(),
-                        $thisstaff->getId());
-
-                 $redirect = 'tickets.php';
-            } else {
-
-                if(!$errors['err'])
-                    $errors['err'] = __('Unable to post internal note - missing or invalid data.');
-
-                $errors['postnote'] = sprintf('%s %s',
-                    __('Unable to post the note.'),
-                    __('Correct any errors below and try again.'));
-            }
-            break;
-        case 'edit':
-        case 'update':
-            if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
-                $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
-            elseif($ticket->update($_POST,$errors)) {
-                $msg=__('Ticket updated successfully');
-                $redirect = 'tickets.php?id='.$ticket->getId();
-                $_REQUEST['a'] = null; //Clear edit action - going back to view.
-                //Check to make sure the staff STILL has access post-update (e.g dept change).
-                if(!$ticket->checkStaffPerm($thisstaff))
-                    $ticket=null;
-            } elseif(!$errors['err']) {
-                $errors['err']=sprintf(
-                    __('Unable to update %s. Correct any errors below and try again.'),
-                    __('ticket'));
-            }
-            break;
-        case 'process':
+                break;
+            case 'process':
             switch(strtolower($_POST['do'])):
                 case 'release':
                     if(!$ticket->isAssigned() || !($assigned=$ticket->getAssigned())) {
@@ -365,100 +381,6 @@ $nav->setTabActive('tickets');
 $open_name = _P('queue-name',
     /* This is the name of the open ticket queue */
     'Open');
-/**
- * if($cfg->showAnsweredTickets()) {
- *     $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']+$stats['answered']).')',
- *                             'title'=>__('Open Tickets'),
- *                             'href'=>'tickets.php?status=open',
- *                             'iconclass'=>'Ticket'),
- *                         ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
-
- * 	$nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
- *                                'title'=>__('Tickets in Progress'),
- *                                'href'=>'tickets.php?status=progress',
- *                                'iconclass'=>'answeredTickets'),
- *                         ($_REQUEST['status']=='progress'));
- * } else {
-
- *     if ($stats) {
-
- *         $nav->addSubMenu(array('desc'=>$open_name.' ('.number_format($stats['open']).')',
- *                                'title'=>__('Open Tickets'),
- *                                'href'=>'tickets.php?status=open',
- *                                'iconclass'=>'Ticket'),
- *                             ((!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) || $_REQUEST['status']=='open'));
- *     }
-
- *     if($stats['progress']) {
- *         $nav->addSubMenu(array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
- *                                'title'=>__('Tickets in Progress'),
- *                                'href'=>'tickets.php?status=progress',
- *                                'iconclass'=>'answeredTickets'),
- *                             ($_REQUEST['status']=='progress'));
- *     }
- * }
-
- * if($stats['assigned']) {
-
- *     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
- *                            'title'=>__('Assigned Tickets'),
- *                            'href'=>'tickets.php?status=assigned',
- *                            'iconclass'=>'assignedTickets'),
- *                         ($_REQUEST['status']=='assigned'));
- * }
-
- * if($stats['overdue']) {
- *     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
- *                            'title'=>__('Overdue Tickets'),
- *                            'href'=>'tickets.php?status=overdue',
- *                            'iconclass'=>'overdueTickets'),
- *                         ($_REQUEST['status']=='overdue'));
-
- *     if(!$sysnotice && $stats['overdue']>10)
- *         $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
- * }
- */
-
-/**
- * if (isset($_SESSION['advsearch'])) {
- *     // XXX: De-duplicate and simplify this code
- *     TicketForm::ensureDynamicDataView();
- *     $search = SavedSearch::create();
- *     $form = $search->getFormFromSession('advsearch');
- *     $tickets = TicketModel::objects();
- *     $tickets = $search->mangleQuerySet($tickets, $form);
- *     $count = $tickets->count();
- *     $nav->addSubMenu(array('desc' => __('Search').' ('.number_format($count).')',
- *                            'title'=>__('Advanced Ticket Search'),
- *                            'href'=>'tickets.php?status=search',
- *                            'iconclass'=>'Ticket'),
- *                         (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
- * }
- */
-
-/**
- * $nav->addSubMenu(array('desc' => __('Resolved').' ('.number_format($stats['resolved']).')',
- *                            'title'=>__('Resolved Tickets'),
- *                            'href'=>'tickets.php?status=resolved',
- *                            'iconclass'=>'closedTickets'),
- *                         ($_REQUEST['status']=='resolved'));
-
- * $nav->addSubMenu(array('desc' => __('Closed'),
- *                        'title'=>__('Closed Tickets'),
- *                        'href'=>'tickets.php?status=closed',
- *                        'iconclass'=>'closedTickets'),
- *                     ($_REQUEST['status']=='closed'));
-
- * if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
- *     $nav->addSubMenu(array('desc'=>__('New Ticket'),
- *                            'title'=> __('Open a New Ticket'),
- *                            'href'=>'tickets.php?a=open',
- *                            'iconclass'=>'newTicket',
- *                            'id' => 'new-ticket'),
- *                         ($_REQUEST['a']=='open'));
- * }
- */
-
 
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?907ec36"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?907ec36"></script>');
@@ -471,7 +393,7 @@ if($ticket) {
     $inc = 'ticket-view.inc.php';
     if ($_REQUEST['a']=='edit'
             && $ticket->checkStaffPerm($thisstaff, TicketModel::PERM_EDIT)) {
-        $inc = 'ticket-edit.inc.php';
+        $inc = 'ticket-view.inc.php';
         if (!$forms) $forms=DynamicFormEntry::forTicket($ticket->getId());
         // Auto add new fields to the entries
         foreach ($forms as $f) {

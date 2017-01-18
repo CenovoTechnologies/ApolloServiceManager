@@ -56,7 +56,7 @@ implements TemplateVariable {
     }
 
     function __toString() {
-        return $this->getDesc();
+        return (string) $this->getDesc();
     }
 
     /* ------------- Static ---------------*/
