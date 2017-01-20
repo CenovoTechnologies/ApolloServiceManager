@@ -362,7 +362,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                             <label style="width:49%">
                                 <select class="form-control" name="ticket-type-input" type="text" id="ticket-type-input">
-                                    <option>Select Ticket Type...</option>
+                                    <option>Select Service Type...</option>
                                 </select>
                             </label>
                         </div>
