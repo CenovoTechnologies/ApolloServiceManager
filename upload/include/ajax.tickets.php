@@ -198,6 +198,7 @@ class TicketsAjaxAPI extends AjaxController {
     function viewUser($tid) {
         global $thisstaff;
 
+        /** @var Ticket $ticket */
         if(!$thisstaff
                 || !($ticket=Ticket::lookup($tid))
                 || !$ticket->checkStaffPerm($thisstaff))
@@ -225,6 +226,7 @@ class TicketsAjaxAPI extends AjaxController {
 
         global $thisstaff;
 
+        /** @var User $user */
         if(!$thisstaff
                 || !($ticket=Ticket::lookup($tid))
                 || !$ticket->checkStaffPerm($thisstaff)
@@ -278,6 +280,74 @@ class TicketsAjaxAPI extends AjaxController {
 
     }
 
+    /**
+     * @param $tid
+     * @param $impact
+     * @param $urgency
+     * @return int
+     */
+    function calculatePriority($tid, $impact, $urgency) {
+        /** @var Ticket $ticket */
+        $ticket = Ticket::lookup($tid);
+        $iLevel = 0;
+        $uLevel = 0;
+        $pLevel = 0;
+        $pId = 0;
+        $impacts = $ticket->getImpactLevels();
+        $urgencies = $ticket->getUrgencyLevels();
+        $priorities = $ticket->getPriorityLevels();
+        while (list($id,$tag,$level) = db_fetch_row($impacts)) {
+            if ($id == $impact) {
+                $iLevel = $level;
+                break;
+            }
+        }
+        while (list($id,$tag,$level) = db_fetch_row($urgencies)) {
+            if ($id == $urgency) {
+                $uLevel = $level;
+                break;
+            }
+        }
+        if ($iLevel == 1) {
+            if ($uLevel <= 2) {
+                $pLevel = 1;
+            } else {
+                $pLevel = 2;
+            }
+        } else if ($iLevel == 2) {
+            if ($uLevel == 1) {
+                $pLevel = 1;
+            } else if ($uLevel == 4) {
+                $pLevel = 3;
+            } else {
+                $pLevel = 2;
+            }
+        } else if ($iLevel == 3) {
+            if ($uLevel == 3) {
+                $pLevel = 3;
+            } else if ($uLevel == 4) {
+                $pLevel = 4;
+            } else {
+                $pLevel = 2;
+            }
+        } else {
+            if ($uLevel == 1) {
+                $pLevel = 2;
+            } else if ($uLevel == 2) {
+                $pLevel = 3;
+            } else {
+                $pLevel = 4;
+            }
+        }
+        while (list($id,$tag,$level) = db_fetch_row($priorities)) {
+            if ($pLevel == $level) {
+                $pId = $id;
+                break;
+            }
+        }
+        return $pId;
+    }
+
     function manageForms($ticket_id) {
         global $thisstaff;
 
@@ -288,8 +358,8 @@ class TicketsAjaxAPI extends AjaxController {
         elseif (!$ticket->checkStaffPerm($thisstaff, Ticket::PERM_EDIT))
             Http::response(403, "Access Denied");
 
-        $forms = DynamicFormEntry::forTicket($ticket->getId());
-        $info = array('action' => '#tickets/'.$ticket->getId().'/forms/manage');
+        $forms = DynamicFormEntry::forTicket($ticket_id);
+        $info = array('action' => '#tickets/'.$ticket_id.'/forms/manage');
         include(STAFFINC_DIR . 'templates/form-manage.tmpl.php');
     }
 
@@ -377,6 +447,7 @@ class TicketsAjaxAPI extends AjaxController {
     function transfer($tid) {
         global $thisstaff;
 
+        /** @var Ticket $ticket */
         if (!($ticket=Ticket::lookup($tid)))
             Http::response(404, __('No such ticket'));
 
@@ -420,6 +491,7 @@ class TicketsAjaxAPI extends AjaxController {
     function assign($tid, $target=null) {
         global $thisstaff;
 
+        /** @var Ticket $ticket */
         if (!($ticket=Ticket::lookup($tid)))
             Http::response(404, __('No such ticket'));
 
@@ -449,10 +521,7 @@ class TicketsAjaxAPI extends AjaxController {
             else
                 $assigned = $ticket->getAssigned();
 
-            $info['notice'] = sprintf(__('%s is currently assigned to <b>%s</b>'),
-                    __('This ticket'),
-                    Format::htmlchars($assigned)
-                    );
+            $info['notice'] = sprintf(__('%s is currently assigned to <b>%s</b>'),__('This ticket'),$assigned);
         }
 
         if ($_POST && $form->isValid()) {
