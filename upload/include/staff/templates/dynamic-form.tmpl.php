@@ -25,6 +25,10 @@ foreach ($form->getFields() as $field) {
                 continue;
             if ($field->get('name') == "priority")
                 continue;
+            if ($field->get('name') == "impact")
+                continue;
+            if ($field->get('name') == "urgency")
+                continue;
         }
         catch (Exception $e) {
             // Not connected to a DynamicFormField

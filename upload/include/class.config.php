@@ -555,6 +555,14 @@ class OsticketConfig extends Config {
         return $this->defaultPriority;
     }
 
+    function getDefaultImpactId() {
+        return $this->get('default_impact_id');
+    }
+
+    function getDefaultUrgencyId() {
+        return $this->get('default_urgency_id');
+    }
+
     function getDefaultTopicId() {
         return $this->get('default_help_topic');
     }

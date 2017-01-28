@@ -147,7 +147,11 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                        <i class="icon-edit"></i>
                    </a>
                    <?php
-               }
+               } ?>
+               <a type="button" class="btn btn-default action-button" title="<?php echo __('Promote to Problem'); ?>" href="#" role="button">
+                   <i class="icon-signin"></i>
+               </a>
+               <?php
                /** @var Staff $thisstaff */
                /** @var Role $role */
                if ($thisstaff->hasPerm(Email::PERM_BANLIST)
@@ -209,14 +213,12 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                            <?php if ($thisstaff->hasPerm(Email::PERM_BANLIST)) {
                                if (!$emailBanned) { ?>
                                    <li><a class="confirm-action" id="ticket-banemail"
-                                          href="#banemail"><i class="icon-ban-circle"></i> <?php echo sprintf(
-                                               Format::htmlchars(__('Ban Email <%s>')),
+                                          href="#banemail"><i class="icon-ban-circle"></i> <?php echo sprintf(__('Ban Email <%s>'),
                                                $ticket->getEmail()); ?></a></li>
                                    <?php
                                } elseif ($unbannable) { ?>
                                    <li><a class="confirm-action" id="ticket-banemail"
-                                          href="#unbanemail"><i class="icon-undo"></i> <?php echo sprintf(
-                                               Format::htmlchars(__('Unban Email <%s>')),
+                                          href="#unbanemail"><i class="icon-undo"></i> <?php echo sprintf(__('Unban Email <%s>'),
                                                $ticket->getEmail()); ?></a></li>
                                    <?php
                                }
@@ -245,7 +247,6 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             <ul  class="nav nav-tabs card-header-tabs" id="ticket_tabs" role="tablist">
                 <li class="nav-item"><a id="record-incident-tab" class="nav-link active" data-toggle="tab" href="#record-incident">Record</a></li>
                 <li class="nav-item"><a id="classify-incident-tab" class="nav-link" data-toggle="tab" href="#classify-incident">Classify</a></li>
-                <li class="nav-item"><a id="investigate-incident-tab" class="nav-link" data-toggle="tab" href="#investigate-incident">Investigate</a></li>
                 <li class="nav-item"><a id="resolve-incident-tab" class="nav-link" data-toggle="tab" href="#resolve-incident">Resolve</a></li>
                 <li class="nav-item"><a id="close-incident-tab" class="nav-link" data-toggle="tab" href="#close-incident">Close</a></li>
             </ul>
@@ -302,7 +303,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <?php
                             foreach ($forms as $form) {
                                 print $form->getForm()->getMedia();
-                                include(STAFFINC_DIR .  'templates/dynamic-form-incident.tmpl.php');
+                                include(STAFFINC_DIR .  'templates/dynamic-form.tmpl.php');
                             }
                             ?>
                         </div>
@@ -324,36 +325,46 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 </form>
             </div>
             <div class="tab-pane card-block" id="classify-incident" role="tabpanel">
-                <form>
+                <form action="tickets.php?id=<?php echo $ticket->getId(); ?>&a=classify" method="post" id="saveClassify"  enctype="multipart/form-data">
+                    <?php csrf_token(); ?>
+                    <input type="hidden" name="do" value="update">
+                    <input type="hidden" name="a" value="edit">
+                    <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
                     <div class="col-md-8">
                         <div class="row">
                             <label style="width:49%">
                                 <input class="form-control" name="affected-service-input" type="text" id="affected-service-input" placeholder="Affected Service">
                             </label>
-                            <label style="width:49%">
-                                <select class="form-control" name="impact-input" type="text" id="impact-input">
-                                    <option>Select Impact...</option>
-                                </select>
+                            <label style="width:49%" id="impact-input">
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-impact.tmpl.php');
+                                }
+                                ?>
                             </label>
                         </div>
                         <div class="row">
                             <label style="width:49%">
                                 <input class="form-control" name="category-input" type="text" id="category-input" placeholder="Category">
                             </label>
-                            <label style="width:49%">
-                                <select class="form-control" name="urgency-input" type="text" id="urgency-input">
-                                    <option>Select Urgency...</option>
-                                </select>
+                            <label style="width:49%" id="urgency-input">
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-urgency.tmpl.php');
+                                }
+                                ?>
                             </label>
                         </div>
                         <div class="row">
                             <label style="width:49%">
                                 <input class="form-control" name="sub-category-input" type="text" id="sub-category-input" placeholder="Sub-Category">
                             </label>
-                            <label style="width:49%">
-                                <select class="form-control" name="priority-input" type="text" id="priority-input">
-                                    <option>Select Priority...</option>
-                                </select>
+                            <label style="width:49%" id="priority-input">
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-priority.tmpl.php');
+                                }
+                                ?>
                             </label>
                         </div>
                         <div class="row">
@@ -371,23 +382,24 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         <div class="d-inline">
                             <h6 class="sidebar-heading">Categorize & Prioritize</h6>
                         </div>
-                        <label>
-                            <select class="form-control-sm" name="select-sla" type="text" id="select-sla">
-                                <option>Select Service Level Agreement</option>
+                        <label style="width:100%">
+                            <select class="form-control-sm" name="slaId" type="text" id="slaId" style="width:100%">
+                                <option value="0" selected="selected">Select Service Level Agreement</option>
+                                <?php
+                                if($slas=SLA::getSLAs()) {
+                                    foreach($slas as $id =>$name) {
+                                        echo sprintf('<option value="%d" %s>%s</option>',
+                                            $id, ($info['slaId']==$id)?'selected="selected"':'',$name);
+                                    }
+                                }
+                                ?>
                             </select>
                         </label>
+                        <div class="row" style="padding:0 15px;">
+                            <input class="btn btn-sm btn-outline-primary" style="width:100%" type="submit" id="record-submit" name="submit" value="<?php echo __('Save');?>">
+                        </div>
                     </div>
                 </form>
-            </div>
-            <div class="tab-pane card-block" id="investigate-incident" role="tabpanel">
-                <div class="col-md-8">
-
-                </div>
-                <div class="col-md-4" style="padding-right:0;">
-                    <div class="d-inline">
-                        <h6 class="sidebar-heading">Investigation & Diagnosis</h6>
-                    </div>
-                </div>
             </div>
             <div class="tab-pane card-block" id="resolve-incident" role="tabpanel">
                 <div class="col-md-8">
@@ -438,6 +450,11 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
         <div class="tab-content">
             <div class="tab-pane card-block active" id="incident-info" role="tabpanel">
                 <div>
+                    <h4 class="card-title"><?php
+                        $subject_field = TicketForm::getInstance()->getField('subject');
+                        echo $subject_field->display($ticket->getSubject()); ?></h4>
+                    <p class="card-text"><?php $message_field = TicketForm::getInstance()->getField('message');
+                        echo $ticket->getFirstMessage(); ?></p>
                     <?php
                     foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                         // Skip core fields shown earlier in the ticket view
@@ -446,9 +463,10 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         //           array('email', ...))));
                         $answers = $form->getAnswers()->exclude(Q::any(array(
                             'field__flags__hasbit' => DynamicFormField::FLAG_EXT_STORED,
-                            'field__name__in' => array('subject', 'priority')
+                            'field__name__in' => array('subject', 'priority', 'impact', 'urgency')
                         )));
                         $displayed = array();
+                        /** @var DynamicFormEntryAnswer $a */
                         foreach($answers as $a) {
                             if (!($v = $a->display()))
                                 continue;
@@ -457,31 +475,18 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         if (count($displayed) == 0)
                             continue;
                         ?>
-                        <table class="ticket_info custom-data" cellspacing="0" cellpadding="0" width="940" border="0">
-                            <thead>
-                            <th colspan="2"><?php echo $form->getTitle(); ?></th>
-                            </thead>
-                            <tbody>
+                        <div>
                             <?php
                             foreach ($displayed as $stuff) {
                                 list($label, $v) = $stuff;
-                                ?>
-                                <tr>
-                                    <td width="200"><?php
-                                        echo $label;
-                                        ?>:
-                                    <td><?php
-                                        echo $v;
-                                        ?></td>
-                                </tr>
+                            ?>
+                            <dl class="row">
+                                <dt class="col-sm-3 sidebar-label align-middle"><?php echo $label; ?></dt>
+                                <dd class="col-sm-9 sidebar-detail align-middle"><?php echo $v; ?></dd>
+                            </dl>
                             <?php } ?>
-                            </tbody>
-                        </table>
+                        </div>
                     <?php } ?>
-                    <h4 class="card-title"><?php $subject_field = TicketForm::getInstance()->getField('subject');
-                        echo $subject_field->display($ticket->getSubject()); ?></h4>
-                    <p class="card-text"><?php $message_field = TicketForm::getInstance()->getField('message');
-                        echo $ticket->getFirstMessage(); ?></p>
                 </div>
             </div>
             <div class="tab-pane card-block" id="ticket-thread" role="tabpanel">
@@ -911,13 +916,13 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     <div>
         <dl class="row">
             <dt class="col-sm-4 sidebar-label align-middle">Impact</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" >Level 3</dd>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getImpact(); ?></dd>
         </dl>
     </div>
     <div>
         <dl class="row">
             <dt class="col-sm-4 sidebar-label align-middle">Urgency</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" >Level 5</dd>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getUrgency(); ?></dd>
         </dl>
     </div>
     <div>
@@ -1141,6 +1146,37 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
 </div>
 <script type="text/javascript">
 $(function() {
+    $(document).ready(function() {
+        $('#impact-input select').change(function() {
+            if ($('#urgency-input select').prop('selectedIndex') > 0) {
+                changePriority();
+            }
+        });
+        $('#urgency-input select').change(function() {
+            if ($('#impact-input select').prop('selectedIndex') > 0) {
+                changePriority();
+            }
+        });
+        function changePriority() {
+            var u = $('#urgency-input select').val();
+            var i = $('#impact-input select').val();
+            <?php while (list($id,$tag,$level) = db_fetch_row($impacts)) {
+
+        } ?>
+            $.ajax({
+                url : 'ajax.php/tickets/<?php echo $ticket->getId(); ?>/calculatePriority/'+i+'/'+u,
+                dataType : 'text',
+                type : 'GET',
+                success : function(data) {
+                    //alert(data);
+                    $('#priority-input select').val(data);
+                },
+                error : function(xhr, textStatus, errorThrown) {
+                    alert(textStatus + " " + errorThrown);
+                }
+            });
+        }
+    });
     $(document).on('click', 'a.change-user', function(e) {
         e.preventDefault();
         var tid = <?php echo $ticket->getOwnerId(); ?>;

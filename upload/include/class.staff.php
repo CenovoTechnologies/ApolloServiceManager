@@ -944,7 +944,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                 }
                 elseif ($agent = self::create($data, $errors)) {
                     if ($callback)
-                        $callback($agent, $data);
+                        //$callback($agent, $data);
                     $agent->save();
                 }
                 else {

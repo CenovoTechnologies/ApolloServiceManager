@@ -105,12 +105,15 @@ class Bootstrap {
         define('THREAD_COLLABORATOR_TABLE', $prefix.'thread_collaborator');
         define('TICKET_STATUS_TABLE', $prefix.'ticket_status');
         define('TICKET_PRIORITY_TABLE',$prefix.'ticket_priority');
+        define('TICKET_IMPACT_TABLE',$prefix.'ticket_impact');
+        define('TICKET_URGENCY_TABLE',$prefix.'ticket_urgency');
 
         define('TASK_TABLE', $prefix.'task');
         define('TASK_CDATA_TABLE', $prefix.'task__cdata');
 
         define('PRIORITY_TABLE',TICKET_PRIORITY_TABLE);
-
+        define('IMPACT_TABLE', TICKET_IMPACT_TABLE);
+        define('URGENCY_TABLE', TICKET_URGENCY_TABLE);
 
         define('FORM_SEC_TABLE',$prefix.'form');
         define('FORM_FIELD_TABLE',$prefix.'form_field');

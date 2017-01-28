@@ -3,6 +3,7 @@
     class.ticket.php
 
     The most important class! Don't play with fire please.
+    I'll play with fire as much as I like!
 
     Peter Rotich <peter@osticket.com>
     Copyright (c)  2006-2013 osTicket
@@ -28,6 +29,8 @@ include_once(INCLUDE_DIR.'class.banlist.php');
 include_once(INCLUDE_DIR.'class.template.php');
 include_once(INCLUDE_DIR.'class.variable.php');
 include_once(INCLUDE_DIR.'class.priority.php');
+include_once(INCLUDE_DIR.'class.impact.php');
+include_once(INCLUDE_DIR.'class.urgency.php');
 include_once(INCLUDE_DIR.'class.sla.php');
 include_once(INCLUDE_DIR.'class.canned.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
@@ -577,16 +580,31 @@ implements RestrictedAccess, Threadable {
             return $b->getDesc();
         return '';
     }
-	
+
+    function getPriorityLevels() {
+        $levels = db_query('SELECT priority_id,priority_desc,priority_urgency FROM '.TICKET_PRIORITY_TABLE);
+        return $levels;
+    }
+
+    function getUrgencyLevels() {
+        $levels = db_query('SELECT urgency_id,urgency_desc,urgency_level FROM '.TICKET_URGENCY_TABLE);
+        return $levels;
+    }
+
 	function getUrgency() {
-        if (($a = $this->_answers['urgency']))
-            return $a;
+        if (($a = $this->_answers['urgency']) && ($b = $a->getValue()))
+            return $b->getDesc();
         return '';
+    }
+
+    function getImpactLevels() {
+        $levels = db_query('SELECT impact_id,impact_desc,impact_level FROM '.TICKET_IMPACT_TABLE);
+        return $levels;
     }
 	
 	function getImpact() {
-        if (($a = $this->_answers['impact']))
-            return $a;
+        if (($a = $this->_answers['impact']) && ($b = $a->getValue()))
+            return $b->getDesc();
         return '';
     }
 
@@ -626,6 +644,7 @@ implements RestrictedAccess, Threadable {
     }
 
     function getLock() {
+        /** @var Lock $lock */
         $lock = $this->lock;
         if ($lock && !$lock->isExpired())
             return $lock;
@@ -641,6 +660,7 @@ implements RestrictedAccess, Threadable {
             return null;
 
         // Check if the ticket is already locked.
+        /** @var Lock $lock */
         if (($lock = $this->getLock()) && !$lock->isExpired()) {
             if ($lock->getStaffId() != $staffId) //someone else locked the ticket.
                 return null;
@@ -1979,6 +1999,12 @@ implements RestrictedAccess, Threadable {
             'priority' => array(
                 'class' => 'Priority', 'desc' => __('Priority'),
             ),
+            'impact' => array(
+                'class' => 'Impact', 'desc' => __('Impact'),
+            ),
+            'urgency' => array(
+                'class' => 'Urgency', 'desc' => __('Urgency'),
+            ),
             'recipients' => array(
                 'class' => 'UserList', 'desc' => __('List of all recipient names'),
             ),
@@ -2424,6 +2450,7 @@ implements RestrictedAccess, Threadable {
 
         $options = array('thread'=>$message);
         // If enabled...send alert to staff (New Message Alert)
+        /** @var Dept $dept */
         if ($cfg->alertONNewMessage()
             && ($email = $dept->getAlertEmail())
             && ($tpl = $dept->getTemplate())
@@ -2453,6 +2480,7 @@ implements RestrictedAccess, Threadable {
             }
 
             // Account manager
+            /** @var Organization $org */
             if ($cfg->alertAcctManagerONNewMessage()
                     && ($org = $this->getOwner()->getOrganization())
                     && ($acct_manager = $org->getAccountManager())) {
@@ -2471,6 +2499,7 @@ implements RestrictedAccess, Threadable {
                     continue;
                 }
                 $alert = $this->replaceVars($msg, array('recipient' => $staff));
+                /** @var Email $email */
                 $email->sendAlert($staff, $alert['subj'], $alert['body'], null, $options);
                 $sentlist[] = $staff->getEmail();
             }
@@ -2573,7 +2602,9 @@ implements RestrictedAccess, Threadable {
         if (!($response = $this->getThread()->addResponse($vars, $errors)))
             return null;
 
+        /** @var Dept $dept */
         $dept = $this->getDept();
+        /** @var Staff $assignee */
         $assignee = $this->getStaff();
         // Set status - if checked.
         if ($vars['reply_status_id']
@@ -2884,13 +2915,12 @@ implements RestrictedAccess, Threadable {
         $fields['topicId']  = array('type'=>'int',      'required'=>1, 'error'=>__('Help topic selection is required'));
         $fields['slaId']    = array('type'=>'int',      'required'=>0, 'error'=>__('Select a valid SLA'));
         $fields['duedate']  = array('type'=>'date',     'required'=>0, 'error'=>__('Invalid date format - must be MM/DD/YY'));
-
         $fields['user_id']  = array('type'=>'int',      'required'=>0, 'error'=>__('Invalid user-id'));
 
-        if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
-            $errors['err'] = sprintf('%s — %s',
-                __('Missing or invalid data'),
-                __('Correct any errors below and try again'));
+//        if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
+//            $errors['err'] = sprintf('%s — %s',
+//                __('Missing or invalid data'),
+//                __('Correct any errors below and try again'));
 
         $vars['note'] = ThreadEntryBody::clean($vars['note']);
 
@@ -2908,10 +2938,12 @@ implements RestrictedAccess, Threadable {
         if (isset($vars['source']) // Check ticket source if provided
                 && !array_key_exists($vars['source'], Ticket::getSources()))
             $errors['source'] = sprintf( __('Invalid source given - %s'),
-                    Format::htmlchars($vars['source']));
+                    $vars['source']);
 
         // Validate dynamic meta-data
         $forms = DynamicFormEntry::forTicket($this->getId());
+
+        /** @var DynamicFormEntry $form */
         foreach ($forms as $form) {
             // Don't validate deleted forms
             if (!in_array($form->getId(), $vars['forms']))
@@ -2947,11 +2979,11 @@ implements RestrictedAccess, Threadable {
         $changes = array();
         foreach ($this->dirty as $F=>$old) {
             switch ($F) {
-            case 'topic_id':
-            case 'user_id':
-            case 'source':
-            case 'duedate':
-            case 'sla_id':
+                case 'topic_id':
+                case 'user_id':
+                case 'source':
+                case 'duedate':
+                case 'sla_id':
                 $changes[$F] = array($old, $this->{$F});
             }
         }
@@ -2963,11 +2995,14 @@ implements RestrictedAccess, Threadable {
             $this->logNote(_S('Ticket Updated'), $vars['note'], $thisstaff);
 
         // Update dynamic meta-data
+        /** @var DynamicFormEntry $f */
         foreach ($forms as $f) {
+
             if ($C = $f->getChanges())
                 $changes['fields'] = ($changes['fields'] ?: array()) + $C;
             // Drop deleted forms
             $idx = array_search($f->getId(), $vars['forms']);
+
             if ($idx === false) {
                 $f->delete();
             }
@@ -2981,9 +3016,7 @@ implements RestrictedAccess, Threadable {
             $this->logEvent('edited', $changes);
 
         // Reselect SLA if transient
-        if (!$keepSLA
-            && (!$this->getSLA() || $this->getSLA()->isTransient())
-        ) {
+        if (!$keepSLA && (!$this->getSLA() || $this->getSLA()->isTransient())) {
             $this->selectSLAId();
         }
 
@@ -3698,8 +3731,7 @@ implements RestrictedAccess, Threadable {
         $vars['note'] = ThreadEntryBody::clean($vars['note']);
         $create_vars = $vars;
         $tform = TicketForm::objects()->one()->getForm($create_vars);
-        $create_vars['cannedattachments']
-            = $tform->getField('message')->getWidget()->getAttachments()->getClean();
+        $create_vars['cannedattachments'] = $tform->getField('message')->getWidget()->getAttachments()->getClean();
 
         if (!($ticket=self::create($create_vars, $errors, 'staff', false)))
             return false;

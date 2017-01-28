@@ -944,14 +944,24 @@ class DynamicFormEntry extends VerySimpleModel {
     }
 
     function getAnswer($name) {
+        /** @var DynamicFormEntryAnswer $ans */
+//        foreach ($this->getAnswers() as $ans)
+//            echo ($ans);
         foreach ($this->getAnswers() as $ans)
             if ($ans->getField()->get('name') == $name)
                 return $ans;
         return null;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param bool $id
+     */
     function setAnswer($name, $value, $id=false) {
         foreach ($this->getAnswers() as $ans) {
+            /** @var DynamicFormEntryAnswer $ans */
+            /** @var DynamicForm $f */
             $f = $ans->getField();
             if ($f->isStorable() && $f->get('name') == $name) {
                 $f->reset();

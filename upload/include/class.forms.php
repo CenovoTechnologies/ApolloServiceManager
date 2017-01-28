@@ -104,7 +104,7 @@ class Form {
             $this->_errors = array();
             $this->validate($this->getClean());
             foreach ($this->getFields() as $field)
-                if ($field->errors() && (!$include || $include($field)))
+                if ($field->errors() && (!$include || $field))
                     $this->_errors[$field->get('id')] = $field->errors();
         }
         return !$this->_errors;
@@ -1904,7 +1904,7 @@ class DatetimeField extends FormField {
             : $value;
         switch ($method) {
         case 'equal':
-            $l = clone $value;
+            $l = $value;
             $r = $value->add(new DateInterval('P1D'));
             return new Q(array(
                 "{$name}__gte" => $l,
@@ -2082,7 +2082,7 @@ class PriorityField extends ChoiceField {
     function getChoices($verbose=false) {
         $sql = 'SELECT priority_id, priority_desc FROM '.PRIORITY_TABLE
               .' ORDER BY priority_urgency DESC';
-        $choices = array('' => '— '.__('Default').' —');
+        $choices = array('' => __('Select Priority...'));
         if (!($res = db_query($sql)))
             return $choices;
 
@@ -2120,7 +2120,7 @@ class PriorityField extends ChoiceField {
         if (!$prio instanceof Priority)
             return parent::display($prio);
         return sprintf('<span style="padding: 2px; background-color: %s">%s</span>',
-            $prio->getColor(), Format::htmlchars($prio->getDesc()));
+            $prio->getColor(), $prio->getDesc());
     }
 
     function toString($value) {
@@ -2168,11 +2168,222 @@ class PriorityField extends ChoiceField {
     }
 }
 FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
-    return array(
-        'priority' => array(__('Priority Level'), PriorityField),
-    );
+    return array('priority' => array(__('Priority Level'), PriorityField),);
 });
 
+class ImpactField extends ChoiceField {
+    function getWidget($widgetClass=false) {
+        $widget = parent::getWidget($widgetClass);
+        if ($widget->value instanceof Impact)
+            $widget->value = $widget->value->getId();
+        return $widget;
+    }
+
+    function hasIdValue() {
+        return true;
+    }
+
+    function getChoices($verbose=false) {
+        $sql = 'SELECT impact_id, impact_desc FROM '.IMPACT_TABLE
+            .' ORDER BY impact_level DESC';
+        $choices = array('' => __('Select Impact...'));
+        if (!($res = db_query($sql)))
+            return $choices;
+
+        while ($row = db_fetch_row($res))
+            $choices[$row[0]] = $row[1];
+        return $choices;
+    }
+
+    function parse($id) {
+        return $this->to_php(null, $id);
+    }
+
+    function to_php($value, $id=false) {
+        if ($value instanceof Impact)
+            return $value;
+        if (is_array($id)) {
+            reset($id);
+            $id = key($id);
+        }
+        elseif (is_array($value))
+            list($value, $id) = $value;
+        elseif ($id === false)
+            $id = $value;
+        if ($id)
+            return Impact::lookup($id);
+    }
+
+    /**
+     * @param $impact
+     * @return array
+     */
+    function to_database($impact) {
+        return ($impact instanceof Impact)
+            ? array($impact->getDesc(), $impact->getId())
+            : $impact;
+    }
+
+    function display($impact) {
+        if (!$impact instanceof Impact)
+            return parent::display($impact);
+        return sprintf('<span style="padding: 2px; background-color: %s">%s</span>',
+            $impact->getColor(), $impact->getDesc());
+    }
+
+    function toString($value) {
+        return ($value instanceof Impact) ? $value->getDesc() : $value;
+    }
+
+    function whatChanged($before, $after) {
+        return FormField::whatChanged($before, $after);
+    }
+
+    function searchable($value) {
+        // Impact isn't searchable this way
+        return null;
+    }
+
+    function getKeys($value) {
+        return ($value instanceof Impact) ? array($value->getId()) : null;
+    }
+
+    function getConfigurationOptions() {
+        $choices = $this->getChoices();
+        $choices[''] = __('System Default');
+        return array(
+            'prompt' => new TextboxField(array(
+                'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
+                'hint'=>__('Leading text shown before a value is selected'),
+                'configuration'=>array('size'=>40, 'length'=>40),
+            )),
+            'default' => new ChoiceField(array(
+                'id'=>3, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
+                'choices' => $choices,
+                'hint'=>__('Default selection for this field'),
+                'configuration'=>array('size'=>20, 'length'=>40),
+            )),
+        );
+    }
+
+    function getConfiguration() {
+        global $cfg;
+
+        $config = parent::getConfiguration();
+        if (!isset($config['default']))
+            $config['default'] = $cfg->getDefaultImpactId();
+        return $config;
+    }
+}
+FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
+    return array('impact' => array(__('Impact Level'), ImpactField),);
+});
+
+class UrgencyField extends ChoiceField {
+    function getWidget($widgetClass=false) {
+        $widget = parent::getWidget($widgetClass);
+        if ($widget->value instanceof Urgency)
+            $widget->value = $widget->value->getId();
+        return $widget;
+    }
+
+    function hasIdValue() {
+        return true;
+    }
+
+    function getChoices($verbose=false) {
+        $sql = 'SELECT urgency_id, urgency_desc FROM '.URGENCY_TABLE
+            .' ORDER BY urgency_level DESC';
+        $choices = array('' => __('Select Urgency...'));
+        if (!($res = db_query($sql)))
+            return $choices;
+
+        while ($row = db_fetch_row($res))
+            $choices[$row[0]] = $row[1];
+        return $choices;
+    }
+
+    function parse($id) {
+        return $this->to_php(null, $id);
+    }
+
+    function to_php($value, $id=false) {
+        if ($value instanceof Urgency)
+            return $value;
+        if (is_array($id)) {
+            reset($id);
+            $id = key($id);
+        }
+        elseif (is_array($value))
+            list($value, $id) = $value;
+        elseif ($id === false)
+            $id = $value;
+        if ($id)
+            return Urgency::lookup($id);
+    }
+
+    function to_database($urge) {
+        return ($urge instanceof Urgency)
+            ? array($urge->getDesc(), $urge->getId())
+            : $urge;
+    }
+
+    function display($urge) {
+        if (!$urge instanceof Urgency)
+            return parent::display($urge);
+        return sprintf('<span style="padding: 2px; background-color: %s">%s</span>',
+            $urge->getColor(), $urge->getDesc());
+    }
+
+    function toString($value) {
+        return ($value instanceof Urgency) ? $value->getDesc() : $value;
+    }
+
+    function whatChanged($before, $after) {
+        return FormField::whatChanged($before, $after);
+    }
+
+    function searchable($value) {
+        // Priority isn't searchable this way
+        return null;
+    }
+
+    function getKeys($value) {
+        return ($value instanceof Urgency) ? array($value->getId()) : null;
+    }
+
+    function getConfigurationOptions() {
+        $choices = $this->getChoices();
+        $choices[''] = __('System Default');
+        return array(
+            'prompt' => new TextboxField(array(
+                'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
+                'hint'=>__('Leading text shown before a value is selected'),
+                'configuration'=>array('size'=>40, 'length'=>40),
+            )),
+            'default' => new ChoiceField(array(
+                'id'=>3, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
+                'choices' => $choices,
+                'hint'=>__('Default selection for this field'),
+                'configuration'=>array('size'=>20, 'length'=>40),
+            )),
+        );
+    }
+
+    function getConfiguration() {
+        global $cfg;
+
+        $config = parent::getConfiguration();
+        if (!isset($config['default']))
+            $config['default'] = $cfg->getDefaultUrgencyId();
+        return $config;
+    }
+}
+FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
+    return array(
+        'urgency' => array(__('Urgency Level'), UrgencyField),
+    );
+});
 
 class DepartmentField extends ChoiceField {
     function getWidget($widgetClass=false) {
@@ -2786,8 +2997,8 @@ class FileUploadField extends FormField {
         $links = array();
         foreach ($this->getFiles() as $f) {
             $links[] = sprintf('<a class="no-pjax" href="%s">%s</a>',
-                Format::htmlchars($f->file->getDownloadUrl()),
-                Format::htmlchars($f->file->name));
+                $f->file->getDownloadUrl(),
+                $f->file->name);
         }
         return implode('<br/>', $links);
     }
@@ -2820,8 +3031,8 @@ class FileUploadField extends FormField {
         $A = (array) $after;
         $added = array_diff($A, $B);
         $deleted = array_diff($B, $A);
-        $added = Format::htmlchars(array_keys($added));
-        $deleted = Format::htmlchars(array_keys($deleted));
+        $added = array_keys($added);
+        $deleted = array_keys($deleted);
 
         if ($added && $deleted) {
             $desc = sprintf(
@@ -3196,12 +3407,12 @@ class PhoneNumberWidget extends Widget {
           <div class="row">
               <label style="width:100%">
                 <input id="<?php echo $this->id; ?>" class="form-control" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
-                echo Format::htmlchars($phone); ?>"/><?php
+                echo $phone; ?>"/><?php
                 // Allow display of extension field even if disabled if the phone
                 // number being edited has an extension
                 if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
                     <input type="text" name="<?php
-                    echo $this->name; ?>-ext" class="form-control" style="width:20%" value="<?php echo Format::htmlchars($ext);
+                    echo $this->name; ?>-ext" class="form-control" style="width:20%" value="<?php echo $ext;
                         ?>" size="5"/>
               </label>
                     </div>
@@ -3276,7 +3487,8 @@ class ChoicesWidget extends Widget {
             $classes = 'class="'.$config['classes'].'"';
         ?>
         <select name="<?php echo $this->name; ?>[]"
-            <?php echo implode(' ', array_filter(array($classes))); ?>
+            <?php //echo implode(' ', array_filter(array($classes))); ?>
+            class="form-control required"
             id="<?php echo $this->id; ?>"
             <?php if (isset($config['data']))
               foreach ($config['data'] as $D=>$V)
@@ -3410,7 +3622,7 @@ class BoxChoicesWidget extends Widget {
         <input id="<?php echo $id; ?>" type="<?php echo $type; ?>"
             name="<?php echo $this->name; ?>[]" <?php
             if ($this->value[$k]) echo 'checked="checked"'; ?> value="<?php
-            echo Format::htmlchars($k); ?>"/>
+            echo $k; ?>"/>
         <?php
         if ($v) {
             echo Format::viewableImages($v);
@@ -3549,7 +3761,7 @@ class DatetimePickerWidget extends Widget {
         ?>
         <input type="text" name="<?php echo $this->name; ?>"
             id="<?php echo $this->id; ?>" style="display:inline-block;width:auto"
-            value="<?php echo Format::htmlchars($this->value); ?>" size="12"
+            value="<?php echo $this->value; ?>" size="12"
             autocomplete="off" class="dp" />
         <script type="text/javascript">
             $(function() {
@@ -3884,7 +4096,7 @@ class FreeTextWidget extends Widget {
         }
         if ($hint = $this->field->getLocal('hint')) { ?>
         <em><?php
-            echo Format::htmlchars($hint);
+            echo $hint;
         ?></em><?php
         } ?>
         <div><?php
@@ -3969,6 +4181,8 @@ class VisibilityConstraint {
 
     /**
      * Determines if the field was visible when the form was submitted
+     * @param $field
+     * @return bool|mixed
      */
     function isVisible($field) {
 
@@ -3982,6 +4196,7 @@ class VisibilityConstraint {
 
     static function splitFieldAndOp($field) {
         if (false !== ($last = strrpos($field, '__'))) {
+            /** @var String $op */
             $op = substr($field, $last + 2);
             if (isset(static::$operators[$op]))
                 $field = substr($field, 0, strrpos($field, '__'));
