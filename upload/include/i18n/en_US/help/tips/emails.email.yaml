@@ -14,16 +14,16 @@
 #
 ---
 new_ticket_help_topic:
-    title: New Ticket Help Topic
+    title: New Ticket Service Template
     content: >
-        Choose a <span class="doc-desc-title">Help Topic</span> to be
+        Choose a <span class="doc-desc-title">Service Template</span> to be
         automatically associated with tickets created via this Email
         Address.
         <br/><br/>
-        Forms associated with the Help Topic will be added to the ticket,
+        Forms associated with the Service Template will be added to the ticket,
         but will not have any data.
     links:
-      - title: Manage Help Topics
+      - title: Manage Service Templates
         href: /scp/helptopics.php
 
 new_ticket_priority:

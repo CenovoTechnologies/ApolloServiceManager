@@ -1935,7 +1935,7 @@ class EditEvent extends ThreadEvent {
         case isset($data['duedate']):
             $base = __('Updated by <b>{somebody}</b> {timestamp} — %s');
             foreach (array(
-                'topic_id' => array(__('Help Topic'), array('Topic', 'getTopicName')),
+                'topic_id' => array(__('Service Template'), array('Topic', 'getTopicName')),
                 'sla_id' => array(__('SLA'), array('SLA', 'getSLAName')),
                 'duedate' => array(__('Due Date'), array('Format', 'date')),
                 'user_id' => array(__('Ticket Owner'), array('User', 'getNameById')),

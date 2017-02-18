@@ -51,7 +51,7 @@ foreach ($faqs as $F) {
     </div>
     <div class="content">
         <section>
-            <div class="header"><?php echo __('Help Topics'); ?></div>
+            <div class="header"><?php echo __('Service Templates'); ?></div>
 <?php
 foreach (Topic::objects()
     ->filter(array('faqs__faq__category__category_id'=>$category->getId()))

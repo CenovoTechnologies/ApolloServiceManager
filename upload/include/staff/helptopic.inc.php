@@ -2,7 +2,7 @@
 if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access Denied');
 $info = $qs = $forms = array();
 if($topic && $_REQUEST['a']!='add') {
-    $title=__('Update Help Topic');
+    $title=__('Update Service Template');
     $action='update';
     $submit_text=__('Save Changes');
     $info=$topic->getInfo();
@@ -12,9 +12,9 @@ if($topic && $_REQUEST['a']!='add') {
     $qs += array('id' => $topic->getId());
     $forms = $topic->getForms();
 } else {
-    $title=__('Add New Help Topic');
+    $title=__('Add New Service Template');
     $action='create';
-    $submit_text=__('Add Topic');
+    $submit_text=__('Add Type');
     $info['isactive']=isset($info['isactive'])?$info['isactive']:1;
     $info['ispublic']=isset($info['ispublic'])?$info['ispublic']:1;
     $qs += array('a' => $_REQUEST['a']);
@@ -30,7 +30,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
  <i class="help-tip icon-question-sign" href="#help_topic_information"></i></h2>
 
 <ul class="nav nav-tabs" id="topic-tabs" role="tablist">
-    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info" role="tab"><i class="icon-info-sign"></i> <?php echo __('Help Topic Information'); ?></a></li>
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info" role="tab"><i class="icon-info-sign"></i> <?php echo __('Service Template Information'); ?></a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#routing" role="tab"><i class="icon-ticket"></i> <?php echo __('New ticket options'); ?></a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#forms" role="tab"><i class="icon-paste"></i> <?php echo __('Forms'); ?></a></li>
 </ul>
@@ -75,31 +75,12 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 &nbsp;<span class="error">*&nbsp;</span> <i class="help-tip icon-question-sign" href="#type"></i>
             </td>
         </tr>
-        <tr>
-            <td>
-                <?php echo __('Parent Topic');?>:
-            </td>
-            <td>
-                <select name="topic_pid" class="form-control-sm">
-                    <option value="">&mdash; <?php echo __('Top-Level Topic'); ?> &mdash;</option><?php
-                    $topics = Topic::getAllHelpTopics();
-                    while (list($id,$topic) = each($topics)) {
-                        if ($id == $info['topic_id'])
-                            continue; ?>
-                        <option value="<?php echo $id; ?>"<?php echo ($info['topic_pid']==$id)?'selected':''; ?>><?php echo $topic; ?></option>
-                    <?php
-                    } ?>
-                </select> <i class="help-tip icon-question-sign" href="#parent_topic"></i>
-                &nbsp;<span class="error">&nbsp;<?php echo $errors['pid']; ?></span>
-            </td>
-        </tr>
 
     </tbody>
     </table>
 
         <div style="padding:8px 3px;border-bottom: 2px dotted #ddd;">
-            <strong><?php echo __('Internal Notes');?>:</strong>
-            <?php echo __("Be liberal, they're internal");?>
+            <?php echo __('Additional Notes');?>:
         </div>
 
         <textarea class="form-control-sm richtext no-bar" name="notes" cols="21"

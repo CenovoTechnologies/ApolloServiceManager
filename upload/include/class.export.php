@@ -89,7 +89,7 @@ class Export {
                 'user.default_email.address' => __('From Email'),
                 'cdata.:priority.priority_desc' => __('Priority'),
                 'dept::getLocalName' => __('Department'),
-                'topic::getName' => __('Help Topic'),
+                'topic::getName' => __('Service Template'),
                 'source' =>         __('Source'),
                 'status::getName' =>__('Current Status'),
                 'lastupdate' =>     __('Last Updated'),
@@ -384,7 +384,9 @@ class DatabaseExporter {
     var $stream;
     var $options;
     var $tables = array(CONFIG_TABLE, SYSLOG_TABLE, FILE_TABLE,
-        FILE_CHUNK_TABLE, STAFF_TABLE, DEPT_TABLE, TOPIC_TABLE, GROUP_TABLE,
+        FILE_CHUNK_TABLE, STAFF_TABLE, DEPT_TABLE, TOPIC_TABLE,
+        SERVICE_TYPE_TABLE, SERVICE_TABLE, SERVICE_CAT_TABLE,
+        SERVICE_SUB_CAT_TABLE, GROUP_TABLE,
         STAFF_DEPT_TABLE, TEAM_TABLE, TEAM_MEMBER_TABLE, FAQ_TABLE,
         FAQ_TOPIC_TABLE, FAQ_CATEGORY_TABLE, DRAFT_TABLE,
         CANNED_TABLE, TICKET_TABLE, ATTACHMENT_TABLE,

@@ -161,7 +161,7 @@ div.hr {
 <tr>
     <th><?php echo __('Assigned To'); ?></th>
     <td><?php echo $ticket->getAssigned(); ?></td>
-    <th><?php echo __('Help Topic'); ?></th>
+    <th><?php echo __('Service Template'); ?></th>
     <td><?php echo $ticket->getHelpTopic(); ?></td>
 </tr>
 <tr>

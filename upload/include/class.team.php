@@ -256,6 +256,16 @@ implements TemplateVariable {
         return $row ? $row[0] : 0;
     }
 
+    static function getNameById($id) {
+
+        $row = self::objects()
+            ->filter(array('team_id'=>trim($id)))
+            ->values_flat('name')
+            ->first();
+
+        return $row ? $row[0] : 0;
+    }
+
     static function getTeams($criteria=array()) {
         static $teams = null;
         if (!$teams || $criteria) {

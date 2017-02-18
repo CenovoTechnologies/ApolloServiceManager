@@ -268,11 +268,11 @@ class AdminNav extends StaffNav{
         if(!$this->tabs){
 
             $tabs=array();
-            $tabs['dashboard']=array('desc'=>__('Dashboard'),'title'=>__('Admin Dashboard'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#dashboard", "aria-expanded"=>"false", "aria-controls"=>"dashboard");
-            $tabs['settings']=array('desc'=>__('Settings'),'title'=>__('System Settings'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#settings", "aria-expanded"=>"false", "aria-controls"=>"settings");
-            $tabs['manage']=array('desc'=>__('Manage'),'title'=>__('Manage Options'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#manage", "aria-expanded"=>"false", "aria-controls"=>"manage");
-            $tabs['emails']=array('desc'=>__('Emails'),'title'=>__('Email Settings'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#emails", "aria-expanded"=>"false", "aria-controls"=>"emails");
-            $tabs['staff']=array('desc'=>__('Agents'),'title'=>__('Manage Agents'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#staff", "aria-expanded"=>"false", "aria-controls"=>"staff");
+            $tabs['dashboard']=array('desc'=>__('Admin Dashboard'),'title'=>__('Admin Dashboard'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#dashboard", "aria-expanded"=>"false", "aria-controls"=>"dashboard");
+            $tabs['settings']=array('desc'=>__('System Settings'),'title'=>__('System Settings'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#settings", "aria-expanded"=>"false", "aria-controls"=>"settings");
+            $tabs['manage']=array('desc'=>__('Manage Options'),'title'=>__('Manage Options'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#manage", "aria-expanded"=>"false", "aria-controls"=>"manage");
+            $tabs['emails']=array('desc'=>__('Email Settings'),'title'=>__('Email Settings'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#emails", "aria-expanded"=>"false", "aria-controls"=>"emails");
+            $tabs['staff']=array('desc'=>__('Manage Agents'),'title'=>__('Manage Agents'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#staff", "aria-expanded"=>"false", "aria-controls"=>"staff");
             if (count($this->getRegisteredApps()))
                 $tabs['apps']=array('desc'=>__('Applications'),'title'=>__('Applications'),"class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#apps", "aria-expanded"=>"false", "aria-controls"=>"apps");
             $this->tabs=$tabs;
@@ -301,7 +301,11 @@ class AdminNav extends StaffNav{
                     $subnav[]=array('desc'=>__('Knowledgebase'),'href'=>'settings.php?t=kb');
                     break;
                 case 'manage':
-                    $subnav[]=array('desc'=>__('Help Topics'),'href'=>'helptopics.php');
+                    $subnav[]=array('desc'=>__('Service Templates'),'href'=>'helptopics.php');
+                    $subnav[]=array('desc'=>__('Service Types'),'href'=>'servicetypes.php');
+                    $subnav[]=array('desc'=>__('Service Catalogue'),'href'=>'services.php');
+                    $subnav[]=array('desc'=>__('Service Categories'),'href'=>'servicecats.php');
+                    $subnav[]=array('desc'=>__('Service Sub-Categories'),'href'=>'servicesubcats.php');
                     $subnav[]=array('desc'=>__('Ticket Filters'),'href'=>'filters.php',
                                         'title'=>__('Ticket Filters'));
                     $subnav[]=array('desc'=>__('SLA Plans'),'href'=>'slas.php');

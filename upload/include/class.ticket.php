@@ -32,6 +32,9 @@ include_once(INCLUDE_DIR.'class.priority.php');
 include_once(INCLUDE_DIR.'class.impact.php');
 include_once(INCLUDE_DIR.'class.urgency.php');
 include_once(INCLUDE_DIR.'class.sla.php');
+include_once(INCLUDE_DIR.'class.servicetype.php');
+include_once(INCLUDE_DIR.'class.service.php');
+include_once(INCLUDE_DIR.'class.servicecat.php');
 include_once(INCLUDE_DIR.'class.canned.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 require_once(INCLUDE_DIR.'class.user.php');
@@ -59,6 +62,22 @@ class TicketModel extends VerySimpleModel {
             ),
             'sla' => array(
                 'constraint' => array('sla_id' => 'Sla.id'),
+                'null' => true,
+            ),
+            'service_type' => array(
+                'constraint' => array('service_type_id' => 'ServiceType.service_type_id'),
+                'null' => true,
+            ),
+            'service' => array(
+                'constraint' => array('service_id' => 'Service.service_id'),
+                'null' => true,
+            ),
+            'service_cat' => array(
+                'constraint' => array('service_cat_id' => 'ServiceCat.service_cat_id'),
+                'null' => true,
+            ),
+            'service_sub_cat' => array(
+                'constraint' => array('service_sub_cat_id' => 'ServiceSubCat.service_sub_cat_id'),
                 'null' => true,
             ),
             'staff' => array(
@@ -251,8 +270,8 @@ class Ticket extends TicketModel
 implements RestrictedAccess, Threadable {
 
     static $meta = array(
-        'select_related' => array('topic', 'staff', 'user', 'team', 'dept', 'sla', 'thread',
-            'user__default_email'),
+        'select_related' => array('topic', 'staff', 'user', 'team', 'dept', 'sla', 'serv_type', 'service',
+            'service_cat', 'service_sub_cat', 'thread', 'user__default_email'),
     );
 
     var $lastMsgId;
@@ -631,6 +650,10 @@ implements RestrictedAccess, Threadable {
             'source'    => $this->getSource(),
             'topicId'   => $this->getTopicId(),
             'slaId'     => $this->getSLAId(),
+            'servTypeId' => $this->getServiceTypeId(),
+            'serviceId' => $this->getServiceId(),
+            'serviceCatId' => $this->getCategoryId(),
+            'serviceSubCatId' => $this->getSubCategoryId(),
             'user_id'   => $this->getOwnerId(),
             'duedate'   => $this->getDueDate()
                 ? Format::date($this->getDueDate(), true,
@@ -759,9 +782,11 @@ implements RestrictedAccess, Threadable {
     function getAssignees() {
 
         $assignees = array();
+        /** @var Staff $staff */
         if ($staff = $this->getStaff())
             $assignees[] = $staff->getName();
 
+        /** @var Team $team */
         if ($team = $this->getTeam())
             $assignees[] = $team->getName();
 
@@ -788,6 +813,38 @@ implements RestrictedAccess, Threadable {
 
     function getSLA() {
         return $this->sla;
+    }
+
+    function getServiceTypeId() {
+        return $this->service_type_id;
+    }
+
+    function getServiceType() {
+        return $this->service_type;
+    }
+
+    function getServiceId() {
+        return $this->service_id;
+    }
+
+    function getService() {
+        return $this->service;
+    }
+
+    function getCategoryId() {
+        return $this->service_cat_id;
+    }
+
+    function getCategory() {
+        return $this->service_cat;
+    }
+
+    function getSubCategoryId() {
+        return $this->service_sub_cat_id;
+    }
+
+    function getSubCategory() {
+        return $this->service_sub_cat;
     }
 
     function getLastRespondent() {
@@ -882,7 +939,12 @@ implements RestrictedAccess, Threadable {
     function getFirstMessage() {
         /** @var ThreadEntry $msg */
         $msg = $this->getThread()->getFirstMessage();
-        return $msg->getBody();
+        try {
+            $body = $msg->getBody();
+            return $body;
+        } catch(Exception $e) {
+            return "";
+        }
     }
 
     function getMessages() {
@@ -1209,6 +1271,22 @@ implements RestrictedAccess, Threadable {
         return $this->save();
     }
 
+    function setServiceType($serviceTypeId) {
+
+    }
+
+    function setService($serviceId) {
+
+    }
+
+    function setCategory($categoryId) {
+
+    }
+
+    function setSubCategory($subCategoryId) {
+
+    }
+
     //Status helper.
 
     function setStatus($status, $comments='', &$errors=array(), $set_closing_agent=true) {
@@ -1358,9 +1436,6 @@ implements RestrictedAccess, Threadable {
         // FIXME: Throw and excception and add test cases
         return false;
     }
-
-
-
 
     function setAnsweredState($isanswered) {
         $this->isanswered = $isanswered;
@@ -2023,7 +2098,7 @@ implements RestrictedAccess, Threadable {
                 'class' => 'TicketThread', 'desc' => __('Ticket Thread'),
             ),
             'topic' => array(
-                'class' => 'Topic', 'desc' => __('Help Topic'),
+                'class' => 'Topic', 'desc' => __('Service Template'),
             ),
             // XXX: Isn't lastreponse and lastmessage more useful
             'last_update' => array(
@@ -2618,6 +2693,7 @@ implements RestrictedAccess, Threadable {
         $claim = ($claim
                 && $cfg->autoClaimTickets()
                 && !$dept->disableAutoClaim());
+        /** @var Staff $thisstaff */
         if ($claim && $thisstaff && $this->isOpen() && !$this->getStaffId()) {
             $this->setStaffId($thisstaff->getId()); //direct assignment;
         }
@@ -2857,17 +2933,19 @@ implements RestrictedAccess, Threadable {
             return false;
         }
         $fields = array();
+        $fields['topicId']  = array('type'=>'int',      'required'=>1, 'error'=>__('Help topic selection is required'));
         $fields['source']  = array('type'=>'text',      'required'=>1, 'error'=>__('Source selection is required'));
         $fields['user_id']  = array('type'=>'int',      'required'=>1, 'error'=>__('Invalid user-id'));
 
         if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
             $errors['err'] = sprintf('%s — %s',
-                __('Missing or poop data'),
+                __('Missing or invalid data'),
                 __('Correct any errors below and try again'));
 
         $changes = array();
         foreach ($this->dirty as $F=>$old) {
             switch ($F) {
+                case 'topicId':
                 case 'user_id':
                 case 'source':
                     $changes[$F] = array($old, $this->{$F});
@@ -2879,6 +2957,9 @@ implements RestrictedAccess, Threadable {
 
         if ($vars['note'])
             $this->logNote(_S('Ticket Updated'), $vars['note'], $thisstaff);
+
+        $this->source = $vars['source'];
+        $this->topic_id = $vars['topicId'];
 
         // Update dynamic meta-data
         $forms = DynamicFormEntry::forTicket($this->getId());
@@ -2916,6 +2997,12 @@ implements RestrictedAccess, Threadable {
         $fields['slaId']    = array('type'=>'int',      'required'=>0, 'error'=>__('Select a valid SLA'));
         $fields['duedate']  = array('type'=>'date',     'required'=>0, 'error'=>__('Invalid date format - must be MM/DD/YY'));
         $fields['user_id']  = array('type'=>'int',      'required'=>0, 'error'=>__('Invalid user-id'));
+        $fields['servTypeId'] = array('type'=>'int',     'required'=>1, 'error'=>__('Service Type selection is required'));
+        $fields['serviceId'] = array('type'=>'int',     'required'=>1, 'error'=>__('Service selection is required'));
+        $fields['serviceCatId'] = array('type'=>'int',     'required'=>0, 'error'=>__('Select a valid service category'));
+        $fields['serviceSubCatId'] = array('type'=>'int',     'required'=>0, 'error'=>__('Select a Valid Sub Category'));
+
+
 
 //        if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
 //            $errors['err'] = sprintf('%s — %s',
@@ -2935,10 +3022,10 @@ implements RestrictedAccess, Threadable {
                 $errors['duedate']=__('Due date must be in the future');
         }
 
-        if (isset($vars['source']) // Check ticket source if provided
+        /*if (isset($vars['source']) // Check ticket source if provided
                 && !array_key_exists($vars['source'], Ticket::getSources()))
             $errors['source'] = sprintf( __('Invalid source given - %s'),
-                    $vars['source']);
+                    $vars['source']);*/
 
         // Validate dynamic meta-data
         $forms = DynamicFormEntry::forTicket($this->getId());
@@ -2965,7 +3052,10 @@ implements RestrictedAccess, Threadable {
 
         $this->topic_id = $vars['topicId'];
         $this->sla_id = $vars['slaId'];
-        $this->source = $vars['source'];
+        $this->service_type_id = $vars['servTypeId'];
+        $this->service_id = $vars['serviceId'];
+        $this->service_cat_id = $vars['serviceCatId'];
+        $this->service_sub_cat_id = $vars['serviceSubCatId'];
         $this->duedate = $vars['duedate']
             ? date('Y-m-d G:i',Misc::dbtime($vars['duedate'].' '.$vars['time']))
             : null;
@@ -2981,7 +3071,10 @@ implements RestrictedAccess, Threadable {
             switch ($F) {
                 case 'topic_id':
                 case 'user_id':
-                case 'source':
+                case 'service_type_id':
+                case 'service_id':
+                case 'service_cat_id':
+                case 'service_sub_cat_id':
                 case 'duedate':
                 case 'sla_id':
                 $changes[$F] = array($old, $this->{$F});
@@ -3277,12 +3370,20 @@ implements RestrictedAccess, Threadable {
         $fields=array();
         switch (strtolower($origin)) {
             case 'web':
-                $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Select a Help Topic'));
+                $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Select a Service Template'));
+                /*$fields['servTypeId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Type'));
+                $fields['serviceId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service'));
+                $fields['serviceCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Category'));
+                $fields['serviceSubCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Sub Category'));*/
                 break;
             case 'staff':
                 $fields['deptId']   = array('type'=>'int',  'required'=>0, 'error'=>__('Department selection is required'));
-                $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Help topic selection is required'));
+                $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Service type selection is required'));
                 $fields['duedate']  = array('type'=>'date', 'required'=>0, 'error'=>__('Invalid date format - must be MM/DD/YY'));
+                /*$fields['servTypeId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Type'));
+                $fields['serviceId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service'));
+                $fields['serviceCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Category'));
+                $fields['serviceSubCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Sub Category'));*/
                 break;
             case 'api':
                 $fields['source']   = array('type'=>'string', 'required'=>1, 'error'=>__('Indicate ticket source'));
@@ -3295,10 +3396,10 @@ implements RestrictedAccess, Threadable {
                 $errors['err']=$errors['origin'] = __('Invalid ticket origin given');
         }
 
-        if(!Validator::process($fields, $vars, $errors) && !$errors['err'])
+        /*if(!Validator::process($fields, $vars, $errors) && !$errors['err'])
             $errors['err'] = sprintf('%s — %s',
                 __('Missing or invalid data'),
-                __('Correct any errors below and try again'));
+                __('Correct any errors below and try again'));*/
 
         // Make sure the due date is valid
         if ($vars['duedate']) {
@@ -3435,8 +3536,8 @@ implements RestrictedAccess, Threadable {
             $autorespond = $vars['autorespond'];
 
         # Apply filter-specific priority
-        if ($vars['priorityId'])
-            $form->setAnswer('priority', null, $vars['priorityId']);
+        //if ($vars['priorityId'])
+            //$form->setAnswer('priority', null, $vars['priorityId']);
 
         // If the filter specifies a help topic which has a form associated,
         // and there was previously either no help topic set or the help
@@ -3449,6 +3550,10 @@ implements RestrictedAccess, Threadable {
         $statusId = $vars['statusId'];
         $deptId = $vars['deptId']; //pre-selected Dept if any.
         $source = ucfirst($vars['source']);
+        $servType = $vars['servTypeId'];
+        $service = $vars['serviceId'];
+        $serviceCat = $vars['serviceCatId'];
+        $serviceSubCat = $vars['serviceSubCatId'];
 
         // Apply email settings for emailed tickets. Email settings should
         // trump help topic settins if the email has an associated help
@@ -3479,6 +3584,8 @@ implements RestrictedAccess, Threadable {
             $deptId = $deptId ?: $topic->getDeptId();
             $statusId = $statusId ?: $topic->getStatusId();
             $priority = $form->getAnswer('priority');
+            $impact = $form->getAnswer('impact');
+            $urgency = $form->getAnswer('urgency');
             if (!$priority || !$priority->getIdValue())
                 $form->setAnswer('priority', null, $topic->getPriorityId());
             if ($autorespond)
@@ -3528,6 +3635,10 @@ implements RestrictedAccess, Threadable {
             'topic_id' => $topicId,
             'ip_address' => $ipaddress,
             'source' => $source,
+            'service_type_id' => $servType,
+            'service_id' => $service,
+            'service_cat_id' => $serviceCat,
+            'service_sub_cat_id' => $serviceSubCat
         ));
 
         if (isset($vars['emailId']) && $vars['emailId'])

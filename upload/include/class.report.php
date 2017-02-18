@@ -198,7 +198,7 @@ class OverviewReport {
                 ->values('dept__id');
             break;
         case 'topic':
-            $headers = array(__('Help Topic'));
+            $headers = array(__('Service Template'));
             $header = function($row) { return Topic::getLocalNameById($row['topic_id'], $row['topic__topic']); };
             $pk = 'topic_id';
             $stats = $stats

@@ -401,7 +401,7 @@ FilterAction::register('FA_AssignAgent', /* @trans */ 'Ticket');
 
 class FA_AssignTopic extends TriggerAction {
     static $type = 'topic';
-    static $name = /* @trans */ 'Set Help Topic';
+    static $name = /* @trans */ 'Set Service Template';
 
     function apply(&$ticket, array $info) {
         $config = $this->getConfiguration();

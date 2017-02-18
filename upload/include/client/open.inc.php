@@ -56,12 +56,12 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     <tbody>
     <tr><td colspan="2"><hr />
         <div class="form-header" style="margin-bottom:0.5em">
-        <?php echo __('Help Topic'); ?>
+        <?php echo __('Service Template'); ?>
         </div>
     </td></tr>
     <tr>
         <td colspan="2">
-            <select id="topicId" class="form-control" name="topicId" onchange="javascript:
+            <select id="topicId" class="form-control required" name="topicId" onchange="javascript:
                     var data = $(':input[name]', '#dynamic-form').serialize();
                     $.ajax(
                       'ajax.php/form/help-topic/' + this.value,
@@ -73,7 +73,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                           $(document.head).append(json.media);
                         }
                       });">
-                <option value="" selected="selected">&mdash; <?php echo __('Select a Help Topic');?> &mdash;</option>
+                <option value="" selected="selected"> <?php echo __('Select a Service Template');?> </option>
                 <?php
                 if($topics=Topic::getPublicHelpTopics()) {
                     foreach($topics as $id =>$name) {

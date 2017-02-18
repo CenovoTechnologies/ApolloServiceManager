@@ -32,5 +32,5 @@ transient:
     content: >
         Transient SLAs are considered temporary and can be overridden by
         a non-transient SLA on <span class="doc-desc-opt">Department</span>
-        transfer or when its <span class="doc-desc-title">Help Topic</span>
+        transfer or when its <span class="doc-desc-title">Service Template</span>
         is changed.

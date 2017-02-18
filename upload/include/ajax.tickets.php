@@ -348,6 +348,44 @@ class TicketsAjaxAPI extends AjaxController {
         return $pId;
     }
 
+    /**
+     * @param $tId
+     * @param $serviceType
+     * @return array|mixed
+     */
+    function filterServices($tId, $serviceType) {
+        $services = [];
+        $children = Service::getServicesForParent($serviceType);
+        foreach ($children as $T) {
+            $services[] = array('id'=>$T['id'], 'name'=>$T['service']);
+        }
+
+        return $this->json_encode($services);
+    }
+
+    /**
+     * @param $tId
+     * @param $service
+     * @return mixed|string
+     */
+    function filterCategories($tId, $service) {
+        $cats = [];
+        $children = ServiceCat::getParentCategories($service);
+        foreach($children as $T) {
+            $cats[] = array('id'=>$T['id'], 'name'=>$T['category']);
+        }
+        return $this->json_encode($cats);
+    }
+
+    function filterSubCategories($tId, $category) {
+        $cats = [];
+        $children = ServiceSubCat::getParentCategories($category);
+        foreach($children as $T) {
+            $cats[] = array('id'=>$T['id'], 'name'=>$T['category']);
+        }
+        return $this->json_encode($cats);
+    }
+
     function manageForms($ticket_id) {
         global $thisstaff;
 

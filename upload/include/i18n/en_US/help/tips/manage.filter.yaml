@@ -104,7 +104,7 @@ priority:
         Filter</span>.<br />
         <br />
         <em>Note: This will override <span
-        class="doc-desc-title">Department</span> or <span class="doc-desc-title"> Help Topic</span> settings.</em>
+        class="doc-desc-title">Department</span> or <span class="doc-desc-title"> Service Template</span> settings.</em>
 
 sla_plan:
     title: SLA Plan
@@ -128,13 +128,13 @@ auto_assign:
         href: /scp/teams.php
 
 help_topic:
-    title: Help Topic
+    title: Service Template
     content: >
-        Choose the <span class="doc-desc-title">Help Topic</span> you want to
+        Choose the <span class="doc-desc-title">Service Templates</span> you want to
         be applied to the matches of the <span class="doc-desc-title">Ticket
         Filter</span>.
     links:
-      - title: Manage Help Topics
+      - title: Manage Service Templates
         href: /scp/helptopics.php
 
 admin_notes:

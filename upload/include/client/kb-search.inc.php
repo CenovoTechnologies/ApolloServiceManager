@@ -31,7 +31,7 @@
     </div>
     <div class="content">
         <section>
-            <div class="header"><?php echo __('Help Topics'); ?></div>
+            <div class="header"><?php echo __('Service Templates'); ?></div>
 <?php
 foreach (Topic::objects()
     ->annotate(array('faqs_count'=>SqlAggregate::count('faqs')))

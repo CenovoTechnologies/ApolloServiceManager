@@ -32,7 +32,7 @@ if(!defined('OSTSTAFFINC') || !$thisstaff) die('Access Denied');
                 <i class="icon-caret-down pull-right"></i>
                 <span>
                     <i class="icon-filter"></i>
-                    <?php echo __('Help Topic'); ?>
+                    <?php echo __('Service Template'); ?>
                 </span>
             </span>
         </div>

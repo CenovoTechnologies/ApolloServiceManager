@@ -1,34 +1,36 @@
 <?php
 /*********************************************************************
-    class.topic.php
+class.service.php
 
-    Help topic helper
+Service Catalogue helper
 
-    Peter Rotich <peter@osticket.com>
-    Copyright (c)  2006-2013 osTicket
-    http://www.osticket.com
+Melissa Smith <melissa@cenovotechnologies.com
+Copyright (c)  2017 cenovoTechnologies
+http://www.cenovotechnologies.com
 
-    Released under the GNU General Public License WITHOUT ANY WARRANTY.
-    See LICENSE.TXT for details.
+Released under the GNU General Public License WITHOUT ANY WARRANTY.
+See LICENSE.TXT for details.
 
-    vim: expandtab sw=4 ts=4 sts=4:
-**********************************************************************/
+vim: expandtab sw=4 ts=4 sts=4:
+ **********************************************************************/
 
+require_once INCLUDE_DIR . 'class.topic.php';
+require_once INCLUDE_DIR . 'class.servicecat.php';
 require_once INCLUDE_DIR . 'class.sequence.php';
 require_once INCLUDE_DIR . 'class.filter.php';
 
-class Topic extends VerySimpleModel
-implements TemplateVariable {
+class Service extends VerySimpleModel
+    implements TemplateVariable {
 
     static $meta = array(
-        'table' => TOPIC_TABLE,
-        'pk' => array('topic_id'),
-        'ordering' => array('topic'),
+        'table' => SERVICE_TABLE,
+        'pk' => array('service_id'),
+        'ordering' => array('service'),
         'joins' => array(
-            'parent' => array(
+            'template' => array(
                 'list' => false,
                 'constraint' => array(
-                    'topic_pid' => 'Topic.topic_id',
+                    'service_pid' => 'Topic.topic_id',
                 ),
             ),
             'faqs' => array(
@@ -53,10 +55,6 @@ implements TemplateVariable {
                     'priority_id' => 'Priority.priority_id',
                 ),
             ),
-            'forms' => array(
-                'reverse' => 'TopicFormModel.topic',
-                'null' => true,
-            ),
         ),
     );
 
@@ -80,10 +78,10 @@ implements TemplateVariable {
             'dept' => array(
                 'class' => 'Dept', 'desc' => __('Department'),
             ),
-            'fullname' => __('Help topic full path'),
-            'name' => __('Help topic'),
+            'fullname' => __('Service full path'),
+            'name' => __('Service'),
             'parent' => array(
-                'class' => 'Topic', 'desc' => __('Parent'),
+                'class' => 'Service', 'desc' => __('Parent'),
             ),
             'sla' => array(
                 'class' => 'SLA', 'desc' => __('Service Level Agreement'),
@@ -92,11 +90,11 @@ implements TemplateVariable {
     }
 
     function getId() {
-        return $this->topic_id;
+        return $this->service_id;
     }
 
     function getPid() {
-        return $this->topic_pid;
+        return $this->service_pid;
     }
 
     function getParent() {
@@ -104,7 +102,7 @@ implements TemplateVariable {
     }
 
     function getName() {
-        return $this->topic;
+        return $this->service;
     }
 
     function getLocalName() {
@@ -112,12 +110,16 @@ implements TemplateVariable {
     }
 
     function getFullName() {
-        return self::getTopicName($this->getId()) ?: $this->topic;
+        return self::getServiceName($this->getId()) ?: $this->service;
     }
 
-    static function getTopicName($id) {
-        $names = static::getHelpTopics(false, true);
+    static function getServiceName($id) {
+        $names = static::getServiceCatalogue(false, true);
         return $names[$id];
+    }
+
+    function getServiceCats() {
+        return ServiceCat::getParentCategories($this->getId());
     }
 
     function getDeptId() {
@@ -152,18 +154,6 @@ implements TemplateVariable {
         return $this->page;
     }
 
-    function getForms() {
-        if (!isset($this->_forms)) {
-            $this->_forms = array();
-            foreach ($this->forms->select_related('form') as $F) {
-                $extra = JsonDataParser::decode($F->extra) ?: array();
-                $F->form->disableFields($extra['disable'] ?: array());
-                $this->_forms[] = $F->form;
-            }
-        }
-        return $this->_forms;
-    }
-
     function autoRespond() {
         return !$this->noautoresp;
     }
@@ -173,16 +163,16 @@ implements TemplateVariable {
     }
 
     /**
-     * Determine if the help topic is currently enabled. The ancestry of
-     * this topic will be considered to see if any of the parents are
-     * disabled. If any are disabled, then this topic will be considered
+     * Determine if the service is currently enabled. The ancestry of
+     * this service will be considered to see if any of the parents are
+     * disabled. If any are disabled, then this service will be considered
      * disabled.
      *
      * Parameters:
      * $chain - array<id:bool> recusion chain used to detect loops. The
      *      chain should be maintained and passed to a parent's ::isActive()
-     *      method. When consulting a parent, if the local topic ID is a key
-     *      in the chain, then this topic has already been considered, and
+     *      method. When consulting a parent, if the local service ID is a key
+     *      in the chain, then this service has already been considered, and
      *      there is a loop in the ancestry
      */
     function isActive(array $chain=array()) {
@@ -232,7 +222,7 @@ implements TemplateVariable {
     }
 
     function getTranslateTag($subtag) {
-        return _H(sprintf('topic.%s.%s', $subtag, $this->getId()));
+        return _H(sprintf('service.%s.%s', $subtag, $this->getId()));
     }
     function getLocal($subtag) {
         $tag = $this->getTranslateTag($subtag);
@@ -252,19 +242,19 @@ implements TemplateVariable {
     function delete() {
         global $cfg;
 
-        if ($this->getId() == $cfg->getDefaultTopicId())
+        if ($this->getId() == $cfg->getDefaultServiceId())
             return false;
 
         if (parent::delete()) {
             self::objects()->filter(array(
-                'topic_pid' => $this->getId()
+                'service_pid' => $this->getId()
             ))->update(array(
-                'topic_pid' => 0
+                'service_pid' => 0
             ));
-            FaqTopic::objects()->filter(array(
-                'topic_id' => $this->getId()
+            Service::objects()->filter(array(
+                'service_id' => $this->getId()
             ))->delete();
-            db_query('UPDATE '.TICKET_TABLE.' SET topic_id=0 WHERE topic_id='.db_input($this->getId()));
+            db_query('UPDATE '.TICKET_TABLE.' SET service_id=0 WHERE service_id='.db_input($this->getId()));
         }
 
         return true;
@@ -277,64 +267,51 @@ implements TemplateVariable {
     /*** Static functions ***/
 
     static function create($vars=array()) {
-        $topic = new static($vars);
-        $topic->created = SqlFunction::NOW();
-        return $topic;
+        $service = new static($vars);
+        $service->created = SqlFunction::NOW();
+        return $service;
     }
 
     static function __create($vars, &$errors) {
-        $topic = self::create($vars);
+        $service = self::create($vars);
         if (!isset($vars['dept_id']))
             $vars['dept_id'] = 0;
-        $vars['id'] = $vars['topic_id'];
-        $topic->update($vars, $errors);
-        return $topic;
+        $vars['id'] = $vars['service_id'];
+        $service->update($vars, $errors);
+        return $service;
     }
 
-    static function getHelpTopics($publicOnly=false, $disabled=false, $localize=true) {
+    static function getServiceCatalogue($publicOnly=false, $disabled=false, $localize=true) {
         global $cfg;
-        static $topics, $names = array();
+        static $services, $names = array();
 
         // If localization is specifically requested, then rebuild the list.
         if (!$names || $localize) {
             $objects = self::objects()->values_flat(
-                'topic_id', 'topic_pid', 'ispublic', 'isactive', 'topic'
+                'service_id', 'service_pid', 'ispublic', 'isactive', 'service'
             )
-            ->order_by('sort');
+                ->order_by('sort');
 
-            // Fetch information for all topics, in declared sort order
-            $topics = array();
+            // Fetch information for all service, in declared sort order
+            $services = array();
             foreach ($objects as $T) {
-                list($id, $pid, $pub, $act, $topic) = $T;
-                $topics[$id] = array('pid'=>$pid, 'public'=>$pub,
-                    'disabled'=>!$act, 'topic'=>$topic);
+                list($id, $pid, $pub, $act, $service) = $T;
+                $services[$id] = array('pid'=>$pid, 'public'=>$pub,
+                    'disabled'=>!$act, 'service'=>$service);
             }
 
             $localize_this = function($id, $default) use ($localize) {
                 if (!$localize)
                     return $default;
 
-                $tag = _H("topic.name.{$id}");
+                $tag = _H("service.name.{$id}");
                 $T = CustomDataTranslation::translate($tag);
                 return $T != $tag ? $T : $default;
             };
 
             // Resolve parent names
-            foreach ($topics as $id=>$info) {
-                $name = $localize_this($id, $info['topic']);
-                $loop = array($id=>true);
-                $parent = false;
-                while (($pid = $info['pid']) && ($info = $topics[$info['pid']])) {
-                    $name = sprintf('%s / %s', $localize_this($pid, $info['topic']),
-                        $name);
-                    if ($parent && $parent['disabled'])
-                        // Cascade disabled flag
-                        $topics[$id]['disabled'] = true;
-                    if (isset($loop[$info['pid']]))
-                        break;
-                    $loop[$info['pid']] = true;
-                    $parent = $info;
-                }
+            foreach ($services as $id=>$info) {
+                $name = $localize_this($id, $info['service']);
                 $names[$id] = $name;
             }
         }
@@ -342,13 +319,13 @@ implements TemplateVariable {
         // Apply requested filters
         $requested_names = array();
         foreach ($names as $id=>$n) {
-            $info = $topics[$id];
+           /* $info = $services[$id];
             if ($publicOnly && !$info['public'])
                 continue;
             if (!$disabled && $info['disabled'])
                 continue;
             if ($disabled === self::DISPLAY_DISABLED && $info['disabled'])
-                $n .= " - ".__("(disabled)");
+                $n .= " - ".__("(disabled)");*/
             $requested_names[$id] = $n;
         }
 
@@ -356,50 +333,111 @@ implements TemplateVariable {
         // primary, the list may need to be sorted. Caching is ok here,
         // because the locale is not going to be changed within a single
         // request.
-        if ($localize && $cfg->getTopicSortMode() == self::SORT_ALPHA)
+        if ($localize && $cfg->getServiceSortMode() == self::SORT_ALPHA)
             return Internationalization::sortKeyedList($requested_names);
 
         return $requested_names;
     }
 
-    static function getPublicHelpTopics() {
-        return self::getHelpTopics(true);
+    static function getServicesForParent($parentId, $localize=true) {
+        global $cfg;
+        static $services, $names = array();
+
+        // If localization is specifically requested, then rebuild the list.
+        if (!$names || $localize) {
+            $objects = self::objects()->values_flat(
+                'service_id', 'service_pid', 'ispublic', 'isactive', 'team_id', 'service'
+            )
+                ->order_by('sort');
+
+            // Fetch information for all service, in declared sort order
+            $services = array();
+            foreach ($objects as $T) {
+                list($id, $pid, $pub, $act, $team, $service) = $T;
+                $services[$id] = array('id'=>$id, 'pid'=>$pid, 'public'=>$pub,
+                    'active'=>$act, 'team'=>$team, 'service'=>$service);
+            }
+
+            // Resolve parent names
+            foreach ($services as $id=>$info) {
+                if ($parentId == $info['pid']) {
+                    $names[$id] = $info;
+                }
+            }
+        }
+
+        // If localization requested and the current locale is not the
+        // primary, the list may need to be sorted. Caching is ok here,
+        // because the locale is not going to be changed within a single
+        // request.
+        if ($localize && $cfg->getServiceSortMode() == self::SORT_ALPHA)
+            return Internationalization::sortKeyedList($names);
+
+        return $names;
     }
 
-    static function getAllHelpTopics($localize=false) {
-        return self::getHelpTopics(false, true, $localize);
+    static function getPublicServices() {
+        return self::getServiceCatalogue(true);
+    }
+
+    static function getAllServices($localize=false) {
+        return self::getServiceCatalogue(false, true, $localize);
     }
 
     static function getLocalNameById($id) {
-        $topics = static::getHelpTopics(false, true);
-        return $topics[$id];
+        $services = static::getServiceCatalogue(false, true);
+        return $services[$id];
     }
 
     static function getIdByName($name, $pid=0) {
         $list = self::objects()->filter(array(
-            'topic'=>$name,
-            'topic_pid'=>$pid,
-        ))->values_flat('topic_id')->first();
+            'service'=>$name,
+            'service_pid'=>$pid,
+        ))->values_flat('service_id')->first();
 
         if ($list)
             return $list[0];
     }
 
+    static function getActiveFlagById($id) {
+        $list = self::objects()->filter(array(
+            'service_id'=>$id
+        ))->values_flat('isactive')->first();
+
+        if ($list) {
+            return $list[0];
+        } else {
+            return "";
+        }
+    }
+
+    static function getPublicFlagById($id) {
+        $list = self::objects()->filter(array(
+            'service_id'=>$id
+        ))->values_flat('ispublic')->first();
+
+        if ($list) {
+            return $list[0];
+        } else {
+            return "";
+        }
+    }
+
     function update($vars, &$errors) {
         global $cfg;
 
-        $vars['topic'] = Format::striptags(trim($vars['topic']));
+        $vars['service'] = Format::striptags(trim($vars['service']));
 
-        if (isset($this->topic_id) && $this->getId() != $vars['id'])
+        if (isset($this->service_id) && $this->getId() != $vars['id'])
             $errors['err']=__('Internal error occurred');
 
-        if (!$vars['topic'])
-            $errors['topic']=__('Help topic name is required');
-        elseif (strlen($vars['topic'])<5)
-            $errors['topic']=__('Topic is too short. Five characters minimum');
-        elseif (($tid=self::getIdByName($vars['topic'], $vars['topic_pid']))
-                && (!isset($this->topic_id) || $tid!=$this->getId()))
-            $errors['topic']=__('Topic already exists');
+        if (!$vars['service'])
+            $errors['service']=__('Service name is required');
+        elseif (strlen($vars['service'])<5)
+            $errors['service']=__('Service is too short. Five characters minimum');
+        elseif (($tid=self::getIdByName($vars['service'], $vars['service_pid']))
+            && (!isset($this->service_id) || $tid!=$this->getId()))
+            $errors['service']=__('Service already exists');
 
         if (!is_numeric($vars['dept_id']))
             $errors['dept_id']=__('Department selection is required');
@@ -411,9 +449,10 @@ implements TemplateVariable {
         if ($errors)
             return false;
 
-        $this->topic = $vars['topic'];
-        $this->topic_pid = $vars['topic_pid'] ?: 0;
+        $this->service = $vars['service'];
+        $this->service_pid = $vars['service_pid'] ?: 0;
         $this->dept_id = $vars['dept_id'];
+        $this->team_id = preg_replace("/[^0-9]/", "", $vars['service_owner']);;
         $this->priority_id = $vars['priority_id'] ?: 0;
         $this->status_id = $vars['status_id'] ?: 0;
         $this->sla_id = $vars['sla_id'] ?: 0;
@@ -432,31 +471,27 @@ implements TemplateVariable {
             $this->staff_id = preg_replace("/[^0-9]/", "", $vars['assign']);
         }
         elseif ($vars['assign'] && $vars['assign'][0] == 't') {
-            $this->staff_id = 0;
-            $this->team_id = preg_replace("/[^0-9]/", "", $vars['assign']);
+            /*$this->staff_id = 0;
+            $this->team_id = preg_replace("/[^0-9]/", "", $vars['assign']);*/
         }
         else {
-            $this->staff_id = 0;
-            $this->team_id = 0;
+            /*$this->staff_id = 0;
+            $this->team_id = 0;*/
         }
 
         $rv = false;
         if ($this->__new__) {
-            if (isset($this->topic_pid)
-                    && ($parent = Topic::lookup($this->topic_pid))) {
-                $this->sort = ($parent->sort ?: 0) + 1;
-            }
             if (!($rv = $this->save())) {
-                $errors['err']=sprintf(__('Unable to create %s.'), __('this help topic'))
-               .' '.__('Internal error occurred');
+                $errors['err']=sprintf(__('Unable to create %s.'), __('this service'))
+                    .' '.__('Internal error occurred');
             }
         }
         elseif (!($rv = $this->save())) {
-            $errors['err']=sprintf(__('Unable to update %s.'), __('this help topic'))
-            .' '.__('Internal error occurred');
+            $errors['err']=sprintf(__('Unable to update %s.'), __('this service'))
+                .' '.__('Internal error occurred');
         }
         if ($rv) {
-            if (!$cfg || $cfg->getTopicSortMode() == 'a') {
+            if (!$cfg || $cfg->getServiceSortMode() == 'a') {
                 static::updateSortOrder();
             }
             $this->updateForms($vars, $errors);
@@ -480,9 +515,9 @@ implements TemplateVariable {
         // Consider all the forms in the request
         $current = array();
         if (is_array($form_ids = $vars['forms'])) {
-            $forms = TopicFormModel::objects()
+            $forms = ServiceFormModel::objects()
                 ->select_related('form')
-                ->filter(array('topic_id' => $this->getId()));
+                ->filter(array('service_id' => $this->getId()));
             foreach ($forms as $F) {
                 if (false !== ($idx = array_search($F->form_id, $form_ids))) {
                     $current[] = $F->form_id;
@@ -505,8 +540,8 @@ implements TemplateVariable {
                     // Don't add a form more than once
                     continue;
                 }
-                $tf = new TopicFormModel(array(
-                    'topic_id' => $this->getId(),
+                $tf = new ServiceFormModel(array(
+                    'service_id' => $this->getId(),
                     'form_id' => $id,
                     'sort' => $sort + 1,
                     'extra' => JsonDataEncoder::encode(
@@ -529,7 +564,7 @@ implements TemplateVariable {
         global $cfg;
 
         // Fetch (un)sorted names
-        if (!($names = static::getHelpTopics(false, true, false)))
+        if (!($names = static::getServiceCatalogue(false, true, false)))
             return;
 
         $names = Internationalization::sortKeyedList($names);
@@ -542,24 +577,24 @@ implements TemplateVariable {
             return;
 
         // Thanks, http://stackoverflow.com/a/3466
-        $sql = sprintf('INSERT INTO `%s` (topic_id,`sort`) VALUES %s
+        $sql = sprintf('INSERT INTO `%s` (service_id,`sort`) VALUES %s
             ON DUPLICATE KEY UPDATE `sort`=VALUES(`sort`)',
-            TOPIC_TABLE, implode(',', $update));
+            SERVICE_TABLE, implode(',', $update));
         db_query($sql);
     }
 }
 
 // Add fields from the standard ticket form to the ticket filterable fields
-Filter::addSupportedMatches(/* @trans */ 'Service Template', array('topicId' => 'Topic ID'), 100);
+Filter::addSupportedMatches(/* @trans */ 'Service Template', array('serviceId' => 'Service ID'), 100);
 
-class TopicFormModel extends VerySimpleModel {
+class ServiceFormModel extends VerySimpleModel {
     static $meta = array(
-        'table' => TOPIC_FORM_TABLE,
+        'table' => SERVICE_FORM_TABLE,
         'pk' => array('id'),
         'ordering' => array('sort'),
         'joins' => array(
-            'topic' => array(
-                'constraint' => array('topic_id' => 'Topic.topic_id'),
+            'service' => array(
+                'constraint' => array('service_id' => 'Service.service_id'),
             ),
             'form' => array(
                 'constraint' => array('form_id' => 'DynamicForm.id'),

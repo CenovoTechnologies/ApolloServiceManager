@@ -16,14 +16,14 @@ $order_by = 'sort';
     <div class="sticky bar opaque">
         <div class="content">
             <div class="pull-left">
-                <h2><?php echo __('Help Topics');?></h2>
+                <h2><?php echo __('Service Templates');?></h2>
             </div>
             <div class="pull-right">
                 <?php if ($cfg->getTopicSortMode() != 'a') { ?>
                 <button class="button no-confirm" type="submit" name="sort"><i class="icon-save"></i>
                 <?php echo __('Save'); ?></button>
                 <?php } ?>
-                <a href="helptopics.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New Help Topic');?></a>
+                <a href="helptopics.php?a=add" class="green button action-button"><i class="icon-plus-sign"></i> <?php echo __('Add New Service Template');?></a>
                 <div class="btn-group">
                 <span class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown">
             <span ><i class="icon-cog"></i> <?php echo __('More');?></span>
@@ -74,7 +74,7 @@ $order_by = 'sort';
         </td></tr>
         <tr class="table-active">
             <th width="4%" style="height:20px;">&nbsp;</th>
-            <th style="padding-left:4px;vertical-align:middle" width="36%"><?php echo __('Help Topic'); ?></th>
+            <th style="padding-left:4px;vertical-align:middle" width="36%"><?php echo __('Service Template'); ?></th>
             <th style="padding-left:4px;vertical-align:middle" width="8%"><?php echo __('Status'); ?></th>
             <th style="padding-left:4px;vertical-align:middle" width="8%"><?php echo __('Type'); ?></th>
             <th style="padding-left:4px;vertical-align:middle" width="10%"><?php echo __('Priority'); ?></th>

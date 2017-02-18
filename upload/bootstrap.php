@@ -124,6 +124,12 @@ class Bootstrap {
         define('FORM_ENTRY_TABLE',$prefix.'form_entry');
         define('FORM_ANSWER_TABLE',$prefix.'form_entry_values');
 
+        define('SERVICE_TYPE_TABLE',$prefix.'service_type');
+        define('SERVICE_TABLE',$prefix.'service');
+        define('SERVICE_FORM_TABLE',$prefix.'service_form');
+        define('SERVICE_CAT_TABLE',$prefix.'service_cat');
+        define('SERVICE_SUB_CAT_TABLE', $prefix.'service_sub_cat');
+
         define('TOPIC_TABLE',$prefix.'help_topic');
         define('TOPIC_FORM_TABLE',$prefix.'help_topic_form');
         define('SLA_TABLE', $prefix.'sla');

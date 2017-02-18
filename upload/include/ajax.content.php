@@ -69,7 +69,7 @@ class ContentAjaxAPI extends AjaxController {
                     <tr><td nowrap>%{recipient.ticket_link}</td><td>'.__('Auth. token used for auto-login').'<br/>
                     '.__('Agent\'s ticket view link').'</td></tr>
                     <tr><td colspan="2" style="padding:5px 0 5px 0;"><em><b>'.__('Expandable Variables').'</b></em></td></tr>
-                    <tr><td>%{ticket.topic}</td><td>'.__('Help Topic').'</td></tr>
+                    <tr><td>%{ticket.topic}</td><td>'.__('Service Template').'</td></tr>
                     <tr><td>%{ticket.dept}</td><td>'.__('Department').'</td></tr>
                     <tr><td>%{ticket.staff}</td><td>'.__('Assigned/closing agent').'</td></tr>
                     <tr><td>%{ticket.team}</td><td>'.__('Assigned/closing team').'</td></tr>

@@ -16,7 +16,12 @@ $role  = $thisstaff->getRole($dept);
 $staff = $ticket->getStaff(); //Assigned or closed by..
 $user  = $ticket->getOwner(); //Ticket User (EndUser)
 $team  = $ticket->getTeam();  //Assigned team.
-$sla   = $ticket->getSLA();
+$sla   = $ticket->getSLA();   //Ticket SLA
+$type  = $ticket->getServiceTypeId(); //Ticket Service Type
+$serv  = $ticket->getServiceId(); //Ticket Service
+$cat   = $ticket->getCategoryId(); //Ticket Service Category
+$sub   = $ticket->getSubCategoryId(); //Ticket Sub Category
+$tmpl  = $ticket->getHelpTopic();
 $lock  = $ticket->getLock();  //Ticket lock obj
 if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
     $lock = $ticket->acquireLock($thisstaff->getId());
@@ -332,10 +337,20 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
                     <div class="col-md-8">
                         <div class="row">
-                            <label style="width:49%">
-                                <input class="form-control" name="affected-service-input" type="text" id="affected-service-input" placeholder="Affected Service">
+                            <label style="width:49%">Service Type:
+                                <select class="form-control required" name="servTypeId" type="text" id="servTypeId" style="width:100%">
+                                    <option value="0" selected="selected">&mdash; Select Service Type &mdash;</option>
+                                    <?php
+                                    if($servTypes=ServiceType::getAllServiceTypes()) {
+                                        foreach($servTypes as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($type==$id)?'selected="selected"':'',$name);
+                                        }
+                                    }
+                                   ?>
+                               </select>
                             </label>
-                            <label style="width:49%" id="impact-input">
+                            <label style="width:49%" id="impact-input">Impact:
                                 <?php
                                 foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                                     include(STAFFINC_DIR .  'templates/dynamic-form-impact.tmpl.php');
@@ -344,10 +359,20 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">
-                                <input class="form-control" name="category-input" type="text" id="category-input" placeholder="Category">
+                            <label style="width:49%">Service:
+                                <select class="form-control required" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
+                                    <option value="0" selected="selected">&mdash; Select Service &mdash;</option>
+                                    <?php
+                                    if($services=Service::getAllServices()) {
+                                        foreach($services as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($serv==$id)?'selected="selected"':'',$name);
+                                        }
+                                    }
+                                    ?>
+                                </select>
                             </label>
-                            <label style="width:49%" id="urgency-input">
+                            <label style="width:49%" id="urgency-input">Urgency:
                                 <?php
                                 foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                                     include(STAFFINC_DIR .  'templates/dynamic-form-urgency.tmpl.php');
@@ -356,10 +381,20 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">
-                                <input class="form-control" name="sub-category-input" type="text" id="sub-category-input" placeholder="Sub-Category">
+                            <label style="width:49%">Category:
+                                <select class="form-control required" disabled name="serviceCatId" type="text" id="serviceCatId" style="width:100%">
+                                    <option value="0" selected="selected">&mdash; Select Category &mdash;</option>
+                                    <?php
+                                    if($serviceCats=ServiceCat::getAllServiceCategories()) {
+                                        foreach($serviceCats as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($cat==$id)?'selected="selected"':'',$name);
+                                        }
+                                    }
+                                    ?>
+                                </select>
                             </label>
-                            <label style="width:49%" id="priority-input">
+                            <label style="width:49%" id="priority-input">Priority:
                                 <?php
                                 foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
                                     include(STAFFINC_DIR .  'templates/dynamic-form-priority.tmpl.php');
@@ -368,13 +403,21 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">
-                                <input class="form-control" name="item-input" type="text" id="item-input" placeholder="Item">
+                            <label style="width:49%">Sub Category:
+                                <select class="form-control required" disabled name="serviceSubCatId" type="text" id="serviceSubCatId" style="width:100%">
+                                    <option value="0" selected="selected">&mdash; Select Sub Category &mdash;</option>
+                                    <?php
+                                    if($serviceSubCats=ServiceSubCat::getAllServiceCategories()) {
+                                        foreach($serviceSubCats as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($sub==$id)?'selected="selected"':'',$name);
+                                        }
+                                    }
+                                    ?>
+                                </select>
                             </label>
                             <label style="width:49%">
-                                <select class="form-control" name="ticket-type-input" type="text" id="ticket-type-input">
-                                    <option>Select Service Type...</option>
-                                </select>
+                                <input class="form-control" name="item-input" type="text" id="item-input" placeholder="Configuration Item">
                             </label>
                         </div>
                     </div>
@@ -389,7 +432,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                 if($slas=SLA::getSLAs()) {
                                     foreach($slas as $id =>$name) {
                                         echo sprintf('<option value="%d" %s>%s</option>',
-                                            $id, ($info['slaId']==$id)?'selected="selected"':'',$name);
+                                            $id, ($sla==$id)?'selected="selected"':'',$name);
                                     }
                                 }
                                 ?>
@@ -522,7 +565,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 ?>
             </div>
             <div id="ticket-reply" class="tab-pane card-block" role="tabpanel">
-                <div>
+                <div class="col-sm-12 col-md-12">
                     <div class="btn-group">
                         <label>
                             <input type="radio" name="convooptions" id="opt1" checked>&nbsp;Reply to Conversation
@@ -544,189 +587,164 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <input type="hidden" name="msgId" value="<?php echo $msgId; ?>">
                             <input type="hidden" name="a" value="reply">
                             <input type="hidden" name="lockCode" value="<?php echo $mylock ? $mylock->getCode() : ''; ?>">
-                            <table style="width:100%" border="0" cellspacing="0" cellpadding="3">
-                                <?php
-                                if ($errors['reply']) {?>
-                                    <tr><td width="120">&nbsp;</td><td class="error"><?php echo $errors['reply']; ?>&nbsp;</td></tr>
+                            <div class="row">
+                                <div class="error"><?php echo $errors['reply'] ?></div>
+                            </div>
+                            <div class="row">
+                                <label class="required">To:
                                     <?php
-                                }?>
-                                <tbody id="to_sec">
-                                <tr>
-                                    <td width="120">
-                                        <label><strong><?php echo __('To'); ?>:</strong></label>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        # XXX: Add user-to-name and user-to-email HTML ID#s
-                                        $to =sprintf('%s &lt;%s&gt;',
-                                            $ticket->getName(),
-                                            $ticket->getReplyToEmail());
-                                        $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
-                                        ?>
-                                        <select id="emailreply" name="emailreply">
-                                            <option value="1" <?php echo $emailReply ?  'selected="selected"' : ''; ?>><?php echo $to; ?></option>
-                                            <option value="0" <?php echo !$emailReply ? 'selected="selected"' : ''; ?>
-                                            >&mdash; <?php echo __('Do Not Email Reply'); ?> &mdash;</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                </tbody>
-                                <?php
-                                if(1) { //Make CC optional feature? NO, for now.
+                                    # XXX: Add user-to-name and user-to-email HTML ID#s
+                                    $to =sprintf('%s &lt;%s&gt;',
+                                        $ticket->getName(),
+                                        $ticket->getReplyToEmail());
+                                    $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
                                     ?>
-                                    <tbody id="cc_sec"
-                                           style="display:<?php echo $emailReply?  'table-row-group':'none'; ?>;">
-                                    <tr>
-                                        <td width="120">
-                                            <label><?php echo __('Collaborators'); ?>:</label>
-                                        </td>
-                                        <td>
-                                            <input type='checkbox' value='1' name="emailcollab"
-                                                   id="t<?php echo $ticket->getThreadId(); ?>-emailcollab"
-                                                <?php echo ((!$info['emailcollab'] && !$errors) || isset($info['emailcollab']))?'checked="checked"':''; ?>
-                                                   style="display:<?php echo $ticket->getThread()->getNumCollaborators() ? 'inline-block': 'none'; ?>;"
-                                            >
-                                            <?php
-                                            $recipients = __('Add Recipients');
-                                            if ($ticket->getThread()->getNumCollaborators())
-                                                $recipients = sprintf(__('Recipients (%d of %d)'),
-                                                    $ticket->getThread()->getNumActiveCollaborators(),
-                                                    $ticket->getThread()->getNumCollaborators());
+                                    <select id="emailreply" name="emailreply" class="form-control">
+                                        <option value="1" <?php echo $emailReply ?  'selected="selected"' : ''; ?>><?php echo $to; ?></option>
+                                        <option value="0" <?php echo !$emailReply ? 'selected="selected"' : ''; ?>
+                                        > <?php echo __('Do Not Email Reply'); ?> </option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <label><?php echo __('Collaborators'); ?>:
+                                    <input type='checkbox' value='1' name="emailcollab" class="form-control"
+                                           id="t<?php echo $ticket->getThreadId(); ?>-emailcollab"
+                                        <?php echo ((!$info['emailcollab'] && !$errors) || isset($info['emailcollab']))?'checked="checked"':''; ?>
+                                           style="display:<?php echo $ticket->getThread()->getNumCollaborators() ? 'inline-block': 'none'; ?>;"
+                                    >
+                                    <?php
+                                    $recipients = __('Add Recipients');
+                                    if ($ticket->getThread()->getNumCollaborators())
+                                        $recipients = sprintf(__('Recipients (%d of %d)'),
+                                            $ticket->getThread()->getNumActiveCollaborators(),
+                                            $ticket->getThread()->getNumCollaborators());
 
-                                            echo sprintf('<span><a class="collaborators preview"
+                                    echo sprintf('<span><a class="collaborators preview"
                                     href="#thread/%d/collaborators"><span id="t%d-recipients">%s</span></a></span>',
-                                                $ticket->getThreadId(),
-                                                $ticket->getThreadId(),
-                                                $recipients);
-                                            ?>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    <?php
-                                } ?>
-                                <tbody id="resp_sec">
-                                <?php
-                                if($errors['response']) {?>
-                                    <tr><td width="120">&nbsp;</td><td class="error"><?php echo $errors['response']; ?>&nbsp;</td></tr>
-                                    <?php
-                                }?>
-                                <tr>
-                                    <td width="120" style="vertical-align:top">
-                                        <label><strong><?php echo __('Response');?>:</strong></label>
-                                    </td>
-                                    <td>
-                                        <?php if ($cfg->isCannedResponseEnabled()) { ?>
-                                            <select id="cannedResp" name="cannedResp">
-                                                <option value="0" selected="selected"><?php echo __('Select a canned response');?></option>
-                                                <option value='original'><?php echo __('Original Message'); ?></option>
-                                                <option value='lastmessage'><?php echo __('Last Message'); ?></option>
-                                                <?php
-                                                if(($cannedResponses=Canned::responsesByDeptId($ticket->getDeptId()))) {
-                                                    echo '<option value="0" disabled="disabled">
+                                        $ticket->getThreadId(),
+                                        $ticket->getThreadId(),
+                                        $recipients);
+                                    ?>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="error"><?php echo $errors['response']; ?></div>
+                            </div>
+                            <div class="row">
+                                <label class="required">Response:
+                                    <?php if ($cfg->isCannedResponseEnabled()) { ?>
+                                        <select id="cannedResp" name="cannedResp" class="form-control">
+                                            <option value="0" selected="selected"><?php echo __('Select a canned response');?></option>
+                                            <option value='original'><?php echo __('Original Message'); ?></option>
+                                            <option value='lastmessage'><?php echo __('Last Message'); ?></option>
+                                            <?php
+                                            if(($cannedResponses=Canned::responsesByDeptId($ticket->getDeptId()))) {
+                                                echo '<option value="0" disabled="disabled">
                                         ------------- '.__('Premade Replies').' ------------- </option>';
-                                                    foreach($cannedResponses as $id =>$title)
-                                                        echo sprintf('<option value="%d">%s</option>',$id,$title);
-                                                }
-                                                ?>
-                                            </select>
-                                            <br>
-                                        <?php } # endif (canned-resonse-enabled)
-                                        $signature = '';
-                                        switch ($thisstaff->getDefaultSignatureType()) {
-                                            case 'dept':
-                                                if ($dept && $dept->canAppendSignature())
-                                                    $signature = $dept->getSignature();
-                                                break;
-                                            case 'mine':
-                                                $signature = $thisstaff->getSignature();
-                                                break;
-                                        } ?>
-                                        <input type="hidden" name="draft_id" value=""/>
-                                        <textarea name="response" id="response" cols="50"
-                                                  data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
-                                                  data-signature="<?php
-                                                  echo Format::htmlchars(Format::viewableImages($signature)); ?>"
-                                                  placeholder="<?php echo __(
-                                                      'Start writing your response here. Use canned responses from the drop-down above'
-                                                  ); ?>"
-                                                  rows="9" wrap="soft"
-                                                  class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
-                                                  ?> draft draft-delete" <?php
-                                        list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.response', $ticket->getId(), $info['response']);
-                                        echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
-                                            ?></textarea>
-                                        <div id="reply_form_attachments" class="attachments">
-                                            <?php
-                                            print $response_form->getField('attachments')->render();
-                                            ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="120">
-                                        <label for="signature" class="left"><?php echo __('Signature');?>:</label>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $info['signature']=$info['signature']?$info['signature']:$thisstaff->getDefaultSignatureType();
-                                        ?>
-                                        <label><input type="radio" name="signature" value="none" checked="checked"> <?php echo __('None');?></label>
-                                        <?php
-                                        if($thisstaff->getSignature()) {?>
-                                            <label><input type="radio" name="signature" value="mine"
-                                                    <?php echo ($info['signature']=='mine')?'checked="checked"':''; ?>> <?php echo __('My Signature');?></label>
-                                            <?php
-                                        } ?>
-                                        <?php
-                                        if($dept && $dept->canAppendSignature()) { ?>
-                                            <label><input type="radio" name="signature" value="dept"
-                                                    <?php echo ($info['signature']=='dept')?'checked="checked"':''; ?>>
-                                                <?php echo sprintf(__('Department Signature (%s)'), Format::htmlchars($dept->getName())); ?></label>
-                                            <?php
-                                        } ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="120" style="vertical-align:top">
-                                        <label><strong><?php echo __('Ticket Status');?>:</strong></label>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $outstanding = false;
-                                        if ($role->hasPerm(TicketModel::PERM_CLOSE)
-                                            && is_string($warning=$ticket->isCloseable())) {
-                                            $outstanding =  true;
-                                            echo sprintf('<div class="warning-banner">%s</div>', $warning);
-                                        } ?>
-                                        <select name="reply_status_id">
-                                            <?php
-                                            $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
-                                            $states = array('open', 'progress', 'resolved');
-                                            if ($role->hasPerm(TicketModel::PERM_CLOSE) && !$outstanding)
-                                                $states = array_merge($states, array('closed'));
-
-                                            foreach (TicketStatusList::getStatuses(
-                                                array('states' => $states)) as $s) {
-                                                if (!$s->isEnabled()) continue;
-                                                $selected = ($statusId == $s->getId());
-                                                echo sprintf('<option value="%d" %s>%s%s</option>',
-                                                    $s->getId(),
-                                                    $selected
-                                                        ? 'selected="selected"' : '',
-                                                    __($s->getName()),
-                                                    $selected
-                                                        ? (' ('.__('current').')') : ''
-                                                );
+                                                foreach($cannedResponses as $id =>$title)
+                                                    echo sprintf('<option value="%d">%s</option>',$id,$title);
                                             }
                                             ?>
                                         </select>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <p  style="text-align:center;">
-                                <input class="save pending" type="submit" value="<?php echo __('Post Reply');?>">
-                                <input class="" type="reset" value="<?php echo __('Reset');?>">
+                                        <br>
+                                    <?php } # endif (canned-response-enabled)
+                                    $signature = '';
+                                    switch ($thisstaff->getDefaultSignatureType()) {
+                                        case 'dept':
+                                            /** @var Dept $dept */
+                                            if ($dept && $dept->canAppendSignature())
+                                                $signature = $dept->getSignature();
+                                            break;
+                                        case 'mine':
+                                            $signature = $thisstaff->getSignature();
+                                            break;
+                                    } ?>
+                                    <input type="hidden" name="draft_id" value=""/>
+                                    <textarea name="response" id="response" cols="50"
+                                              data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
+                                              data-signature="<?php
+                                              echo Format::viewableImages($signature); ?>"
+                                              placeholder="<?php echo __(
+                                                  'Start writing your response here. Use canned responses from the drop-down above'
+                                              ); ?>"
+                                              rows="9" wrap="soft"
+                                              class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
+                                              ?> draft draft-delete" <?php
+                                    list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.response', $ticket->getId(), $info['response']);
+                                    echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
+                                        ?></textarea>
+                                </label>
+                                <div id="reply_form_attachments" class="attachments">
+                                    <?php
+                                    print $response_form->getField('attachments')->render();
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label><?php echo __('Signature');?>:
+                                    <?php
+                                    $info['signature']=$info['signature']?$info['signature']:$thisstaff->getDefaultSignatureType();
+                                    ?>
+                                    <label>
+                                        <input type="radio" name="signature" value="none" checked="checked"> <?php echo __('None');?>
+                                    </label>
+                                    <?php
+                                    if($thisstaff->getSignature()) {?>
+                                        <label>
+                                            <input type="radio" name="signature" value="mine"
+                                                <?php echo ($info['signature']=='mine')?'checked="checked"':''; ?>> <?php echo __('My Signature');?>
+                                        </label>
+                                        <?php
+                                    } ?>
+                                    <?php
+                                    /** @var Dept $dept */
+                                    if($dept && $dept->canAppendSignature()) { ?>
+                                        <label>
+                                            <input type="radio" name="signature" value="dept"
+                                                <?php echo ($info['signature']=='dept')?'checked="checked"':''; ?>>
+                                            <?php echo sprintf(__('Department Signature (%s)'), $dept->getName()); ?>
+                                        </label>
+                                        <?php
+                                    } ?>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <label class="required"><?php echo __('Ticket Status');?>:
+                                    <?php
+                                    $outstanding = false;
+                                    if ($role->hasPerm(TicketModel::PERM_CLOSE)
+                                        && is_string($warning=$ticket->isCloseable())) {
+                                        $outstanding =  true;
+                                        echo sprintf('<div class="warning-banner">%s</div>', $warning);
+                                    } ?>
+                                    <select name="reply_status_id" class="form-control">
+                                        <?php
+                                        $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
+                                        $states = array('open', 'progress', 'resolved');
+                                        if ($role->hasPerm(TicketModel::PERM_CLOSE) && !$outstanding)
+                                            $states = array_merge($states, array('closed'));
+
+                                        foreach (TicketStatusList::getStatuses(
+                                            array('states' => $states)) as $s) {
+                                            if (!$s->isEnabled()) continue;
+                                            $selected = ($statusId == $s->getId());
+                                            echo sprintf('<option value="%d" %s>%s%s</option>',
+                                                $s->getId(),
+                                                $selected
+                                                    ? 'selected="selected"' : '',
+                                                __($s->getName()),
+                                                $selected
+                                                    ? (' ('.__('current').')') : ''
+                                            );
+                                        }
+                                        ?>
+                                    </select>
+                                </label>
+                            </div>
+                            <p  style="text-align:right;">
+                                <input class="btn btn-sm btn-outline-primary" type="submit" value="<?php echo __('Post Reply');?>">
+                                <input class="btn btn-sm btn-outline-secondary" type="reset" value="<?php echo __('Reset');?>">
                             </p>
                         </form>
                     </div>
@@ -743,56 +761,60 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <input type="hidden" name="locktime" value="<?php echo $cfg->getLockTime() * 60; ?>">
                             <input type="hidden" name="a" value="postnote">
                             <input type="hidden" name="lockCode" value="<?php echo $mylock ? $mylock->getCode() : ''; ?>">
-                            <div>
-                                <div class="faded" style="padding-left:0.15em"><?php
-                                    echo __('Note title - summary of the note (optional)'); ?></div>
-                                    <label>
-                                        <input type="text" name="title" id="title" size="60" value="<?php echo $info['title']; ?>" >
-                                    </label>
-                                    <br/>
-                                    <span class="error">&nbsp;<?php echo $errors['title']; ?></span>
+                            <div class="row">
+                                <label>
+                                    <input type="text" class="form-control" name="title" id="title" size="60" value="<?php echo $info['title']; ?>"
+                                        placeholder="<?php echo __('Note title - summary of the note (optional)'); ?>">
+                                </label>
+                                <br/>
+                                <span class="error">&nbsp;<?php echo $errors['title']; ?></span>
                             </div>
-                            <div class="error"><?php echo $errors['note']; ?></div>
-                            <textarea name="note" id="internal_note" cols="80"
-                                      placeholder="<?php echo __('Note details'); ?>"
-                                      rows="9" wrap="soft"
-                                      class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
-                                      ?> draft draft-delete" <?php
-                                list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.note', $ticket->getId(), $info['note']);
-                                echo $attrs; ?>><?php echo $_POST ? $info['note'] : $draft;
-                            ?></textarea>
-                            <div class="attachments">
-                                <?php
-                                print $note_form->getField('attachments')->render();
-                                ?>
+                            <div class="row">
+                                <div class="error"><?php echo $errors['note']; ?></div>
                             </div>
-                            <label><?php echo __('Ticket Status');?>:</label>
-                            <div class="faded"></div>
-                            <label>
-                                <select name="note_status_id">
+                            <div class="row">
+                                <label>
+                                    <textarea name="note" id="internal_note" cols="80"
+                                              placeholder="<?php echo __('Note details'); ?>"
+                                              rows="9" wrap="soft"
+                                              class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
+                                              ?> draft draft-delete" <?php
+                                    list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.note', $ticket->getId(), $info['note']);
+                                    echo $attrs; ?>><?php echo $_POST ? $info['note'] : $draft;
+                                        ?></textarea>
+                                </label>
+                                <div class="attachments">
                                     <?php
-                                    $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
-                                    $states = array('open', 'progress', 'resolved');
-                                    if ($ticket->isCloseable() === true
-                                        && $role->hasPerm(TicketModel::PERM_CLOSE))
-                                        $states = array_merge($states, array('closed'));
-                                    foreach (TicketStatusList::getStatuses(
-                                        array('states' => $states)) as $s) {
-                                        if (!$s->isEnabled()) continue;
-                                        $selected = $statusId == $s->getId();
-                                        echo sprintf('<option value="%d" %s>%s%s</option>',
-                                            $s->getId(),
-                                            $selected ? 'selected="selected"' : '',
-                                            __($s->getName()),
-                                            $selected ? (' ('.__('current').')') : ''
-                                        );
-                                    }
+                                    print $note_form->getField('attachments')->render();
                                     ?>
-                                </select>
-                                &nbsp;<span class='error'>*&nbsp;<?php echo $errors['note_status_id']; ?></span>
-                            </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="required"><?php echo __('Ticket Status');?>:
+                                    <select name="note_status_id" class="form-control">
+                                        <?php
+                                        $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
+                                        $states = array('open', 'progress', 'resolved');
+                                        if ($ticket->isCloseable() === true
+                                            && $role->hasPerm(TicketModel::PERM_CLOSE))
+                                            $states = array_merge($states, array('closed'));
+                                        foreach (TicketStatusList::getStatuses(
+                                            array('states' => $states)) as $s) {
+                                            if (!$s->isEnabled()) continue;
+                                            $selected = $statusId == $s->getId();
+                                            echo sprintf('<option value="%d" %s>%s%s</option>',
+                                                $s->getId(),
+                                                $selected ? 'selected="selected"' : '',
+                                                __($s->getName()),
+                                                $selected ? (' ('.__('current').')') : ''
+                                            );
+                                        }
+                                        ?>
+                                    </select>
+                                </label>
+                            </div>
                             <br/><br/>
-                            <p class="btn-group">
+                            <p style="text-align:right;">
                                 <input class="btn btn-sm btn-outline-primary" type="submit" value="<?php echo __('Post Note');?>">
                                 <input class="btn btn-sm btn-secondary" type="reset" value="<?php echo __('Reset');?>">
                             </p>
@@ -909,8 +931,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     </div>
     <div>
         <dl class="row">
-            <dt class="col-sm-4 sidebar-label align-middle">Sub-Category</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" >Password Reset</dd>
+            <dt class="col-sm-4 sidebar-label align-middle">Source</dt>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getSource(); ?></dd>
         </dl>
     </div>
     <div>
@@ -939,20 +961,26 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     </div>
     <div>
         <dl class="row">
+            <dt class="col-sm-4 sidebar-label align-middle">Service Type</dt>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getServiceType(); ?></dd>
+        </dl>
+    </div>
+    <div>
+        <dl class="row">
             <dt class="col-sm-4 sidebar-label align-middle">Service</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getHelpTopic(); ?></dd>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getService(); ?></dd>
         </dl>
     </div>
     <div>
         <dl class="row">
             <dt class="col-sm-4 sidebar-label align-middle">Category</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" >User Account Maintenance</dd>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getCategory(); ?></dd>
         </dl>
     </div>
     <div>
         <dl class="row">
             <dt class="col-sm-4 sidebar-label align-middle">Sub-Category</dt>
-            <dd class="col-sm-8 sidebar-detail align-middle" >Password Reset</dd>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getSubCategory(); ?></dd>
         </dl>
     </div>
     <div class="spacer"></div>
@@ -1049,32 +1077,23 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             </div>
             <div class="modal-body">
                 <label>
-                    <select name="topicId" class="form-control-sm" onchange="javascript:
-            var data = $(':input[name]', '#dynamic-form').serialize();
-            $.ajax(
-            'ajax.php/form/help-topic/' + this.value,{
-             data: data,
-             dataType: 'json',
-             success: function(json) {
-                $('#dynamic-form').empty().append(json.html);
-                $(document.head).append(json.media);
-             }
-             });">
+                    <select name="topicId" id="topicId" class="form-control" onchange="
+                        var data = $(':input[name]', '#dynamic-form').serialize();
+                        $.ajax(
+                        'ajax.php/form/help-topic/' + this.value,{
+                         data: data,
+                         dataType: 'json',
+                         success: function(json) {
+                            $('#dynamic-form').empty().append(json.html);
+                            $(document.head).append(json.media);
+                         }
+                         });">
+                        <option value="" selected > <?php echo __('Select Incident Template...');?> </option>
                         <?php
-                        if ($topics=Topic::getHelpTopics(false, false, true)) {
-                            if (count($topics) == 1)
-                                $selected = 'selected="selected"';
-                            else { ?>
-                                <option value="" selected >&mdash; <?php echo __('Select Incident Template'); ?> &mdash;</option>
-                            <?php                   }
+                        if($topics=Topic::getHelpTopics()) {
                             foreach($topics as $id =>$name) {
-                                echo sprintf('<option value="%d" %s %s>%s</option>',
-                                    $id, ($info['topicId']==$id)?'selected="selected"':'',
-                                    $selected, $name);
-                            }
-                            if (count($topics) == 1 && !$forms) {
-                                if (($T = Topic::lookup($id)))
-                                    $forms =  $T->getForms();
+                                echo sprintf('<option value="%d" %s>%s</option>',
+                                    $id, ($tmpl==$id)?'selected="selected"':'',$name);
                             }
                         }
                         ?>
@@ -1115,8 +1134,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     </p>
     <p class="confirm-action" style="display:none;" id="changeuser-confirm">
         <span id="msg_warning" style="display:block;vertical-align:top">
-        <?php echo sprintf('%s <%s> will longer have access to the ticket'),
-            '<b>'.$ticket->getName().'</b>', $ticket->getEmail(); ?>
+        <?php echo sprintf('%s <%s> will longer have access to the ticket',
+            '<b>'.$ticket->getName().'</b>', $ticket->getEmail()); ?>
         </span>
         <?php echo sprintf(__('Are you sure you want to <b>change</b> ticket owner to %s?'),
             '<b><span id="newuser">this guy</span></b>'); ?>
@@ -1146,36 +1165,106 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
 </div>
 <script type="text/javascript">
 $(function() {
+    $(window).load( function() {
+        if ($('#serviceId').val() > 0) {
+            $('#serviceId').prop("disabled", false);
+        }
+        if ($('#serviceCatId').val() > 0) {
+            $('#serviceCatId').prop("disabled", false);
+        }
+        if ($('#serviceSubCatId').val() > 0) {
+            $('#serviceSubCatId').prop("disabled", false);
+        }
+    });
     $(document).ready(function() {
-        $('#impact-input select').change(function() {
-            if ($('#urgency-input select').prop('selectedIndex') > 0) {
+        $('#impact-input').find('select').change(function() {
+            if ($('#urgency-input').find('select').prop('selectedIndex') > 0) {
                 changePriority();
             }
         });
-        $('#urgency-input select').change(function() {
-            if ($('#impact-input select').prop('selectedIndex') > 0) {
+        $('#urgency-input').find('select').change(function() {
+            if ($('#impact-input').find('select').prop('selectedIndex') > 0) {
                 changePriority();
             }
         });
         function changePriority() {
-            var u = $('#urgency-input select').val();
-            var i = $('#impact-input select').val();
-            <?php while (list($id,$tag,$level) = db_fetch_row($impacts)) {
-
-        } ?>
+            var u = $('#urgency-input').find('select').val();
+            var i = $('#impact-input').find('select').val();
             $.ajax({
                 url : 'ajax.php/tickets/<?php echo $ticket->getId(); ?>/calculatePriority/'+i+'/'+u,
                 dataType : 'text',
                 type : 'GET',
                 success : function(data) {
-                    //alert(data);
-                    $('#priority-input select').val(data);
+                    $('#priority-input').find('select').val(data);
                 },
                 error : function(xhr, textStatus, errorThrown) {
                     alert(textStatus + " " + errorThrown);
                 }
             });
         }
+        $('#servTypeId').change(function() {
+            var pId = $('#servTypeId').val();
+            if (pId > 0) {
+                $('#serviceId').find('option').remove();
+                $.ajax({
+                    url : 'ajax.php/tickets/<?php echo $ticket->getId(); ?>/filterServices/'+pId,
+                    dataType : 'json',
+                    type : 'GET',
+                    success : function(data) {
+                        $("#serviceId").append("<option value=''>&mdash; Select Service &mdash;</option>").prop("disabled", false);
+                        $.each(data, function(key, value){
+                            $("#serviceId").append("<option value='"+value.id+"'>" + value.name + "</option>");
+                        });
+                    },
+                    error : function(xhr, textStatus, errorThrown) {
+                        alert(textStatus + " " + errorThrown);
+                    },
+                    header :{"Content-Type": "application/json"}
+                });
+            }
+        });
+        $('#serviceId').change(function() {
+            var pId = $('#serviceId').val();
+            if (pId > 0) {
+                $('#serviceCatId').find('option').remove();
+                $.ajax({
+                    url : 'ajax.php/tickets/<?php echo $ticket->getId(); ?>/filterCategories/'+pId,
+                    dataType : 'json',
+                    type : 'GET',
+                    success : function(data) {
+                        $("#serviceCatId").append("<option value=''>&mdash; Select Category &mdash;</option>").prop("disabled", false);
+                        $.each(data, function(key, value){
+                            $("#serviceCatId").append("<option value='"+value.id+"'>" + value.name + "</option>");
+                        });
+                    },
+                    error : function(xhr, textStatus, errorThrown) {
+                        alert(textStatus + " " + errorThrown);
+                    },
+                    header :{"Content-Type": "application/json"}
+                });
+            }
+        });
+        $('#serviceCatId').change(function() {
+            var pId = $('#serviceCatId').val();
+            if (pId > 0) {
+                $('#serviceSubCatId').find('option').remove();
+                $.ajax({
+                    url : 'ajax.php/tickets/<?php echo $ticket->getId(); ?>/filterSubCategories/'+pId,
+                    dataType : 'json',
+                    type : 'GET',
+                    success : function(data) {
+                        $("#serviceSubCatId").append("<option value=''>&mdash; Select Sub Category &mdash;</option>").prop("disabled", false);
+                        $.each(data, function(key, value){
+                            $("#serviceSubCatId").append("<option value='"+value.id+"'>" + value.name + "</option>");
+                        });
+                    },
+                    error : function(xhr, textStatus, errorThrown) {
+                        alert(textStatus + " " + errorThrown);
+                    },
+                    header :{"Content-Type": "application/json"}
+                });
+            }
+        });
     });
     $(document).on('click', 'a.change-user', function(e) {
         e.preventDefault();

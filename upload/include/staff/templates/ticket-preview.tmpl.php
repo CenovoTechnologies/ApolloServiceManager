@@ -105,7 +105,7 @@ echo sprintf(
             <td>%s</td>
         </tr>
         <tr>
-            <th>'.__('Help Topic').':</th>
+            <th>'.__('Service Template').':</th>
             <td>%s</td>
         </tr>',
     $ticket->getUserId(),

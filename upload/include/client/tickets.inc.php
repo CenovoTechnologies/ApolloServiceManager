@@ -151,9 +151,9 @@ $tickets->values(
     <input type="text" name="keywords" size="30" value="<?php echo Format::htmlchars($settings['keywords']); ?>">
     <input type="submit" value="<?php echo __('Search');?>">
 <div class="pull-right">
-    <?php echo __('Help Topic'); ?>:
+    <?php echo __('Service Template'); ?>:
     <select name="topic_id" class="nowarn" onchange="javascript: this.form.submit(); ">
-        <option value="">&mdash; <?php echo __('All Help Topics');?> &mdash;</option>
+        <option value=""><?php echo __('All Service Templates');?></option>
 <?php
 foreach (Topic::getHelpTopics(true) as $id=>$name) {
         $count = $thisclient->getNumTopicTickets($id, $org_tickets);

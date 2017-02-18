@@ -206,6 +206,8 @@ class OsticketConfig extends Config {
         'accept_unregistered_email' => true,
         'default_help_topic' => 0,
         'help_topic_sort_mode' => 'a',
+        'service_sort_mode' => 'a',
+        'service_type_sort_mode' => 'a',
         'client_verify_email' => 1,
         'allow_auth_tokens' => 1,
         'verify_email_addrs' => 1,
@@ -565,6 +567,38 @@ class OsticketConfig extends Config {
 
     function getDefaultTopicId() {
         return $this->get('default_help_topic');
+    }
+
+    function getServiceSortMode() {
+        return $this->get('service_sort_mode');
+    }
+
+    function getDefaultServiceId() {
+        return $this->get('default_service');
+    }
+
+    function getServiceCatSortMode() {
+        return $this->get('service_cat_sort_mode');
+    }
+
+    function getDefaultServiceCatId() {
+        return $this->get('default_service_cat');
+    }
+
+    function getServiceSubCatSortMode() {
+        return $this->get('service_sub_cat_sort_mode');
+    }
+
+    function getDefaultServiceSubCatId() {
+        return $this->get('default_service_sub_cat');
+    }
+
+    function getServiceTypeSortMode() {
+        return $this->get('service_type_sort_mode');
+    }
+
+    function getDefaultServiceTypeId() {
+        return $this->get('default_service_type');
     }
 
     function getDefaultTopic() {

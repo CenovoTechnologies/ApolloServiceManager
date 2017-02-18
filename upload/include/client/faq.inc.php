@@ -52,7 +52,7 @@ $category=$faq->getCategory();
 <?php }
 if ($faq->getHelpTopics()->count()) { ?>
 <section>
-    <strong><?php echo __('Help Topics'); ?></strong>
+    <strong><?php echo __('Service Templates'); ?></strong>
 <?php foreach ($faq->getHelpTopics() as $T) { ?>
     <div><?php echo $T->topic->getFullName(); ?></div>
 <?php } ?>

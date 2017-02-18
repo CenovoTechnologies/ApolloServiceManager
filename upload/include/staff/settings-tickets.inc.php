@@ -134,7 +134,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td><?php echo __('Default Help Topic'); ?>:</td>
+            <td><?php echo __('Default Service Template'); ?>:</td>
             <td>
                 <select name="default_help_topic" class="form-control-sm">
                     <option value="0">&mdash; <?php echo __('None'); ?> &mdash;</option><?php

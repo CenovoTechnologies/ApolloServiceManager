@@ -51,7 +51,7 @@ if ($thisstaff->hasPerm(FAQ::PERM_MANAGE)) { ?>
 
 <?php if ($faq->getHelpTopics()->count()) { ?>
 <section>
-    <header><?php echo __('Help Topics'); ?></header>
+    <header><?php echo __('Service Templates'); ?></header>
 <?php foreach ($faq->getHelpTopics() as $T) { ?>
     <div><?php echo $T->topic->getFullName(); ?></div>
 <?php } ?>

@@ -127,7 +127,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <tr>
             <td>
-                <?php echo __('Help Topic'); ?>
+                <?php echo __('Service Template'); ?>
             </td>
             <td>
 		<span>

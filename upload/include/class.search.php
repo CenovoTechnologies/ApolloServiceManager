@@ -751,7 +751,7 @@ class SavedSearch extends VerySimpleModel {
             )),
             'topic_id'  =>  new HelpTopicChoiceField(array(
                 'id' => 3104,
-                'label' => __('Help Topic'),
+                'label' => __('Service Template'),
             )),
             'created'   =>  new DateTimeField(array(
                 'id' => 3105,

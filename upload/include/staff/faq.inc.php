@@ -76,11 +76,11 @@ if ($topics = Topic::getAllHelpTopics()) {
         $info['topics'] = array();
 ?>
     <div style="padding-top:9px">
-        <strong><?php echo __('Help Topics');?></strong>:
+        <strong><?php echo __('Service Templates');?></strong>:
         <div class="faded"><?php echo __('Check all help topics related to this article.');?></div>
     </div>
     <select multiple="multiple" name="topics[]" class="multiselect"
-        data-placeholder="<?php echo __('Help Topics'); ?>"
+        data-placeholder="<?php echo __('Service Templates'); ?>"
         id="help-topic-selection" style="width:350px;">
     <?php while (list($topicId,$topic) = each($topics)) { ?>
         <option value="<?php echo $topicId; ?>" <?php
