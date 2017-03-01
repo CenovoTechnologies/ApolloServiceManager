@@ -133,6 +133,8 @@ class Bootstrap {
         define('TOPIC_TABLE',$prefix.'help_topic');
         define('TOPIC_FORM_TABLE',$prefix.'help_topic_form');
         define('SLA_TABLE', $prefix.'sla');
+        define('AUTO_CLOSURE_TABLE', $prefix.'auto_closure');
+        define('RESOLUTION_CODE_TABLE', $prefix.'resolution_code');
 
         define('EMAIL_TABLE',$prefix.'email');
         define('EMAIL_TEMPLATE_GRP_TABLE',$prefix.'email_template_group');
@@ -327,9 +329,9 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('THIS_VERSION', 'v1.0.2'); // Set by installer
-define('GIT_VERSION', '907ec36'); // Set by installer
-define('MAJOR_VERSION', '1.0');
+define('THIS_VERSION', 'v0.1.0'); // Set by installer
+define('GIT_VERSION', '2b1c935'); // Set by installer
+define('MAJOR_VERSION', '0.0.0');
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))
