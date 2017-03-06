@@ -22,6 +22,8 @@ $serv  = $ticket->getServiceId(); //Ticket Service
 $cat   = $ticket->getCategoryId(); //Ticket Service Category
 $sub   = $ticket->getSubCategoryId(); //Ticket Sub Category
 $tmpl  = $ticket->getHelpTopic();
+$resCode = $ticket->getResolutionCodeId(); //Resolution Code
+$autoClose = $ticket->getAutoClosePlanId(); //Auto Close Plan
 $lock  = $ticket->getLock();  //Ticket lock obj
 if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
     $lock = $ticket->acquireLock($thisstaff->getId());
@@ -146,13 +148,6 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                        class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a>
                    </ul>
                </div>
-               <?php
-               if ($role->hasPerm(TicketModel::PERM_EDIT)) { ?>
-                   <a type="button" class="btn btn-default action-button" title="<?php echo __('Edit'); ?>" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=edit" role="button">
-                       <i class="icon-edit"></i>
-                   </a>
-                   <?php
-               } ?>
                <a type="button" class="btn btn-default action-button" title="<?php echo __('Promote to Problem'); ?>" href="#" role="button">
                    <i class="icon-signin"></i>
                </a>
@@ -338,7 +333,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <div class="col-md-8">
                         <div class="row">
                             <label style="width:49%">Service Type:
-                                <select class="form-control required" name="servTypeId" type="text" id="servTypeId" style="width:100%">
+                                <select class="form-control" name="servTypeId" type="text" id="servTypeId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Service Type &mdash;</option>
                                     <?php
                                     if($servTypes=ServiceType::getAllServiceTypes()) {
@@ -360,7 +355,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="row">
                             <label style="width:49%">Service:
-                                <select class="form-control required" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
+                                <select class="form-control" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Service &mdash;</option>
                                     <?php
                                     if($services=Service::getAllServices()) {
@@ -382,7 +377,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="row">
                             <label style="width:49%">Category:
-                                <select class="form-control required" disabled name="serviceCatId" type="text" id="serviceCatId" style="width:100%">
+                                <select class="form-control" disabled name="serviceCatId" type="text" id="serviceCatId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Category &mdash;</option>
                                     <?php
                                     if($serviceCats=ServiceCat::getAllServiceCategories()) {
@@ -404,7 +399,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="row">
                             <label style="width:49%">Sub Category:
-                                <select class="form-control required" disabled name="serviceSubCatId" type="text" id="serviceSubCatId" style="width:100%">
+                                <select class="form-control" disabled name="serviceSubCatId" type="text" id="serviceSubCatId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Sub Category &mdash;</option>
                                     <?php
                                     if($serviceSubCats=ServiceSubCat::getAllServiceCategories()) {
@@ -445,14 +440,83 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 </form>
             </div>
             <div class="tab-pane card-block" id="resolve-incident" role="tabpanel">
-                <div class="col-md-8">
-
-                </div>
-                <div class="col-md-4" style="padding-right:0;">
-                    <div class="d-inline">
-                        <h6 class="sidebar-heading">Resolution & Recovery</h6>
+                <form action="tickets.php?id=<?php echo $ticket->getId(); ?>#resolve" name="resolve" method="post" enctype="multipart/form-data">
+                <?php csrf_token(); ?>
+                    <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
+                    <input type="hidden" name="a" value="resolve">
+                    <input type="hidden" name="do" value="resolve">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="error"><?php echo $errors['resolve']; ?></div>
+                        </div>
+                        <div class="row">
+                            <label style="width:49%">Resolution Code:
+                                <select class="form-control" name="resolution_code_id" id="resolution_code_id">
+                                    <option value="0" selected="selected">&mdash; Select Resolution Code &mdash;</option>
+                                    <?php
+                                    if($resCodes=ResolutionCode::getResolutionCodes()) {
+                                        foreach($resCodes as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($resCode==$id)?'selected="selected"':'',$name['name']);
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </label>
+                            <label style="width:49%">Auto Close Plan:
+                                <select class="form-control" name="auto_close_plan_id" id="auto_close_plan_id">
+                                    <option value="0" selected="selected">&mdash; Select Auto Close Plan &mdash;</option>
+                                    <?php
+                                    if($autoClosures=AutoClosure::getAutoClosures()) {
+                                        foreach($autoClosures as $id =>$name) {
+                                            if ($name['active']) { ?>
+                                                <option value="<?php echo $id; ?>"
+                                                    <?php echo ($autoClose == $id) ? 'selected' : ''; ?>>
+                                                    <?php echo $name['name'] . " (" . $name['time'] . " hours)"; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                    }?>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="row">
+                            <label>Resolution Notes:
+                                <?php
+                                $signature = '';
+                                switch ($thisstaff->getDefaultSignatureType()) {
+                                    case 'dept':
+                                        /** @var Dept $dept */
+                                        if ($dept && $dept->canAppendSignature())
+                                            $signature = $dept->getSignature();
+                                        break;
+                                    case 'mine':
+                                        $signature = $thisstaff->getSignature();
+                                        break;
+                                } ?>
+                                <input type="hidden" name="draft_id" value=""/>
+                                <textarea name="response" id="resolveResponse" cols="50"
+                                          data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
+                                          data-signature="<?php
+                                          echo Format::viewableImages($signature); ?>"
+                                          placeholder="Detailed description of the steps used to resolve this incident"
+                                          rows="12" wrap="soft"
+                                          class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
+                                          ?> draft draft-delete">
+                                </textarea>
+                            </label>
+                        </div>
                     </div>
-                </div>
+                    <div class="col-md-4" style="padding-right:0;">
+                        <div class="d-inline">
+                            <h6 class="sidebar-heading">Resolution & Recovery</h6>
+                        </div>
+                        <div class="row" style="padding:0 15px;">
+                            <input class="btn btn-sm btn-outline-primary" style="width:100%" type="submit" id="resolveBtn" name="submit" value="<?php echo __('Resolve Incident');?>">
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane card-block" id="close-incident" role="tabpanel">
                 <div class="col-md-8">
@@ -982,6 +1046,18 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             <dt class="col-sm-4 sidebar-label align-middle">Sub-Category</dt>
             <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getSubCategory(); ?></dd>
         </dl>
+    </div>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-4 sidebar-label align-middle">Resolution Code</dt>
+            <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getResolutionCode(); ?></dd>
+        </dl>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-4 sidebar-label align-middle">Auto Close Plan</dt>
+                <dd class="col-sm-8 sidebar-detail align-middle" ><?php echo $ticket->getAutoClosePlan(); ?></dd>
+            </dl>
+        </div>
     </div>
     <div class="spacer"></div>
     <div>

@@ -112,10 +112,10 @@ case 'progress':
     $status=array('progress');
     $staffId=$thisstaff->getId();
     $results_type=__('Tickets in Progress');
-    $tickets->filter(Q::any(array(
+    /*$tickets->filter(Q::any(array(
         'staff_id'=>$thisstaff->getId(),
         Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
-    )));
+    )));*/
     $queue_sort_options = array('updated', 'priority,updated',
         'priority,created', 'priority,due', 'due', 'answered', 'number',
         'hot');
@@ -124,10 +124,10 @@ case 'resolved':
     $status=array('resolved');
     $staffId=$thisstaff->getId();
     $results_type=__('Resolved Tickets');
-    $tickets->filter(Q::any(array(
+    /*$tickets->filter(Q::any(array(
         'staff_id'=>$thisstaff->getId(),
         Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
-    )));
+    )));*/
     $queue_sort_options = array('updated', 'priority,updated',
         'priority,created', 'priority,due', 'due', 'answered', 'number',
         'hot');
@@ -215,8 +215,8 @@ case 'open':
     $status=array('open');
     $queue_name = $queue_name ?: 'open';
     $results_type=__('Open Tickets');
-    if (!$cfg->showAnsweredTickets())
-        $tickets->filter(array('isanswered'=>0));
+    /*if (!$cfg->showAnsweredTickets())
+        $tickets->filter(array('isanswered'=>0));*/
     $queue_sort_options = array('priority,updated', 'updated',
         'priority,due', 'due', 'priority,created', 'answered', 'number',
         'hot');
@@ -550,7 +550,7 @@ $tickets->constrain(array('lock' => array(
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"
                     data-preview="#tickets/<?php echo $T['ticket_id']; ?>/preview"
                     ><?php echo $tid; ?></a></td>
-                <td align="center" nowrap><?php echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback; ?></td>
+                <td align="center" nowrap><?php echo $T[$date_col ?: 'lastupdate'] ?: $date_fallback; ?></td>
                 <td><div style="max-width: <?php
                     $base = 279;
                     // Make room for the paperclip and some extra

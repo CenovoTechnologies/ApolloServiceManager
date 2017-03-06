@@ -47,7 +47,9 @@ $dispatcher = patterns('',
         url_get('^signature/(?P<type>\w+)(?:/(?P<id>\d+))?$', 'getSignature'),
         url_get('^(?P<id>\d+)/(?:(?P<lang>\w+)/)?manage$', 'manageContent'),
         url_get('^(?P<id>[\w-]+)/(?:(?P<lang>\w+)/)?manage$', 'manageNamedContent'),
-        url_post('^(?P<id>\d+)(?:/(?P<lang>\w+))?$', 'updateContent')
+        url_post('^(?P<id>\d+)(?:/(?P<lang>\w+))?$', 'updateContent'),
+        url_get('^autoclosure/(?P<id>\d+)$', 'getAutoClosePlan'),
+        url_get('^resolutioncode/(?P<id>\d+)$', 'getResolutionCode')
     )),
     url('^/config/', patterns('ajax.config.php:ConfigAjaxAPI',
         url_get('^scp', 'scp'),

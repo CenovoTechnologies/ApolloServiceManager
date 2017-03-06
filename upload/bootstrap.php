@@ -330,7 +330,7 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 
 #Current version && schema signature (Changes from version to version)
 define('THIS_VERSION', 'v0.1.0'); // Set by installer
-define('GIT_VERSION', '2b1c935'); // Set by installer
+define('GIT_VERSION', '03f9544f'); // Set by installer
 define('MAJOR_VERSION', '0.0.0');
 //Path separator
 if(!defined('PATH_SEPARATOR')){

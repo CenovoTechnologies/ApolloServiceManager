@@ -1830,6 +1830,19 @@ class CloseEvent extends ThreadEvent {
     }
 }
 
+class ResolveEvent extends ThreadEvent {
+    static $icon = 'thumbs-up-alt';
+    static $state = 'resolve';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        if ($this->getData('status'))
+            return $this->template(__('Resolved by <b>{somebody}</b> with status of {<TicketStatus>data.status} {timestamp}'));
+        else
+            return $this->template(__('Resolved by <b>{somebody}</b> {timestamp}'));
+    }
+}
+
+
 class CollaboratorEvent extends ThreadEvent {
     static $icon = 'group';
     static $state = 'collab';

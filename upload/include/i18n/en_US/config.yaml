@@ -32,7 +32,7 @@ core:
     enable_kb: 0
     enable_premade: 1
     enable_captcha: 0
-    enable_auto_cron: 0
+    enable_auto_cron: 1
     enable_mail_polling: 0
     send_sys_errors: 1
     send_sql_errors: 1

@@ -305,7 +305,9 @@ class AdminNav extends StaffNav{
                     $subnav[]=array('desc'=>__('Service Types'),'href'=>'servicetypes.php');
                     $subnav[]=array('desc'=>__('Service Catalogue'),'href'=>'services.php');
                     $subnav[]=array('desc'=>__('Service Categories'),'href'=>'servicecats.php');
-                    $subnav[]=array('desc'=>__('Service Sub-Categories'),'href'=>'servicesubcats.php');
+                    $subnav[]=array('desc'=>__('Service Sub Categories'),'href'=>'servicesubcats.php');
+                    $subnav[]=array('desc'=>__('Auto Close Plans'),'href'=>'autoclosures.php');
+                    $subnav[]=array('desc'=>__('Resolution Codes'),'href'=>'resolutioncodes.php');
                     $subnav[]=array('desc'=>__('Ticket Filters'),'href'=>'filters.php',
                                         'title'=>__('Ticket Filters'));
                     $subnav[]=array('desc'=>__('SLA Plans'),'href'=>'slas.php');

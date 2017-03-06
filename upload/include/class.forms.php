@@ -3488,7 +3488,7 @@ class ChoicesWidget extends Widget {
         ?>
         <select name="<?php echo $this->name; ?>[]"
             <?php //echo implode(' ', array_filter(array($classes))); ?>
-            class="form-control required"
+            class="form-control"
             id="<?php echo $this->id; ?>"
             <?php if (isset($config['data']))
               foreach ($config['data'] as $D=>$V)

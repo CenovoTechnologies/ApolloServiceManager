@@ -781,7 +781,7 @@ class DynamicListItem extends VerySimpleModel implements CustomListItem {
     }
 
     function __toString() {
-        return $this.toString();
+        return (string) $this;
     }
 
     function display() {
@@ -1429,7 +1429,7 @@ implements CustomListItem, TemplateVariable {
     }
 
     function __toString() {
-        return $this->getName().toString();
+        return (string) $this->getName();
     }
 
     static function create($ht=false) {

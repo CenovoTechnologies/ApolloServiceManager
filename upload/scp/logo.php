@@ -38,6 +38,6 @@ elseif (($logo = $ost->getConfig()->getStaffLogo())) {
 
 header("Cache-Control: private, max-age=86400");
 header('Pragma: private');
-Http::redirect('images/ost-logo.png');
+Http::redirect('images/asm-logo.png');
 
 ?>

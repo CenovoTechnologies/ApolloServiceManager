@@ -32,9 +32,12 @@ include_once(INCLUDE_DIR.'class.priority.php');
 include_once(INCLUDE_DIR.'class.impact.php');
 include_once(INCLUDE_DIR.'class.urgency.php');
 include_once(INCLUDE_DIR.'class.sla.php');
+include_once(INCLUDE_DIR.'class.autoclosure.php');
+include_once(INCLUDE_DIR.'class.resolutioncode.php');
 include_once(INCLUDE_DIR.'class.servicetype.php');
 include_once(INCLUDE_DIR.'class.service.php');
 include_once(INCLUDE_DIR.'class.servicecat.php');
+include_once(INCLUDE_DIR.'class.servicesubcat.php');
 include_once(INCLUDE_DIR.'class.canned.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 require_once(INCLUDE_DIR.'class.user.php');
@@ -93,6 +96,14 @@ class TicketModel extends VerySimpleModel {
             ),
             'topic' => array(
                 'constraint' => array('topic_id' => 'Topic.topic_id'),
+                'null' => true,
+            ),
+            'resolution_code' => array(
+                'constraint' =>array('resolution_code_id' => 'ResolutionCode.id'),
+                'null' => true,
+            ),
+            'auto_close_plan' => array(
+                'constraint' =>array('auto_close_plan_id' => 'AutoClosure.id'),
                 'null' => true,
             ),
             'thread' => array(
@@ -271,7 +282,7 @@ implements RestrictedAccess, Threadable {
 
     static $meta = array(
         'select_related' => array('topic', 'staff', 'user', 'team', 'dept', 'sla', 'serv_type', 'service',
-            'service_cat', 'service_sub_cat', 'thread', 'user__default_email'),
+            'service_cat', 'service_sub_cat', 'resolution_code', 'auto_close_plan', 'thread', 'user__default_email'),
     );
 
     var $lastMsgId;
@@ -806,7 +817,6 @@ implements RestrictedAccess, Threadable {
         return $this->topic;
     }
 
-
     function getSLAId() {
         return $this->sla_id;
     }
@@ -845,6 +855,22 @@ implements RestrictedAccess, Threadable {
 
     function getSubCategory() {
         return $this->service_sub_cat;
+    }
+
+    function getResolutionCodeId() {
+        return $this->resolution_code_id;
+    }
+
+    function getResolutionCode() {
+        return $this->resolution_code;
+    }
+
+    function getAutoClosePlanId() {
+        return $this->auto_close_plan_id;
+    }
+
+    function getAutoClosePlan() {
+        return $this->auto_close_plan;
     }
 
     function getLastRespondent() {
@@ -910,7 +936,6 @@ implements RestrictedAccess, Threadable {
                         'flags__hasbit' => TaskModel::ISOPEN)));
     }
 
-
     function getThreadId() {
         if ($this->thread)
             return $this->thread->id;
@@ -963,6 +988,10 @@ implements RestrictedAccess, Threadable {
         return $this->getThreadEntries(array('M', 'R'));
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     function getThreadEntry($id) {
         return $this->getThread()->getEntry($id);
     }
@@ -1272,26 +1301,33 @@ implements RestrictedAccess, Threadable {
     }
 
     function setServiceType($serviceTypeId) {
-
+        $this->service_type_id = $serviceTypeId;
     }
 
     function setService($serviceId) {
-
+        $this->service_id = $serviceId;
     }
 
     function setCategory($categoryId) {
-
+        $this->service_sub_cat_id = $categoryId;
     }
 
     function setSubCategory($subCategoryId) {
+        $this->service_sub_cat_id = $subCategoryId;
+    }
 
+    function setResolutionCode($resCodeId) {
+        $this->resolution_code_id = $resCodeId;
+    }
+
+    function setAutoClosePlan($autoClosePlanId) {
+        $this->auto_close_plan_id = $autoClosePlanId;
     }
 
     //Status helper.
 
     function setStatus($status, $comments='', &$errors=array(), $set_closing_agent=true) {
         global $thisstaff;
-
         /** @var Role $role */
         /** @var Staff $thisstaff */
         if ($thisstaff && !($role = $thisstaff->getRole($this->getDeptId())))
@@ -1302,7 +1338,6 @@ implements RestrictedAccess, Threadable {
 
         if (!$status || !$status instanceof TicketStatus)
             return false;
-
         // Double check permissions (when changing status)
         if ($role && $this->getStatusId()) {
             switch ($status->getState()) {
@@ -1356,9 +1391,14 @@ implements RestrictedAccess, Threadable {
             case 'open':
                 // TODO: check current status if it allows for reopening
                 if ($this->isClosed()) {
-                    $this->closed = $this->lastupdate = $this->reopened = SqlFunction::NOW();
+                    $this->lastupdate = $this->reopened = SqlFunction::NOW();
                     $ecb = function ($t) {
                         $t->logEvent('reopened', false, null, 'closed');
+                    };
+                } else {
+                    $this->lastupdate = $this->reopened = SqlFunction::NOW();
+                    $ecb = function ($t) {
+                        $t->logEvent('updated', false, null, 'closed');
                     };
                 }
 
@@ -1367,18 +1407,21 @@ implements RestrictedAccess, Threadable {
                     $this->isanswered = 0;
 				break;
 			case 'resolved':
-				if ($this->isClosed()) {
-					$this->closed = $this->lastupdate = $this->resolved = SqlFunction::NOW();
+				if (!$this->isClosed()) {
+					$this->resolved = $this->lastupdate = SqlFunction::NOW();
 					$ecb = function ($t) {
 						$t->logEvent('resolved', false, null, 'closed');
 					};
+					//TODO: send resolved notification
+                    $this->duedate = null;
+                    $this->clearOverdue(false);
 				}
 				break;
 			case 'progress':
-				if ($this->isClosed()) {
-					$this->closed = $this->lastupdate = $this->progress = SqlFunction::NOW();
+				if (!$this->isClosed()) {
+					$this->lastupdate = SqlFunction::NOW();
 					$ecb = function ($t) {
-						$t->logEvent('started', false, null, 'closed');
+						$t->logEvent('updated', false, null, 'closed');
 					};
 				}
                 break;
@@ -1854,7 +1897,7 @@ implements RestrictedAccess, Threadable {
     function onAssign($assignee, $comments, $alert=true) {
         global $cfg, $thisstaff;
 
-        if ($this->isClosed())
+        if ($this->isClosed() || $this->isResolved())
             $this->reopen(); //Assigned tickets must be open - otherwise why assign?
 
         // Assignee must be an object of type Staff or Team
@@ -2080,6 +2123,12 @@ implements RestrictedAccess, Threadable {
             'urgency' => array(
                 'class' => 'Urgency', 'desc' => __('Urgency'),
             ),
+            'resolution_code' => array(
+                'class' => 'ResolutionCode', 'desc' => __('Resolution Code'),
+            ),
+            'auto_close_plan' => array(
+                'class' => 'AutoClosure', 'desc' => __('Auto Close Plan'),
+            ),
             'recipients' => array(
                 'class' => 'UserList', 'desc' => __('List of all recipient names'),
             ),
@@ -2162,6 +2211,23 @@ implements RestrictedAccess, Threadable {
             $this->sla = null;
 
         return $save ? $this->save() : true;
+    }
+
+    function tryAutoClose($save=true) {
+        if (!$this->isReadyToClose()) {
+            return false;
+        }
+        $this->setStatus('3');
+        //TODO: initialize satisfaction survey
+        return $save ? $this->save() : true;
+    }
+
+    //checking the time since the ticket entered resolve and when auto-close should take place
+    function isReadyToClose() {
+        if ($this->isResolved() && $this->isCloseable()) {
+            return true;
+        }
+        return false;
     }
 
     //Dept Transfer...with alert.. done by staff
@@ -3129,6 +3195,118 @@ implements RestrictedAccess, Threadable {
         return $this->save();
     }
 
+    function resolve($vars, &$errors) {
+        global /** @var Staff $thisstaff */
+        $cfg, $thisstaff;
+        /** @var Dept $dept */
+        $dept = $thisstaff->getDept();
+
+        if (!$cfg || !($this->checkStaffPerm($thisstaff, TicketModel::PERM_EDIT))) {
+            return false;
+        }
+
+        $fields = array();
+        $fields['resolution_code_id'] = array('type'=>'int', 'required'=>1, 'error'=>__('Resolution code selection is required'));
+        $fields['auto-close-plan_id'] = array('type'=>'int', 'required'=>1, 'error'=>__('Select a valid Auto Close Plan'));
+        $fields['response'] = array('type'=>'int', 'required'=>1, 'error'=>__('Resolution steps are required.'));
+
+        $vars['response'] = ThreadEntryBody::clean($vars['response']);
+
+        if ($errors)
+            return false;
+
+        $this->resolution_code_id = $vars['resolution_code_id'];
+        $this->auto_close_plan_id = $vars['auto_close_plan_id'];
+
+        $changes = array();
+        foreach ($this->dirty as $F=>$old) {
+            switch ($F) {
+                case 'resolution_code_id':
+                case 'auto_close_plan_id':
+                    $changes[$F] = array($old, $this->{$F});
+            }
+        }
+
+        // Effective role for the department
+        $role = $thisstaff->getRole($this->getDeptId());
+
+        // post the resolution steps
+        $response = null;
+        if($vars['response'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
+            $vars['response'] = $this->replaceVars($vars['response']);
+            // $vars['cannedatachments'] contains the attachments placed on
+            // the response form.
+            $response = $this->postReply($vars, $errors, false);
+        }
+
+        //resolving the incident requires a status of resolved
+        $this->setStatus('2');
+
+        if (!$this->save())
+            return false;
+
+        /* email the user */
+        /** @var Email $email */
+        $email = $dept->getEmail();
+        $options = array('thread'=>$response);
+        $signature = $from_name = '';
+        if ($thisstaff && $vars['signature']=='mine')
+            $signature=$thisstaff->getSignature();
+        elseif ($vars['signature']=='dept' && $dept->isPublic())
+            $signature=$dept->getSignature();
+
+        if ($thisstaff && ($type=$thisstaff->getReplyFromNameType())) {
+            switch ($type) {
+                case 'mine':
+                    if (!$cfg->hideStaffName())
+                        $from_name = (string) $thisstaff->getName();
+                    break;
+                case 'dept':
+                    if ($dept->isPublic())
+                        $from_name = $dept->getName();
+                    break;
+                case 'email':
+                default:
+                    $from_name =  $email->getName();
+            }
+
+            if ($from_name)
+                $options += array('from_name' => $from_name);
+
+        }
+
+        $variables = array(
+            'response' => $response,
+            'signature' => $signature,
+            'staff' => $thisstaff,
+            'poster' => $thisstaff
+        );
+
+        $user = $this->getOwner();
+        if (($email=$dept->getEmail())
+            && ($tpl = $dept->getTemplate())
+            && ($msg=$tpl->getReplyMsgTemplate())
+        ) {
+            $msg = $this->replaceVars($msg->asArray(),
+                $variables + array('recipient' => $user)
+            );
+            $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
+            $email->send($user->getEmail(), $msg['subj'], $msg['body'], $attachments,
+                $options);
+        }
+
+        if ($changes)
+            $this->logEvent('resolved', $changes);
+
+        // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
+        if($this->isOverdue()) {
+            $this->clearOverdue();
+        }
+
+        Signal::send('model.updated', $this);
+        return $this->save();
+    }
+
    /*============== Static functions. Use Ticket::function(params); =============nolint*/
     static function getIdByNumber($number, $email=null, $ticket=false) {
 
@@ -3371,19 +3549,11 @@ implements RestrictedAccess, Threadable {
         switch (strtolower($origin)) {
             case 'web':
                 $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Select a Service Template'));
-                /*$fields['servTypeId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Type'));
-                $fields['serviceId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service'));
-                $fields['serviceCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Category'));
-                $fields['serviceSubCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Sub Category'));*/
                 break;
             case 'staff':
                 $fields['deptId']   = array('type'=>'int',  'required'=>0, 'error'=>__('Department selection is required'));
                 $fields['topicId']  = array('type'=>'int',  'required'=>1, 'error'=>__('Service type selection is required'));
                 $fields['duedate']  = array('type'=>'date', 'required'=>0, 'error'=>__('Invalid date format - must be MM/DD/YY'));
-                /*$fields['servTypeId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Type'));
-                $fields['serviceId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service'));
-                $fields['serviceCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Service Category'));
-                $fields['serviceSubCatId']  = array('type'=>'int',  'required'=>0, 'error'=>__('Select a Sub Category'));*/
                 break;
             case 'api':
                 $fields['source']   = array('type'=>'string', 'required'=>1, 'error'=>__('Indicate ticket source'));
@@ -3799,7 +3969,8 @@ implements RestrictedAccess, Threadable {
 
     /* routine used by staff to open a new ticket */
     static function open($vars, &$errors) {
-        global $thisstaff, $cfg;
+        global /** @var Staff $thisstaff */
+        $thisstaff, $cfg;
 
         if (!$thisstaff)
             return false;
@@ -3814,8 +3985,7 @@ implements RestrictedAccess, Threadable {
 
         if (isset($vars['source']) // Check ticket source if provided
                 && !array_key_exists($vars['source'], Ticket::getSources()))
-            $errors['source'] = sprintf( __('Invalid source given - %s'),
-                    Format::htmlchars($vars['source']));
+            $errors['source'] = sprintf( __('Invalid source given - %s'), $vars['source']);
 
 
         if (!$vars['uid']) {
@@ -3829,6 +3999,7 @@ implements RestrictedAccess, Threadable {
 
         // Ensure agent has rights to make assignment in the cited
         // department
+        /** @var Role $role */
         if ($vars['assignId'] && !(
             $role
             ? $role->hasPerm(TicketModel::PERM_ASSIGN)
@@ -3853,6 +4024,7 @@ implements RestrictedAccess, Threadable {
         $role = $thisstaff->getRole($ticket->getDeptId());
 
         // post response - if any
+        /** @var ThreadEntry $response */
         $response = null;
         if($vars['response'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
             $vars['response'] = $ticket->replaceVars($vars['response']);
@@ -3869,6 +4041,7 @@ implements RestrictedAccess, Threadable {
             $ticket->logNote(_S('New Ticket'), $vars['note'], $thisstaff, false);
         }
 
+        /** @var Dept $dept */
         if (!$cfg->notifyONNewStaffTicket()
             || !isset($vars['alertuser'])
             || !($dept=$ticket->getDept())
@@ -3949,10 +4122,27 @@ implements RestrictedAccess, Threadable {
         }
    }
 
+    static function autoClose() {
+        $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
+            .' INNER JOIN '.TICKET_STATUS_TABLE.' status
+                ON (status.id=T1.status_id AND status.state = "resolved") '
+            .' LEFT JOIN '.AUTO_CLOSURE_TABLE.' T2 ON (T1.auto_close_plan_id=T2.id) '
+            .' WHERE isoverdue=0 '
+            .' AND ((resolved is NOT NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.resolved))>=T2.time_period*3600) '
+            .' ) ORDER BY T1.created LIMIT 50'; //Age upto 50 tickets at a time?
+
+        if(($res=db_query($sql)) && db_num_rows($res)) {
+            while(list($id)=db_fetch_row($res)) {
+                /** @var Ticket $ticket */
+                if ($ticket=Ticket::lookup($id))
+                    $ticket->tryAutoClose();
+            }
+        }
+    }
+
     static function agentActions($agent, $options=array()) {
         if (!$agent)
             return;
-
         require STAFFINC_DIR.'templates/tickets-actions.tmpl.php';
     }
 }

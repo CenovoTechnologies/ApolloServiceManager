@@ -24,6 +24,8 @@ require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 require_once(INCLUDE_DIR.'class.export.php');       // For paper sizes
 
 $page='';
+/** @var Ticket $ticket */
+/** @var User $user */
 $ticket = $user = null; //clean start.
 $redirect = false;
 //LOCKDOWN...See if the id provided is actually valid and if the user has access.
@@ -211,6 +213,22 @@ if($_POST && !$errors):
                     $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
                 elseif($ticket->update($_POST,$errors)) {
                     $msg=__('Ticket updated successfully');
+                    $redirect = 'tickets.php?id='.$ticket->getId();
+                    $_REQUEST['a'] = null; //Clear edit action - going back to view.
+                    //Check to make sure the staff STILL has access post-update (e.g dept change).
+                    if(!$ticket->checkStaffPerm($thisstaff))
+                        $ticket=null;
+                } elseif(!$errors['err']) {
+                    $errors['err']=sprintf(
+                        __('Unable to update %s. Correct any errors below and try again.'),
+                        __('ticket'));
+                }
+                break;
+            case 'resolve':
+                if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
+                    $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
+                elseif($ticket->resolve($_POST,$errors)) {
+                    $msg=__('Ticket resolved successfully');
                     $redirect = 'tickets.php?id='.$ticket->getId();
                     $_REQUEST['a'] = null; //Clear edit action - going back to view.
                     //Check to make sure the staff STILL has access post-update (e.g dept change).

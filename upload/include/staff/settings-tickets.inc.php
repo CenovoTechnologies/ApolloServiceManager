@@ -134,6 +134,28 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
+            <td class="required">
+                <?php echo __('Default Auto Close Plan');?>:
+            </td>
+            <td>
+                <span>
+                <select name="default_auto_closure_id" class="form-control-sm">
+                    <option value="0">&mdash; <?php echo __('None');?> &mdash;</option>
+                    <?php
+                    $acs=AutoClosure::objects();
+                    foreach ($acs as $ac) {
+                        if ($ac->isActive()) { ?>
+                            <option value="<?php echo $ac->getId(); ?>" <?php echo ($config['default_auto_closure_id'] == $ac->getId()) ? 'selected' : ''; ?>>
+                                <?php echo $ac->getName()." (".$ac->getTimePeriod()." hours)"; ?></option>
+                            <?php
+                        }
+                    }?>
+                </select>
+                &nbsp;<span class="error">*&nbsp;<?php echo $errors['default_auto_closure_id']; ?></span>  <i class="help-tip icon-question-sign" href="#default_auto_close_plan"></i>
+                </span>
+            </td>
+        </tr>
+        <tr>
             <td><?php echo __('Default Service Template'); ?>:</td>
             <td>
                 <select name="default_help_topic" class="form-control-sm">

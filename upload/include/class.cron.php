@@ -25,16 +25,17 @@ class Cron {
         MailFetcher::run(); //Fetch mail..frequency is limited by email account setting.
     }
 
-    function TicketMonitor() {
+    static function TicketMonitor() {
         require_once(INCLUDE_DIR.'class.ticket.php');
         Ticket::checkOverdue(); //Make stale tickets overdue
+        Ticket::autoClose(); //close tickets that have reached their auto-close time
         // Cleanup any expired locks
         require_once(INCLUDE_DIR.'class.lock.php');
         Lock::cleanup();
 
     }
 
-    function PurgeLogs() {
+    static function PurgeLogs() {
         global $ost;
         // Once a day on a 5-minute cron
         if (rand(1,300) == 42)
@@ -46,7 +47,7 @@ class Cron {
         Draft::cleanup();
     }
 
-    function CleanOrphanedFiles() {
+    static function CleanOrphanedFiles() {
         require_once(INCLUDE_DIR.'class.file.php');
         AttachmentFile::deleteOrphans();
     }
@@ -92,7 +93,7 @@ class Cron {
         }
     }
 
-    function run(){ //called by outside cron NOT autocron
+    static function run(){ //called by outside cron NOT autocron
         global $ost;
         if (!$ost || $ost->isUpgradePending())
             return;

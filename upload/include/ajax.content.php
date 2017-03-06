@@ -16,6 +16,8 @@
 if(!defined('INCLUDE_DIR')) die('!');
 
 require_once INCLUDE_DIR.'class.ajax.php';
+require_once INCLUDE_DIR.'class.autoclosure.php';
+require_once INCLUDE_DIR.'class.resolutioncode.php';
 
 class ContentAjaxAPI extends AjaxController {
 
@@ -221,6 +223,24 @@ class ContentAjaxAPI extends AjaxController {
 
         header('Content-Type: application/json');
         return $this->encode($items);
+    }
+
+    /**
+     * @param $id
+     * @return mixed|string
+     */
+    function getAutoClosePlan($id) {
+        /** @var AutoClosure $autoClose */
+        $autoClose = AutoClosure::getAutoCloseById($id);
+        $info = $autoClose->getInfo();
+        return $this->json_encode($info);
+    }
+
+    function getResolutionCode($id) {
+        /** @var ResolutionCode $resCode */
+        $resCode = ResolutionCode::getResCodeById($id);
+        $info = $resCode->getInfo();
+        return $this->json_encode($info);
     }
 }
 ?>
