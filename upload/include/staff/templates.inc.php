@@ -113,12 +113,12 @@ else
                   <input type="checkbox" class="ckb" name="ids[]" value="<?php echo $row['tpl_id']; ?>"
                             <?php echo $sel?'checked="checked"':''; ?> <?php echo $default?'disabled="disabled"':''; ?> >
                 </td>
-                <td>&nbsp;<a href="templates.php?tpl_id=<?php echo $row['tpl_id']; ?>"><?php echo Format::htmlchars($row['name']); ?></a>
+                <td>&nbsp;<a href="templates.php?tpl_id=<?php echo $row['tpl_id']; ?>"><?php echo $row['name']; ?></a>
                 &nbsp;<?php echo $default; ?></td>
                 <td>&nbsp;<?php echo $row['isactive']?__('Active'):'<b>'.__('Disabled').'</b>'; ?></td>
                 <td>&nbsp;&nbsp;<?php echo ($inuse)?'<b>'.__('Yes').'</b>':__('No'); ?></td>
-                <td>&nbsp;<?php echo Format::date($row['created']); ?></td>
-                <td>&nbsp;<?php echo Format::datetime($row['updated']); ?></td>
+                <td>&nbsp;<?php echo $row['created']; ?></td>
+                <td>&nbsp;<?php echo $row['updated']; ?></td>
             </tr>
             <?php
             } //end of while.

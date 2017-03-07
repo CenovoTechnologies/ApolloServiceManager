@@ -84,6 +84,14 @@ class EmailTemplateGroup {
                 'ticket', 'signature', 'message', 'poster', 'recipient',
             ),
         ),
+        'ticket.resolve.notice'=>array(
+            'group'=>'a.ticket.user',
+            'name'=>/* @trans */ 'Ticket Resolve Notice',
+            'desc'=>/* @trans */ 'Template used to notify end-user a ticket has been resolved',
+            'context' => array(
+                'ticket', 'signature', 'message', 'poster', 'recipient',
+            )
+        ),
         'ticket.alert'=>array(
             'group'=>'b.ticket.staff',
             'name'=>/* @trans */ 'New Ticket Alert',
@@ -331,6 +339,10 @@ class EmailTemplateGroup {
 
     function getOverlimitMsgTemplate() {
         return $this->getMsgTemplate('ticket.overlimit');
+    }
+
+    function getResolveNoticeMsgTemplate() {
+        return $this->getMsgTemplate('ticket.resolve.notice');
     }
 
     function getNoteAlertMsgTemplate() {

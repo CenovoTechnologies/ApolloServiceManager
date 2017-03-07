@@ -1412,7 +1412,6 @@ implements RestrictedAccess, Threadable {
 					$ecb = function ($t) {
 						$t->logEvent('resolved', false, null, 'closed');
 					};
-					//TODO: send resolved notification
                     $this->duedate = null;
                     $this->clearOverdue(false);
 				}
@@ -1726,6 +1725,59 @@ implements RestrictedAccess, Threadable {
             $notice = $this->replaceVars($msg, array('recipient' => $recipient));
             $email->send($recipient, $notice['subj'], $notice['body'], $attachments,
                 $options);
+        }
+    }
+
+    function notifyOnResolve($message, $autorespond=true) {
+        global $cfg;
+
+        //Log stuff here...
+
+        if (!$autorespond)
+            return true; //No alerts to send.
+
+        /* ------ SEND OUT NEW TICKET AUTORESP && ALERTS ----------*/
+
+        /** @var Dept $dept */
+        if(!$cfg
+            || !($dept=$this->getDept())
+            || !($tpl = $dept->getTemplate())
+            || !($email=$dept->getAutoRespEmail())
+        ) {
+            return false;  //bail out...missing stuff.
+        }
+
+        $dept = $this->getDept();
+        $options = array();
+        if (($message instanceof ThreadEntry)
+            && $message->getEmailMessageId()) {
+            $options += array(
+                'inreplyto'=>$message->getEmailMessageId(),
+                'references'=>$message->getEmailReferences(),
+                'thread'=>$message
+            );
+        }
+        else {
+            $options += array(
+                'thread' => $this->getThread(),
+            );
+        }
+
+        //Send auto response - if enabled.
+        if ($autorespond
+            && $cfg->autoRespONNewTicket()
+            && $dept->autoRespONNewTicket()
+            && ($msg = $tpl->getResolveNoticeMsgTemplate())
+        ) {
+            $msg = $this->replaceVars(
+                $msg->asArray(),
+                array('message' => $message,
+                    'recipient' => $this->getOwner(),
+                    'signature' => ($dept && $dept->isPublic())?$dept->getSignature():''
+                )
+            );
+            $email->sendAutoReply($this->getOwner(), $msg['subj'], $msg['body'],
+                null, $options);
         }
     }
 
@@ -3247,7 +3299,7 @@ implements RestrictedAccess, Threadable {
 
         /* email the user */
         /** @var Email $email */
-        $email = $dept->getEmail();
+        /*$email = $dept->getEmail();
         $options = array('thread'=>$response);
         $signature = $from_name = '';
         if ($thisstaff && $vars['signature']=='mine')
@@ -3273,9 +3325,11 @@ implements RestrictedAccess, Threadable {
             if ($from_name)
                 $options += array('from_name' => $from_name);
 
-        }
+        }*/
 
-        $variables = array(
+        $this->notifyOnResolve($response, true);
+
+        /*$variables = array(
             'response' => $response,
             'signature' => $signature,
             'staff' => $thisstaff,
@@ -3296,7 +3350,7 @@ implements RestrictedAccess, Threadable {
         }
 
         if ($changes)
-            $this->logEvent('resolved', $changes);
+            $this->logEvent('resolved', $changes);*/
 
         // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
         if($this->isOverdue()) {
