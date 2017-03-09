@@ -1,5 +1,5 @@
 <?php
-$info=Format::htmlchars(($errors && $_POST)?$_POST:$_REQUEST);
+$info=($errors && $_POST)?$_POST:$_REQUEST;
 
 if (is_a($template, EmailTemplateGroup)) {
     // New template implementation
@@ -92,7 +92,7 @@ $tpl=$msgtemplates[$selected];
             &nbsp;<i class="help-tip icon-question-sign"
                 data-content="<?php echo __($desc['desc']); ?>"
                 data-title="<?php echo __($desc['name']); ?>"></i>
-            <a style="font-size:10pt" class="tip pull-right" href="#ticket_variables.txt">
+            <a style="font-size:10pt" class="tip pull-right" href="#ticket_variables">
             <i class="icon-tags"></i>
             <?php echo __('Supported Variables'); ?></a>
             </h3>

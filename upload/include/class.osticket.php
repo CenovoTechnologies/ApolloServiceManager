@@ -149,7 +149,7 @@ class osTicket {
 
     static function getVarScope() {
         return array(
-            'url' => __("osTicket's base url (FQDN)"),
+            'url' => __("Apollo Service Manager's base url (FQDN)"),
             'company' => array('class' => 'Company', 'desc' => __('Company Information')),
         );
     }

@@ -45,16 +45,16 @@ class ContentAjaxAPI extends AjaxController {
     function ticket_variables() {
 
         $content='
-<div style="width:680px;">
+<div style="width:720px;">
     <h2>'.__('Ticket Variables').'</h2>
-    '.__('Please note that non-base variables depend on the context of use. Visit osTicket Wiki for up to date documentation.').'
+    '.__('Please note that non-base variables depend on the context of use.').'
     <br/>
     <table width="100%" border="0" cellspacing=1 cellpadding=2>
-        <tr><td width="55%" valign="top"><b>'.__('Base Variables').'</b></td><td><b>'.__('Other Variables').'</b></td></tr>
+        <tr><td width="60%" valign="top"><b>'.__('Base Variables').'</b></td><td><b>'.__('Other Variables').'</b></td></tr>
         <tr>
-            <td width="55%" valign="top">
+            <td width="60%" valign="top">
                 <table width="100%" border="0" cellspacing=1 cellpadding=1>
-                    <tr><td width="130">%{ticket.id}</td><td>'.__('Ticket ID').' ('.__('internal ID').')</td></tr>
+                    <tr><td width="200">%{ticket.id}</td><td>'.__('Ticket ID').' ('.__('internal ID').')</td></tr>
                     <tr><td>%{ticket.number}</td><td>'.__('Ticket Number').' ('.__('external ID').')</td></tr>
                     <tr><td>%{ticket.email}</td><td>'.__('Email Address').'</td></tr>
                     <tr><td>%{ticket.name}</td><td>'.__('Full Name').' &mdash;
@@ -68,6 +68,7 @@ class ContentAjaxAPI extends AjaxController {
                     <tr><td>%{ticket.due_date}</td><td>'.__('Due Date').'</td></tr>
                     <tr><td>%{ticket.close_date}</td><td>'.__('Date Closed').'</td></tr>
                     <tr><td>%{ticket.recipients}</td><td>'.__('List of all recipient names').'</td></tr>
+                    <tr><td>%{ticket.auto_close_plan}</td><td>'.__('Auto Close Plan').'</td></tr>
                     <tr><td nowrap>%{recipient.ticket_link}</td><td>'.__('Auth. token used for auto-login').'<br/>
                     '.__('Agent\'s ticket view link').'</td></tr>
                     <tr><td colspan="2" style="padding:5px 0 5px 0;"><em><b>'.__('Expandable Variables').'</b></em></td></tr>
@@ -80,13 +81,13 @@ class ContentAjaxAPI extends AjaxController {
             </td>
             <td valign="top">
                 <table width="100%" border="0" cellspacing=1 cellpadding=1>
-                    <tr><td width="100">%{message}</td><td>'.__('Incoming message').'</td></tr>
+                    <tr><td width="120">%{message}</td><td>'.__('Incoming message').'</td></tr>
                     <tr><td>%{response}</td><td>'.__('Outgoing response').'</td></tr>
                     <tr><td>%{comments}</td><td>'.__('Assign/transfer comments').'</td></tr>
                     <tr><td>%{note}</td><td>'.__('Internal note <em>(expandable)</em>').'</td></tr>
                     <tr><td>%{assignee}</td><td>'.__('Assigned Agent / Team').'</td></tr>
                     <tr><td>%{assigner}</td><td>'.__('Agent assigning the ticket').'</td></tr>
-                    <tr><td>%{url}</td><td>'.__('osTicket\'s base url (FQDN)').'</td></tr>
+                    <tr><td>%{url}</td><td>'.__('Apollo Service Manager\'s base url (FQDN)').'</td></tr>
                     <tr><td>%{reset_link}</td>
                         <td>'.__('Reset link used by the password reset feature').'</td></tr>
                 </table>
