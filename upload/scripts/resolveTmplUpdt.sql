@@ -21,7 +21,7 @@
 
 LOCK TABLES `asm_email_template` WRITE;
 /*!40000 ALTER TABLE `asm_email_template` DISABLE KEYS */;
-UPDATE TABLE `asm_email_template` SET `body` = ' <h3><strong>Dear %{recipient.name.first},</strong></h3>Our customer care team has resolved, <a href=\"http://localhost/apollo/upload/scp/%%7Brecipient.ticket_link%7D\">#%{ticket.number}</a> , with the following details and summary: <br /><br />Topic: <strong>%{ticket.topic.name}</strong> <br />Subject: <strong>%{ticket.subject}</strong> <br /><br />%{message} <br /><br />If the incident in question has not been resolved, please let us know as soon as possible. The ticket will close in <strong>%{ticket.auto_close_plan.time_period} hours</strong> if there is no response.<br />You can let us know of any issues by contacting the help desk.<br /><br />Your %{company.name} Team,<br />%{signature}' AND `updated` = '2017-03-08 20:20:44';
+UPDATE `asm_email_template` SET `body` = ' <h3><strong>Dear %{recipient.name.first},</strong></h3>Our customer care team has resolved, <a href=\"http://localhost/apollo/upload/scp/%%7Brecipient.ticket_link%7D\">#%{ticket.number}</a> , with the following details and summary: <br /><br />Topic: <strong>%{ticket.topic.name}</strong> <br />Subject: <strong>%{ticket.subject}</strong> <br /><br />%{message} <br /><br />If the incident in question has not been resolved, please let us know as soon as possible. The ticket will close in <strong>%{ticket.auto_close_plan.time_period} hours</strong> if there is no response.<br />You can let us know of any issues by contacting the help desk.<br /><br />Your %{company.name} Team,<br />%{signature}' AND `updated` = '2017-03-08 20:20:44' where 'id' = 20;
 /*!40000 ALTER TABLE `asm_email_template` ENABLE KEYS */;
 UNLOCK TABLES;
 
