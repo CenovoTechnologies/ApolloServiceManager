@@ -322,7 +322,7 @@ class AdminNav extends StaffNav{
                     $subnav[]=array('desc'=>__('Settings'),'href'=>'emailsettings.php');
                     $subnav[]=array('desc'=>__('Banlist'),'href'=>'banlist.php',
                                         'title'=>__('Banned Emails'));
-                    $subnav[]=array('desc'=>__('Templates'),'href'=>'templates.php','title'=>__('Email Templates'));
+                    $subnav[]=array('desc'=>__('Template Sets'),'href'=>'templates.php','title'=>__('Email Template Sets'));
                     $subnav[]=array('desc'=>__('Diagnostic'),'href'=>'emailtest.php', 'title'=>__('Email Diagnostic'));
                     break;
                 case 'staff':

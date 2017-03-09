@@ -3,16 +3,16 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access
 
 $info = $qs = array();
 if($template && $_REQUEST['a']!='add'){
-    $title=__('Update Template');
+    $title=__('Update Template Set');
     $action='update';
     $submit_text=__('Save Changes');
     $info=$template->getInfo();
     $info['tpl_id']=$template->getId();
     $qs += array('tpl_id' => $template->getId());
 }else {
-    $title=__('Add New Template');
+    $title=__('Add New Template Set');
     $action='add';
-    $submit_text=__('Add Template');
+    $submit_text=__('Add Template Set');
     $info['isactive']=isset($info['isactive'])?$info['isactive']:0;
     $info['lang_id'] = $cfg->getPrimaryLanguage();
     $qs += array('a' => $_REQUEST['a']);
@@ -27,14 +27,14 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
  <input type="hidden" name="tpl_id" value="<?php echo $info['tpl_id']; ?>">
  <h2><?php echo $title; ?>
     <?php if (isset($info['name'])) { ?><small>
-    — <?php echo $info['name']; ?></small>
+    — <?php echo $info['name']." Set"; ?></small>
      <?php } ?>
 </h2>
  <table class="table table-condensed" border="0" cellspacing="0" cellpadding="2">
     <thead>
         <tr class="table-heading">
             <th colspan="2">
-                <?php echo __('Template information');?>
+                <?php echo __('Template Set information');?>
             </th>
         </tr>
     </thead>
