@@ -149,22 +149,22 @@ class StaffNav {
                     $stats = $staff->getTicketsStats();
                     $open_name = _P('queue-name', 'Open');
                         
-                        if($cfg->showAnsweredTickets()) {
-                        
-                            if ($stats) {
-                        
+                        /*if($cfg->showAnsweredTickets()) {
+
+                            if ($stats) {*/
+
                                 $subnav[]=array('desc'=>$open_name.' ('.number_format($stats['open']).')',
                                                        'title'=>__('Open Tickets'),
                                                        'href'=>'tickets.php?status=open',
                                                        'droponly'=>true);
-                            
-                        
+
+
                                 $subnav[]=array('desc'=>__('In Progress').' ('.number_format($stats['progress']).')',
                                                        'title'=>__('Tickets in Progress'),
                                                        'href'=>'tickets.php?status=progress',
                                                        'droponly'=>true);
-                            }
-                        }
+                        /*    }
+                        }*/
                         
                         $subnav[]=array('desc'=>__('Open Tasks'), 'href'=>'tasks.php',  'droponly'=>true);
                         
