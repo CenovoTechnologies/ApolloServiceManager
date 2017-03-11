@@ -275,25 +275,29 @@ if(!defined('OSTADMININC') || !$thisstaff || !$thisstaff->isAdmin()) die('Access
                     </div>
                     <?php
                     $current_cats = array();
-                    foreach ($serviceCats as $S) {
-                        $current_cats[] = $S->id;
-                        $id = $S['id']; ?>
-                        <div class="row" style="border-bottom: #555 1px;">
-                            <div class="col-sm-3">
-                                <a href="servicecats.php?id=<?php echo $id; ?>"><?php
-                                    echo $S['category']; ?></a>
+                    /** @var ServiceCat $serviceCats */
+                    foreach ($serviceCats as $S => $val) {
+                        if ($_REQUEST['a']!='add') {
+                            $S = $val;
+                            $current_cats[] = $S->id;
+                            $id = $S['id']; ?>
+                            <div class="row" style="border-bottom: #555 1px;">
+                                <div class="col-sm-3">
+                                    <a href="servicecats.php?id=<?php echo $id; ?>"><?php
+                                        echo $S['category']; ?></a>
+                                </div>
+                                <div class="col-sm-1">
+                                    <?php echo $S['active'] ? __('Active') : __('Disabled'); ?>
+                                </div>
+                                <div class="col-sm-1">
+                                    <?php echo $S['public'] ? __('Public') : __('Private');?>
+                                </div>
+                                <div class="col-sm-7">
+                                    <?php echo $S['notes']; ?>
+                                </div>
                             </div>
-                            <div class="col-sm-1">
-                                <?php echo $S['active'] ? __('Active') : __('Disabled'); ?>
-                            </div>
-                            <div class="col-sm-1">
-                                <?php echo $S['public'] ? __('Public') : __('Private');?>
-                            </div>
-                            <div class="col-sm-7">
-                                <?php echo $S['notes']; ?>
-                            </div>
-                        </div>
-                    <?php } ?>
+                    <?php }
+                        } ?>
                     <div class="spacer"></div>
                 </div>
             </div>

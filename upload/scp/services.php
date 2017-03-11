@@ -16,6 +16,7 @@ vim: expandtab sw=4 ts=4 sts=4:
 require('admin.inc.php');
 include_once(INCLUDE_DIR.'class.service.php');
 include_once(INCLUDE_DIR.'class.servicetype.php');
+include_once(INCLUDE_DIR.'class.servicecat.php');
 include_once(INCLUDE_DIR.'class.faq.php');
 require_once(INCLUDE_DIR.'class.dynamic_forms.php');
 
@@ -41,7 +42,7 @@ if($_POST){
             $_service = Service::create();
             if ($_service->update($_POST, $errors)) {
                 $service = $_service;
-                $msg=sprintf(__('Successfully added %s.'), Format::htmlchars($_POST['service']));
+                $msg=sprintf(__('Successfully added %s.'), $_POST['service']);
                 $_REQUEST['a']=null;
             }elseif(!$errors['err']){
                 $errors['err']=sprintf('%s %s',

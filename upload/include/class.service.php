@@ -274,8 +274,6 @@ class Service extends VerySimpleModel
 
     static function __create($vars, &$errors) {
         $service = self::create($vars);
-        if (!isset($vars['dept_id']))
-            $vars['dept_id'] = 0;
         $vars['id'] = $vars['service_id'];
         $service->update($vars, $errors);
         return $service;
@@ -426,7 +424,7 @@ class Service extends VerySimpleModel
     function update($vars, &$errors) {
         global $cfg;
 
-        $vars['service'] = Format::striptags(trim($vars['service']));
+        $vars['service'] = trim($vars['service']);
 
         if (isset($this->service_id) && $this->getId() != $vars['id'])
             $errors['err']=__('Internal error occurred');
@@ -438,9 +436,6 @@ class Service extends VerySimpleModel
         elseif (($tid=self::getIdByName($vars['service'], $vars['service_pid']))
             && (!isset($this->service_id) || $tid!=$this->getId()))
             $errors['service']=__('Service already exists');
-
-        if (!is_numeric($vars['dept_id']))
-            $errors['dept_id']=__('Department selection is required');
 
         if ($vars['custom-numbers'] && !preg_match('`(?!<\\\)#`', $vars['number_format']))
             $errors['number_format'] =
