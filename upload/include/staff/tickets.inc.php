@@ -235,7 +235,7 @@ if ($status != 'closed' && $queue_name != 'assigned') {
 // Apply primary ticket status
 if (!empty($status))
     $tickets->filter(Q::any(array('status__state__in'=>$status)));
-// Impose visibility constraints
+// Impose visibility constraints --Would negatively impact worker's productivity???
 // ------------------------------------------------------------
 if (!$view_all_tickets) {
     // -- Open and assigned to me

@@ -1728,15 +1728,10 @@ implements RestrictedAccess, Threadable {
         }
     }
 
-    function notifyOnResolve($message, $autorespond=true) {
+    function notifyOnResolve($message) {
         global $cfg;
 
         //Log stuff here...
-
-        if (!$autorespond)
-            return true; //No alerts to send.
-
-        /* ------ SEND OUT NEW TICKET AUTORESP && ALERTS ----------*/
 
         /** @var Dept $dept */
         if(!$cfg
@@ -1764,11 +1759,7 @@ implements RestrictedAccess, Threadable {
         }
 
         //Send auto response - if enabled.
-        if ($autorespond
-            && $cfg->autoRespONNewTicket()
-            && $dept->autoRespONNewTicket()
-            && ($msg = $tpl->getResolveNoticeMsgTemplate())
-        ) {
+        if (($msg = $tpl->getResolveNoticeMsgTemplate())) {
             $msg = $this->replaceVars(
                 $msg->asArray(),
                 array('message' => $message,
@@ -2791,7 +2782,6 @@ implements RestrictedAccess, Threadable {
 
         if (!$vars['ip_address'] && $_SERVER['REMOTE_ADDR'])
             $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
-
         if (!($response = $this->getThread()->addResponse($vars, $errors)))
             return null;
 
@@ -3260,9 +3250,9 @@ implements RestrictedAccess, Threadable {
         $fields = array();
         $fields['resolution_code_id'] = array('type'=>'int', 'required'=>1, 'error'=>__('Resolution code selection is required'));
         $fields['auto-close-plan_id'] = array('type'=>'int', 'required'=>1, 'error'=>__('Select a valid Auto Close Plan'));
-        $fields['response'] = array('type'=>'int', 'required'=>1, 'error'=>__('Resolution steps are required.'));
+        $fields['resolveResponse'] = array('type'=>'int', 'required'=>1, 'error'=>__('Resolution steps are required.'));
 
-        $vars['response'] = ThreadEntryBody::clean($vars['response']);
+        $vars['resolveResponse'] = ThreadEntryBody::clean($vars['resolveResponse']);
 
         if ($errors)
             return false;
@@ -3284,9 +3274,9 @@ implements RestrictedAccess, Threadable {
 
         // post the resolution steps
         $response = null;
-        if($vars['response'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
-            $vars['response'] = $this->replaceVars($vars['response']);
-            // $vars['cannedatachments'] contains the attachments placed on
+        if($vars['resolveResponse'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
+            $vars['resolveResponse'] = $this->replaceVars($vars['resolveResponse']);
+            // $vars['cannedattachments'] contains the attachments placed on
             // the response form.
             $response = $this->postReply($vars, $errors, false);
         }
@@ -3297,60 +3287,7 @@ implements RestrictedAccess, Threadable {
         if (!$this->save())
             return false;
 
-        /* email the user */
-        /** @var Email $email */
-        /*$email = $dept->getEmail();
-        $options = array('thread'=>$response);
-        $signature = $from_name = '';
-        if ($thisstaff && $vars['signature']=='mine')
-            $signature=$thisstaff->getSignature();
-        elseif ($vars['signature']=='dept' && $dept->isPublic())
-            $signature=$dept->getSignature();
-
-        if ($thisstaff && ($type=$thisstaff->getReplyFromNameType())) {
-            switch ($type) {
-                case 'mine':
-                    if (!$cfg->hideStaffName())
-                        $from_name = (string) $thisstaff->getName();
-                    break;
-                case 'dept':
-                    if ($dept->isPublic())
-                        $from_name = $dept->getName();
-                    break;
-                case 'email':
-                default:
-                    $from_name =  $email->getName();
-            }
-
-            if ($from_name)
-                $options += array('from_name' => $from_name);
-
-        }*/
-
-        $this->notifyOnResolve($response, true);
-
-        /*$variables = array(
-            'response' => $response,
-            'signature' => $signature,
-            'staff' => $thisstaff,
-            'poster' => $thisstaff
-        );
-
-        $user = $this->getOwner();
-        if (($email=$dept->getEmail())
-            && ($tpl = $dept->getTemplate())
-            && ($msg=$tpl->getReplyMsgTemplate())
-        ) {
-            $msg = $this->replaceVars($msg->asArray(),
-                $variables + array('recipient' => $user)
-            );
-            $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
-            $email->send($user->getEmail(), $msg['subj'], $msg['body'], $attachments,
-                $options);
-        }
-
-        if ($changes)
-            $this->logEvent('resolved', $changes);*/
+        $this->notifyOnResolve($response);
 
         // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
         if($this->isOverdue()) {

@@ -496,7 +496,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                         break;
                                 } ?>
                                 <input type="hidden" name="draft_id" value=""/>
-                                <textarea name="response" id="resolveResponse" cols="50"
+                                <textarea name="resolveResponse" id="resolveResponse" cols="50"
                                           data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
                                           data-signature="<?php
                                           echo Format::viewableImages($signature); ?>"

@@ -2316,16 +2316,20 @@ class ResponseThreadEntry extends ThreadEntry {
     }
 
     static function add($vars, &$errors=array()) {
-
-        if (!$vars || !is_array($vars) || !$vars['threadId'])
+        if (!$vars || !is_array($vars) || !$vars['threadId']) {
             $errors['err'] = __('Missing or invalid data');
-        elseif (!$vars['response'])
-            $errors['response'] = __('Response content is required');
+        } /*elseif (!$vars['response']) {
+            if (!$vars['resolveResponse'])
+                $errors['resolveResponse'] = __('Response content is required');
+            else
+                $errors['response'] = __('Response content is required');
+        }*/
 
         if ($errors) return false;
-
         $vars['type'] = self::ENTRY_TYPE;
         $vars['body'] = $vars['response'];
+        if (!$vars['response'])
+            $vars['body'] = $vars['resolveResponse'];
         if (!$vars['pid'] && $vars['msgId'])
             $vars['pid'] = $vars['msgId'];
 
@@ -2333,7 +2337,6 @@ class ResponseThreadEntry extends ThreadEntry {
                 && $vars['staffId']
                 && ($staff = Staff::lookup($vars['staffId'])))
             $vars['poster'] = (string) $staff->getName();
-
         return parent::add($vars);
     }
 
@@ -2526,7 +2529,6 @@ implements TemplateVariable {
 
         $vars['threadId'] = $this->getId();
         $vars['userId'] = 0;
-
         if (!($resp = ResponseThreadEntry::add($vars, $errors)))
             return $resp;
 
