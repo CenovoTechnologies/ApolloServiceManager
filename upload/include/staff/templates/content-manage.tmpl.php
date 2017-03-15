@@ -1,4 +1,4 @@
-<h3 class="drag-handle"><?php echo __('Manage Content'); ?> &mdash; <?php echo Format::htmlchars($content->getName()); ?></h3>
+<h3 class="drag-handle"><?php echo __('Manage Content'); ?> &mdash; <?php echo $content->getName(); ?></h3>
 <a class="close" href=""><i class="icon-remove-circle"></i></a>
 <hr/>
 
@@ -30,7 +30,7 @@ if (count($langs) > 1) { ?>
         class="tab_content" lang="<?php echo $cfg->getPrimaryLanguage(); ?>">
     <div class="error"><?php echo $errors['name']; ?></div>
     <input type="text" style="width: 100%; font-size: 14pt" name="name" value="<?php
-    echo Format::htmlchars($info['title']); ?>" spellcheck="true"
+    echo $info['title']; ?>" spellcheck="true"
         lang="<?php echo $cfg->getPrimaryLanguage(); ?>" />
     <div style="margin-top: 5px">
     <div class="error"><?php echo $errors['body']; ?></div>
@@ -49,7 +49,7 @@ if (count($langs) > 1) { ?>
         dir="<?php echo $nfo['direction']; ?>" lang="<?php echo $tag; ?>">
     <input type="text" style="width: 100%; font-size: 14pt"
         name="trans[<?php echo $tag; ?>][title]" value="<?php
-        echo Format::htmlchars($trans['title']); ?>"
+        echo $trans['title']; ?>"
         placeholder="<?php echo __('Title'); ?>"  spellcheck="true"
         lang="<?php echo $tag; ?>" />
     <div style="margin-top: 5px">

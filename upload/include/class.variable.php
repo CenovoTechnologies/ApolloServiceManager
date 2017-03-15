@@ -239,24 +239,28 @@ class VariableReplacer {
 
     static function getContextForRoot($root) {
         switch ($root) {
-        case 'cannedresponse':
-            $roots = array('ticket');
-            break;
-
-        case 'fa:send_email':
-            // FIXME: Make this pluggable
-            require_once INCLUDE_DIR . 'class.filter_action.php';
-            return FA_SendEmail::getVarScope();
-
-        default:
-            if ($info = Page::getContext($root)) {
-                $roots = $info;
+            case 'cannedresponse':
+                $roots = array('ticket');
                 break;
-            }
 
-            // Get the context for an email template
-            if ($tpl_info = EmailTemplateGroup::getTemplateDescription($root))
-                $roots = $tpl_info['context'];
+            case 'auto_close_plan':
+                $roots = array('ticket');
+                break;
+
+            case 'fa:send_email':
+                // FIXME: Make this pluggable
+                require_once INCLUDE_DIR . 'class.filter_action.php';
+                return FA_SendEmail::getVarScope();
+
+            default:
+                if ($info = Page::getContext($root)) {
+                    $roots = $info;
+                    break;
+                }
+
+                // Get the context for an email template
+                if ($tpl_info = EmailTemplateGroup::getTemplateDescription($root))
+                    $roots = $tpl_info['context'];
         }
 
         if (!$roots)
