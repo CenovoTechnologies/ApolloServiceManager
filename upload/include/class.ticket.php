@@ -861,25 +861,25 @@ implements RestrictedAccess, Threadable {
         return $this->resolution_code_id;
     }
 
-    /*function getResolutionCode() {
-        return $this->resolution_code;
-    }*/
-    //getting the name instead of the object -> variable
     function getResolutionCode() {
-        return ResolutionCode::getResolutionCodeName($this->resolution_code_id);
+        return $this->resolution_code;
     }
+    //getting the name instead of the object -> variable
+    /*function getResolutionCode() {
+        return ResolutionCode::getResolutionCodeName($this->resolution_code_id);
+    }*/
 
     function getAutoClosePlanId() {
         return $this->auto_close_plan_id;
     }
 
-    /*function getAutoClosePlan() {
-        return $this->auto_close_plan;
-    }*/
-    //getting the name instead of the object -> variable
     function getAutoClosePlan() {
-        return AutoClosure::getAutoClosureName($this->auto_close_plan_id);
+        return $this->auto_close_plan;
     }
+    //getting the name instead of the object -> variable
+//    function getAutoClosePlan() {
+//        return AutoClosure::getAutoClosureName($this->auto_close_plan_id);
+//    }
 
     function getLastRespondent() {
         if (!isset($this->lastrespondent)) {
@@ -2107,42 +2107,46 @@ implements RestrictedAccess, Threadable {
         global $cfg;
 
         switch(mb_strtolower($tag)) {
-        case 'phone':
-        case 'phone_number':
-            return $this->getPhoneNumber();
-            break;
-        case 'auth_token':
-            return $this->getOldAuthToken();
-            break;
-        case 'client_link':
-            return sprintf('%s/view.php?t=%s',
-                    $cfg->getBaseUrl(), $this->getNumber());
-            break;
-        case 'staff_link':
-            return sprintf('%s/scp/tickets.php?id=%d', $cfg->getBaseUrl(), $this->getId());
-            break;
-        case 'create_date':
-            return new FormattedDate($this->getCreateDate());
-            break;
-         case 'due_date':
-            if ($due = $this->getEstDueDate())
-                return new FormattedDate($due);
-            break;
-        case 'close_date':
-            if ($this->isClosed())
-                return new FormattedDate($this->getCloseDate());
-            break;
-        case 'last_update':
-            return new FormattedDate($this->last_update);
-        case 'user':
-            return $this->getOwner();
-        default:
-            if (isset($this->_answers[$tag]))
-                // The answer object is retrieved here which will
-                // automatically invoke the toString() method when the
-                // answer is coerced into text
-                return $this->_answers[$tag];
-        }
+            case 'phone':
+            case 'phone_number':
+                return $this->getPhoneNumber();
+                break;
+            case 'auth_token':
+                return $this->getOldAuthToken();
+                break;
+            case 'client_link':
+                return sprintf('%s/view.php?t=%s',
+                        $cfg->getBaseUrl(), $this->getNumber());
+                break;
+            case 'staff_link':
+                return sprintf('%s/scp/tickets.php?id=%d', $cfg->getBaseUrl(), $this->getId());
+                break;
+            case 'create_date':
+                return new FormattedDate($this->getCreateDate());
+                break;
+             case 'due_date':
+                if ($due = $this->getEstDueDate())
+                    return new FormattedDate($due);
+                break;
+            case 'close_date':
+                if ($this->isClosed())
+                    return new FormattedDate($this->getCloseDate());
+                break;
+            case 'last_update':
+                return new FormattedDate($this->last_update);
+            case 'auto_close_plan':
+                return $this->getAutoClosePlan();
+            case 'resolution_code':
+                return $this->getResolutionCode();
+            case 'user':
+                return $this->getOwner();
+            default:
+                if (isset($this->_answers[$tag]))
+                    // The answer object is retrieved here which will
+                    // automatically invoke the toString() method when the
+                    // answer is coerced into text
+                    return $this->_answers[$tag];
+            }
     }
 
     static function getVarScope() {
