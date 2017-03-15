@@ -861,16 +861,24 @@ implements RestrictedAccess, Threadable {
         return $this->resolution_code_id;
     }
 
-    function getResolutionCode() {
+    /*function getResolutionCode() {
         return $this->resolution_code;
+    }*/
+    //getting the name instead of the object -> variable
+    function getResolutionCode() {
+        return ResolutionCode::getResolutionCodeName($this->resolution_code_id);
     }
 
     function getAutoClosePlanId() {
         return $this->auto_close_plan_id;
     }
 
-    function getAutoClosePlan() {
+    /*function getAutoClosePlan() {
         return $this->auto_close_plan;
+    }*/
+    //getting the name instead of the object -> variable
+    function getAutoClosePlan() {
+        return AutoClosure::getAutoClosureName($this->auto_close_plan_id);
     }
 
     function getLastRespondent() {
@@ -1764,7 +1772,8 @@ implements RestrictedAccess, Threadable {
                 $msg->asArray(),
                 array('message' => $message,
                     'recipient' => $this->getOwner(),
-                    'signature' => ($dept && $dept->isPublic())?$dept->getSignature():''
+                    'signature' => ($dept && $dept->isPublic())?$dept->getSignature():'',
+                    'staff' => $this->getStaffId()
                 )
             );
             $email->sendAutoReply($this->getOwner(), $msg['subj'], $msg['body'],
