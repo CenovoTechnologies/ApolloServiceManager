@@ -79,6 +79,17 @@ class ResolutionCode extends VerySimpleModel implements TemplateVariable {
         return $this->getName();
     }
 
+    function getVar($name) {
+        switch ($name) {
+            case 'name':
+                return $this->getName();
+            case 'notes':
+                return $this->notes;
+            default:
+                return "";
+        }
+    }
+
     static function getVarScope() {
         return array(
             'name' => __('Resolution Code'),

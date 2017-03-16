@@ -53,7 +53,7 @@ class AutoClosure extends VerySimpleModel implements TemplateVariable {
     }
 
     function getTranslateTag($subtag) {
-        return _H(sprintf('autoclosure.%s.%s', $subtag, $this->getId()));
+        return _H(sprintf('auto_close_plan.%s.%s', $subtag, $this->getId()));
     }
 
     function getLocal($subtag) {
@@ -63,7 +63,7 @@ class AutoClosure extends VerySimpleModel implements TemplateVariable {
     }
 
     static function getLocalById($id, $subtag, $default) {
-        $tag = _H(sprintf('autoclosure.%s.%s', $subtag, $id));
+        $tag = _H(sprintf('auto_close_plan.%s.%s', $subtag, $id));
         $T = CustomDataTranslation::translate($tag);
         return $T != $tag ? $T : $default;
     }
@@ -77,13 +77,24 @@ class AutoClosure extends VerySimpleModel implements TemplateVariable {
     }
 
     // TemplateVariable interface
-    function asVar() {
+   /* function asVar() {
         return $this->getName();
+    }*/
+
+    function getVar($name) {
+        switch ($name) {
+            case 'name':
+                return $this->getName();
+            case 'time_period':
+                return $this->getTimePeriod();
+            default:
+                return "";
+        }
     }
 
     static function getVarScope() {
         return array(
-            'name' => __('Auto-Close Plan'),
+            'name' => __('Auto Close Plan'),
             'time_period' => __("Time Period (hrs)"),
         );
     }
@@ -166,7 +177,7 @@ class AutoClosure extends VerySimpleModel implements TemplateVariable {
                 if (!$localize)
                     return $default;
 
-                $tag = _H("auto_closure.name.{$id}");
+                $tag = _H("auto_close_plan.name.{$id}");
                 $T = CustomDataTranslation::translate($tag);
                 return $T != $tag ? $T : $default;
             };
