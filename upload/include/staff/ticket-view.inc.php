@@ -519,14 +519,33 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 </form>
             </div>
             <div class="tab-pane card-block" id="close-incident" role="tabpanel">
-                <div class="col-md-8">
-
-                </div>
-                <div class="col-md-4" style="padding-right:0;">
-                    <div class="d-inline">
-                        <h6 class="sidebar-heading">Incident Closure</h6>
+                <form action="tickets.php?id=<?php echo $ticket->getId(); ?>#close" name="resolve" method="post" enctype="multipart/form-data">
+                    <?php csrf_token(); ?>
+                    <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
+                    <input type="hidden" name="a" value="close">
+                    <input type="hidden" name="do" value="close">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <label>Closing Notes:
+                                <input type="hidden" name="draft_id" value=""/>
+                                <textarea name="closeResponse" id="closeResponse" cols="50"
+                                          placeholder="Closing Notes"
+                                          rows="12" wrap="soft"
+                                          class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
+                                          ?> draft draft-delete">
+                                </textarea>
+                            </label>
+                        </div>
                     </div>
-                </div>
+                    <div class="col-md-4" style="padding-right:0;">
+                        <div class="d-inline">
+                            <h6 class="sidebar-heading">Incident Closure</h6>
+                            <div class="row" style="padding:0 15px;">
+                                <input class="btn btn-sm btn-outline-primary" style="width:100%" type="submit" id="closeBtn" name="submit" value="<?php echo __('Close Incident');?>">
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -739,7 +758,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
                                         ?></textarea>
                                 </label>
-                                <div id="reply_form_attachments" class="attachments">
+                                <div id="reply_form_attachments" class="attachments" style="margin:10px 12px;">
                                     <?php
                                     print $response_form->getField('attachments')->render();
                                     ?>
@@ -847,7 +866,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     echo $attrs; ?>><?php echo $_POST ? $info['note'] : $draft;
                                         ?></textarea>
                                 </label>
-                                <div class="attachments">
+                                <div class="attachments" style="margin:10px 12px;">
                                     <?php
                                     print $note_form->getField('attachments')->render();
                                     ?>
@@ -1390,7 +1409,6 @@ $(function() {
     $('#select-template-btn').click(function() {
        $('#chooseIncidentTmpl').modal('show');
     });
-
     $('#opt1').click(function() {
         $('#reply-div').show();
         $('#note-div').hide();

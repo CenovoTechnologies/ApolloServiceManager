@@ -62,9 +62,9 @@ foreach ($form->getFields() as $field) {
                 </i>
                     <?php
                 }
-                foreach ($field->errors() as $e) { ?>
-                    <div class="error"><?php echo $e; ?></div>
-                <?php } ?>
+                /*foreach ($field->errors() as $e) { */?><!--
+                    <div class="error"><?php /*echo $e; */?></div>
+                --><?php /*} */?>
 
             </td>
         </tr>

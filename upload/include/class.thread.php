@@ -2328,8 +2328,11 @@ class ResponseThreadEntry extends ThreadEntry {
         if ($errors) return false;
         $vars['type'] = self::ENTRY_TYPE;
         $vars['body'] = $vars['response'];
-        if (!$vars['response'])
+        if (!$vars['response']) {
             $vars['body'] = $vars['resolveResponse'];
+            if (!$vars['resolveResponse'])
+                $vars['body'] = $vars['closeResponse'];
+        }
         if (!$vars['pid'] && $vars['msgId'])
             $vars['pid'] = $vars['msgId'];
 

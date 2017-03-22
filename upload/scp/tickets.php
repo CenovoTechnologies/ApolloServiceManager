@@ -240,6 +240,25 @@ if($_POST && !$errors):
                         __('ticket'));
                 }
                 break;
+            case 'close':
+                if(!$ticket || !$role->hasPerm(TicketModel::PERM_CLOSE))
+                    $errors['err']=__('Permission Denied. You are not allowed to close tickets');
+                elseif(is_string($closeable=$ticket->isCloseable())) {
+                    $errors['err']=$closeable;
+                }
+                elseif($ticket->close($_POST,$errors)) {
+                    $msg=__('Ticket closed successfully');
+                    $redirect = 'tickets.php?id='.$ticket->getId();
+                    $_REQUEST['a'] = null; //Clear edit action - going back to view.
+                    //Check to make sure the staff STILL has access post-update (e.g dept change).
+                    if(!$ticket->checkStaffPerm($thisstaff))
+                        $ticket=null;
+                } elseif(!$errors['err']) {
+                    $errors['err']=sprintf(
+                        __('Unable to close %s. Correct any errors below and try again.'),
+                        __('ticket'));
+                }
+                break;
             case 'process':
             switch(strtolower($_POST['do'])):
                 case 'release':
@@ -435,7 +454,7 @@ if($ticket) {
 
     //Clear active submenu on search with no status
     if($_REQUEST['a']=='search' && !$_REQUEST['status'])
-        $nav->setActiveSubMenu(-1);
+        //$nav->setActiveSubMenu(-1);
 
     //set refresh rate if the user has it configured
     if(!$_POST && !$_REQUEST['a'] && ($min=(int)$thisstaff->getRefreshRate())) {

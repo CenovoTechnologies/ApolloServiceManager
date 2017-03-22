@@ -3311,6 +3311,49 @@ implements RestrictedAccess, Threadable {
         return $this->save();
     }
 
+    function close($vars, $errors) {
+        global /** @var Staff $thisstaff */
+        $cfg, $thisstaff;
+
+        if (!$cfg || !($this->checkStaffPerm($thisstaff, TicketModel::PERM_CLOSE))) {
+            return false;
+        }
+
+        $fields = array();
+        $fields['closeResponse'] = array('type'=>'int', 'required'=>1, 'error'=>__('Closing notes are required.'));
+
+        $vars['closeResponse'] = ThreadEntryBody::clean($vars['closeResponse']);
+
+        if ($errors)
+            return false;
+
+        // Effective role for the department
+        $role = $thisstaff->getRole($this->getDeptId());
+
+        // post the resolution steps
+        $response = null;
+        if($vars['closeResponse'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
+            $vars['closeResponse'] = $this->replaceVars($vars['closeResponse']);
+            // $vars['cannedattachments'] contains the attachments placed on
+            // the response form.
+            $this->postReply($vars, $errors, true, false);
+        }
+
+        //resolving the incident requires a status of resolved
+        $this->setStatus('3');
+
+        if (!$this->save())
+            return false;
+
+        // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
+        if($this->isOverdue()) {
+            $this->clearOverdue();
+        }
+
+        Signal::send('model.updated', $this);
+        return $this->save();
+    }
+
    /*============== Static functions. Use Ticket::function(params); =============nolint*/
     static function getIdByNumber($number, $email=null, $ticket=false) {
 
