@@ -11,11 +11,9 @@
     Released under the GNU General Public License WITHOUT ANY WARRANTY.
     See LICENSE.TXT for details.
 
-    TODO: The plan is to make cron jobs db based.
 
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
-//TODO: Make it DB based!
 require_once INCLUDE_DIR.'class.signal.php';
 
 class Cron {
