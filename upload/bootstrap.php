@@ -62,6 +62,7 @@ class Bootstrap {
         define('SYSLOG_TABLE',$prefix.'syslog');
         define('SESSION_TABLE',$prefix.'session');
         define('CONFIG_TABLE',$prefix.'config');
+        define('CRON_SETTINGS_TABLE',$prefix.'cron_settings');
 
         define('CANNED_TABLE',$prefix.'canned_response');
         define('PAGE_TABLE', $prefix.'content');

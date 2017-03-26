@@ -16,6 +16,7 @@
 **********************************************************************/
 define('AJAX_REQUEST', 1);
 require('staff.inc.php');
+require_once INCLUDE_DIR.'class.cron.php';
 ignore_user_abort(1);//Leave me a lone bro!
 @set_time_limit(0); //useless when safe_mode is on
 $data=sprintf ("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%",
@@ -34,23 +35,22 @@ if (function_exists('fastcgi_finish_request'))
     fastcgi_finish_request();
 
 ob_start(); //Keep the image output clean. Hide our dirt.
-//TODO: Make cron DB based to allow for better time limits. Direct calls for now sucks big time.
-//We DON'T want to spawn cron on every page load...we record the lastcroncall on the session per user
-$sec=time()-$_SESSION['lastcroncall'];
+//The last cron time and cron interval time is stored in the database. This allows for better time intervals and what not
+$lastCronCall = CRON::getLastCronRuntime();
+$cronIntervalTime = CRON::getCronTimeInterval();
+$sec = time() - $lastCronCall;
 $caller = $thisstaff->getUserName();
 
-// Agent can call cron once every 3 minutes.
-if ($sec < 180 || !$ost || $ost->isUpgradePending())
+// Agent can call cron once every 5 minutes.
+if ($sec < $cronIntervalTime || !$ost || $ost->isUpgradePending())
     return ob_end_clean();
-
-require_once(INCLUDE_DIR.'class.cron.php');
 
 // Clear staff obj to avoid false credit internal notes & auto-assignment
 $thisstaff = null;
 
 // Release the session to prevent locking a future request while this is
 // running
-$_SESSION['lastcroncall'] = time();
+CRON::updateLastCronRuntime(time());
 session_write_close();
 
 // Age tickets: We're going to age tickets regardless of cron settings.
@@ -62,7 +62,7 @@ if (mt_rand(1, 20) == 4)
 
 if($cfg && $cfg->isAutoCronEnabled()) { //ONLY fetch tickets if autocron is enabled!
     Cron::MailFetcher();  //Fetch mail.
-    $ost->logDebug(_S('Auto Cron'), sprintf(_S('Mail fetcher cron call [%s]'), $caller));
+    //$ost->logDebug(_S('Auto Cron'), sprintf(_S('Mail fetcher cron call [%s]'), $caller));
 }
 
 $data = array('autocron'=>true);

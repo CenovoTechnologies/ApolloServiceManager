@@ -20,7 +20,23 @@ require_once INCLUDE_DIR.'class.signal.php';
 
 class Cron {
 
-    function MailFetcher() {
+
+    static function getCronTimeInterval() {
+        $sql = 'SELECT cron_interval_time FROM '.CRON_SETTINGS_TABLE.' WHERE cron_settings_id = 1';
+        return db_query($sql);
+    }
+
+    static function getLastCronRuntime() {
+        $sql = 'SELECT last_cron_runtime FROM '.CRON_SETTINGS_TABLE.' WHERE cron_settings_id = 1';
+        return db_query($sql);
+    }
+
+    static function updateLastCronRuntime($time) {
+        $sql = 'UPDATE '.CRON_SETTINGS_TABLE.' SET last_cron_runtime = '.$time.' WHERE cron_settings_id = 1';
+        db_query($sql);
+    }
+
+    static function MailFetcher() {
         require_once(INCLUDE_DIR.'class.mailfetch.php');
         MailFetcher::run(); //Fetch mail..frequency is limited by email account setting.
     }

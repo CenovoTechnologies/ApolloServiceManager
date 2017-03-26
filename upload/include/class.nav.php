@@ -120,7 +120,7 @@ class StaffNav {
             );
             //$this->tabs['tasks'] = array('desc'=>__('Tasks'), 'title'=>__('Task Queue'), "class"=>"nav-header");
             $this->tabs['tickets'] = array('desc'=>__('Service Desk'),'title'=>__('Ticket Queue'), "class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#tickets", "aria-expanded"=>"false", "aria-controls"=>"tickets");
-            $this->tabs['assets'] = array('desc'=>__('Asset Management'),'title'=>__('Assets'), "class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#assets", "aria-expanded"=>"false", "aria-controls"=>"assets");
+            //$this->tabs['assets'] = array('desc'=>__('Asset Management'),'title'=>__('Assets'), "class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#assets", "aria-expanded"=>"false", "aria-controls"=>"assets");
             $this->tabs['kbase'] = array('desc'=>__('Knowledge Center'),'title'=>__('Knowledge Center'), "class"=>"nav-header", "data-toggle"=>"collapse", "href"=>"#kbase", "aria-expanded"=>"false", "aria-controls"=>"kbase");
             if ($thisstaff->hasPerm(User::PERM_DIRECTORY)) {
                 //$this->tabs['users'] = array('desc' => __('Users'), 'title' => __('User Directory'), "class"=>"nav-header");
