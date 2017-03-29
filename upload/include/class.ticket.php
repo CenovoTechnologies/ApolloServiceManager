@@ -2807,6 +2807,9 @@ implements RestrictedAccess, Threadable {
             && $vars['reply_status_id'] != $this->getStatusId()
         ) {
             $this->setStatus($vars['reply_status_id']);
+            if ($vars['reply_status_id']) {
+                $this->notifyOnResolve($response);
+            }
         }
 
 
@@ -2951,6 +2954,10 @@ implements RestrictedAccess, Threadable {
             && ($status=TicketStatus::lookup($vars['note_status_id']))
         ) {
             $this->setStatus($status);
+        }
+
+        if ($vars['note_status_id']) {
+            $this->notifyOnResolve($note);
         }
 
         $activity = $vars['activity'] ?: _S('New Internal Note');

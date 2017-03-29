@@ -730,9 +730,12 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                             }
                                             ?>
                                         </select>
-                                        <br>
-                                    <?php } # endif (canned-response-enabled)
-                                    $signature = '';
+                                    <?php } # endif (canned-response-enabled)?>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <label>
+                                    <?php $signature = '';
                                     switch ($thisstaff->getDefaultSignatureType()) {
                                         case 'dept':
                                             /** @var Dept $dept */
@@ -743,20 +746,17 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                             $signature = $thisstaff->getSignature();
                                             break;
                                     } ?>
-                                    <input type="hidden" name="draft_id" value=""/>
+                                    <input type="hidden" name="draft_id" value="">
                                     <textarea name="response" id="response" cols="50"
                                               data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
                                               data-signature="<?php
                                               echo Format::viewableImages($signature); ?>"
-                                              placeholder="<?php echo __(
-                                                  'Start writing your response here. Use canned responses from the drop-down above'
-                                              ); ?>"
+                                              placeholder="Start writing your response here. Use canned responses from the drop-down above"
                                               rows="9" wrap="soft"
                                               class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
                                               ?> draft draft-delete" <?php
                                     list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.response', $ticket->getId(), $info['response']);
-                                    echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
-                                        ?></textarea>
+                                    echo $attrs; ?>></textarea>
                                 </label>
                                 <div id="reply_form_attachments" class="attachments" style="margin:10px 12px;">
                                     <?php
@@ -858,13 +858,12 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <div class="row">
                                 <label>
                                     <textarea name="note" id="internal_note" cols="80"
-                                              placeholder="<?php echo __('Note details'); ?>"
+                                              placeholder="<?php echo __('Write your notes here'); ?>"
                                               rows="9" wrap="soft"
                                               class="form-control <?php if ($cfg->isRichTextEnabled()) echo 'richtext';
                                               ?> draft draft-delete" <?php
                                     list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.note', $ticket->getId(), $info['note']);
-                                    echo $attrs; ?>><?php echo $_POST ? $info['note'] : $draft;
-                                        ?></textarea>
+                                    echo $attrs; ?>></textarea>
                                 </label>
                                 <div class="attachments" style="margin:10px 12px;">
                                     <?php
