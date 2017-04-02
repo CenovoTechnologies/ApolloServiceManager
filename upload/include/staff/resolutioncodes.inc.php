@@ -193,7 +193,7 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
                     </h5>
                 </div>
                 <div class="modal-body">
-                    <div class="col-sm-12 col-md-12">
+                    <div style="padding: 0 15px; width: 100%;">
                         <div class="row">
                             <label class="required">Name:
                                 <input type="text" class="form-control required" size="64" name="resCodeName" id="resCodeName" placeholder="Name"/>

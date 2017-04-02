@@ -73,7 +73,7 @@ $showing = $pageNav->showing().' '._N('task', 'tasks', $count);
                         $assigned=sprintf('<span class="Icon staffAssigned">%s</span>',
                             $task->staff->getName());
 
-                    $status = $task->isOpen() ? '<strong>open</strong>': 'closed';
+                    $status = $task->isOpen() ? '<strong>Open</strong>': 'Closed';
 
                     $title = $task->getTitle();
                     $threadcount = $task->getThread() ?

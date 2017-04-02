@@ -313,7 +313,30 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <h6 class="sidebar-heading">Identification & Logging</h6>
                         </div>
                         <div class="row" style="padding:0 15px;">
-                            <button class="btn btn-sm btn-secondary" style="width:100%" type="button" id="select-template-btn" title="Select Incident Template">Select Incident Template</button>
+                            <!--<button class="btn btn-sm btn-secondary" style="width:100%" type="button" id="select-template-btn" title="Select Incident Template">Select Incident Template</button>-->
+                            <label style="width:100%;">
+                                <select name="topicId" id="topicId" class="form-control-sm" onchange="
+                                    var data = $(':input[name]', '#dynamic-form').serialize();
+                                    $.ajax(
+                                    'ajax.php/form/help-topic/' + this.value,{
+                                     data: data,
+                                     dataType: 'json',
+                                     success: function(json) {
+                                        $('#dynamic-form').empty().append(json.html);
+                                        $(document.head).append(json.media);
+                                     }
+                                     });">
+                                    <option value="" selected > <?php echo __('Select Incident Template...');?> </option>
+                                    <?php
+                                    if($topics=Topic::getHelpTopics()) {
+                                        foreach($topics as $id =>$name) {
+                                            echo sprintf('<option value="%d" %s>%s</option>',
+                                                $id, ($tmpl==$id)?'selected="selected"':'',$name);
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </label>
                         </div>
                         <div class="row" style="padding:0 15px;">
                             <button class="btn btn-sm btn-secondary" style="width:100%" type="button" id="first-resolution-btn" title="First Contact Resolution">First Contact Resolution</button>
