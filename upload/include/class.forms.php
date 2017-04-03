@@ -174,7 +174,7 @@ class Form {
             include(STAFFINC_DIR . 'templates/' . $template);
         else
             include(CLIENTINC_DIR . 'templates/' . $template);
-        echo $this->getMedia();
+        //echo $this->getMedia();
     }
 
     function getLayout($title=false, $options=array()) {
@@ -185,7 +185,7 @@ class Form {
     function asTable($title=false, $options=array()) {
         return $this->getLayout($title, $options)->asTable($this);
         // XXX: Media can't go in a table
-        echo $this->getMedia();
+        //echo $this->getMedia();
     }
 
     function getMedia() {
@@ -392,11 +392,12 @@ implements FormRenderer {
     function asTable($form) {
       ob_start();
 ?>
-      <table class="<?php echo 'grid form' ?>">
-          <caption><?php echo Format::htmlchars($this->title ?: $form->getTitle()); ?>
+      <div class="grid form">
+          <h4 class="faded"><?php echo $this->title ?: $form->getTitle(); ?>
                   <div><small><?php echo Format::viewableImages($form->getInstructions()); ?></small></div>
-          </caption>
-          <tbody><tr><?php for ($i=0; $i<12; $i++) echo '<td style="width:8.3333%"/>'; ?></tr></tbody>
+          </h4>
+          <div class="spacer"></div>
+          <div class="col-sm-12">
 <?php
       $row_size = 12;
       $cols = $row = 0;
@@ -411,8 +412,8 @@ implements FormRenderer {
               $size += $offs;
           }
           if ($cols < $size || $layout->isBreakForced()) {
-              if ($row) echo '</tr>';
-              echo '<tr>';
+              if ($row) echo '</div>';
+              echo '<div class="row">';
               $cols = $row_size;
               $row++;
           }
@@ -420,11 +421,8 @@ implements FormRenderer {
           $cols -= $size;
           $attrs = array('colspan' => $size, 'rowspan' => $layout->getHeight(),
               'style' => '"'.$layout->getOption('style').'"');
-          if ($offs) { ?>
-              <td colspan="<?php echo $offs; ?>"></td> <?php
-          }
           ?>
-          <td class="cell" <?php echo Format::array_implode('=', ' ', array_filter($attrs)); ?>
+          <div class="cell" <?php echo Format::array_implode('=', ' ', array_filter($attrs)); ?>
               data-field-id="<?php echo $f->get('id'); ?>">
               <fieldset class="field <?php if (!$f->isVisible()) echo 'hidden'; ?>"
                 id="field<?php echo $f->getWidget()->id; ?>"
@@ -450,13 +448,13 @@ implements FormRenderer {
                       echo sprintf('<div class="error">%s</div>', Format::htmlchars($e));
 ?>
               </fieldset>
-          </td>
+          </div>
       <?php
       }
       if ($row)
-        echo  '</tr>';
+        echo  '</div>';
 
-      echo '</tbody></table>';
+      echo '</div></div>';
 
       return ob_get_clean();
     }
@@ -941,12 +939,13 @@ class FormField {
         switch ($method) {
             case 'nset':
                 $Q->negate();
+                break;
             case 'set':
                 $criteria[$name . '__isnull'] = false;
                 break;
-
             case 'nequal':
                 $Q->negate();
+                break;
             case 'equal':
                 $criteria[$name] = $value;
                 break;
@@ -3292,8 +3291,8 @@ class TextboxWidget extends Widget {
             $config['placeholder']));
         ?>
         <div class="row">
-            <label style="width:100%">
-                <input type="<?php echo $type; ?>" class="form-control required"
+            <label style="width:100%;">
+                <input type="<?php echo $type; ?>" class="form-control-sm required"
                     id="<?php echo $this->id; ?>"
                     <?php echo implode(' ', array_filter(array(
                         $size, $maxlength, $classes, $autocomplete, $disabled,
@@ -3368,7 +3367,7 @@ class TextareaWidget extends Widget {
         if (isset($config['context']))
             $attrs['data-root-context'] = '"'.$config['context'].'"';
         ?>
-        <div class="row">
+        <!--<div class="row">-->
             <label style="width:100%">
                 <textarea <?php echo $rows." ".$cols." ".$maxlength." ".$class
                         .' '.Format::array_implode('=', ' ', $attrs)
@@ -3379,7 +3378,7 @@ class TextareaWidget extends Widget {
                     ?>
                 </textarea>
             </label>
-        </div>
+        <!--</div>-->
         <?php
     }
 
@@ -3404,18 +3403,18 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-          <div class="row">
+          <!--<div class="row">-->
               <label style="width:100%">
-                <input id="<?php echo $this->id; ?>" class="form-control" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
+                <input id="<?php echo $this->id; ?>" class="form-control-sm" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
                 echo $phone; ?>"/><?php
                 // Allow display of extension field even if disabled if the phone
                 // number being edited has an extension
                 if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
                     <input type="text" name="<?php
-                    echo $this->name; ?>-ext" class="form-control" style="width:20%" value="<?php echo $ext;
+                    echo $this->name; ?>-ext" class="form-control-sm" style="width:20%" value="<?php echo $ext;
                         ?>" size="5"/>
               </label>
-                    </div>
+                  <!--  </div>-->
         <?php }
     }
 
@@ -3486,24 +3485,26 @@ class ChoicesWidget extends Widget {
         if (isset($config['classes']))
             $classes = 'class="'.$config['classes'].'"';
         ?>
-        <select name="<?php echo $this->name; ?>[]"
-            <?php //echo implode(' ', array_filter(array($classes))); ?>
-            class="form-control"
-            id="<?php echo $this->id; ?>"
-            <?php if (isset($config['data']))
-              foreach ($config['data'] as $D=>$V)
-                echo ' data-'.$D.'="'.Format::htmlchars($V).'"';
-            ?>
-            data-placeholder="<?php echo $prompt; ?>"
-            <?php if ($config['multiselect'])
-                echo ' multiple="multiple"'; ?>>
-            <?php if (!$have_def && !$config['multiselect']) { ?>
-            <option value="<?php echo $def_key; ?>">&mdash; <?php
-                echo $def_val; ?> &mdash;</option>
-<?php
-        }
-        $this->emitChoices($choices, $values, $have_def, $def_key); ?>
-        </select>
+        <label style="width:100%">
+            <select name="<?php echo $this->name; ?>[]"
+                <?php //echo implode(' ', array_filter(array($classes))); ?>
+                class="form-control-sm" style="width:100%;"
+                id="<?php echo $this->id; ?>"
+                <?php if (isset($config['data']))
+                  foreach ($config['data'] as $D=>$V)
+                    echo ' data-'.$D.'="'.Format::htmlchars($V).'"';
+                ?>
+                data-placeholder="<?php echo $prompt; ?>"
+                <?php if ($config['multiselect'])
+                    echo ' multiple="multiple"'; ?>>
+                <?php if (!$have_def && !$config['multiselect']) { ?>
+                <option value="<?php echo $def_key; ?>">&mdash; <?php
+                    echo $def_val; ?> &mdash;</option>
+    <?php
+            }
+            $this->emitChoices($choices, $values, $have_def, $def_key); ?>
+            </select>
+        </label>
         <?php
         if ($config['multiselect']) {
          ?>
@@ -3762,7 +3763,7 @@ class DatetimePickerWidget extends Widget {
         <input type="text" name="<?php echo $this->name; ?>"
             id="<?php echo $this->id; ?>" style="display:inline-block;width:auto"
             value="<?php echo $this->value; ?>" size="12"
-            autocomplete="off" class="dp" />
+            autocomplete="off" class="dp form-control-sm" />
         <script type="text/javascript">
             $(function() {
                 $('input[name="<?php echo $this->name; ?>"]').datepicker({

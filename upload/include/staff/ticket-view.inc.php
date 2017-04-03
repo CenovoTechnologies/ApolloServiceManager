@@ -262,7 +262,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         <div class="row">
                             <label style="margin-bottom:0.1em;">
                                 <div class="input-group">
-                                    <input type="hidden" class="form-control" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
+                                    <input type="hidden" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
                                     <input class="form-control required" name="user-name" type="text" id="client-name" aria-describedby="user-lookup"
                                            value="<?php /** @var User $user */
                                            echo $user->getName(); ?>  (<?php echo $user->getEmail(); ?>)" placeholder="Customer">
@@ -283,8 +283,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                         </div>
                         <div class="row">
-                            <label style="width:50%;">
-                                <select class="form-control required" name="source" type="text" id="source">
+                            <label style="width:100%;">
+                                <select class="form-control-sm required" name="source" type="text" id="source">
                                     <option value="" selected >&mdash; <?php
                                         echo __('Select Source');?> &mdash;</option>
                                     <?php
@@ -300,12 +300,14 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </label>
                         </div>
                         <div id="dynamic-form">
+                            <label>
                             <?php
                             foreach ($forms as $form) {
                                 print $form->getForm()->getMedia();
                                 include(STAFFINC_DIR .  'templates/dynamic-form.tmpl.php');
                             }
                             ?>
+                            </label>
                         </div>
                     </div>
                     <div class="col-md-4" style="padding-right:0;">
@@ -355,8 +357,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
                     <div class="col-md-8">
                         <div class="row">
-                            <label style="width:49%">Service Type:
-                                <select class="form-control" name="servTypeId" type="text" id="servTypeId" style="width:100%">
+                            <label style="width:100%">Service Type:
+                                <select class="form-control-sm" name="servTypeId" type="text" id="servTypeId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Service Type &mdash;</option>
                                     <?php
                                     if($servTypes=ServiceType::getAllServiceTypes()) {
@@ -368,17 +370,10 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                    ?>
                                </select>
                             </label>
-                            <label style="width:49%" id="impact-input">Impact:
-                                <?php
-                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
-                                    include(STAFFINC_DIR .  'templates/dynamic-form-impact.tmpl.php');
-                                }
-                                ?>
-                            </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">Service:
-                                <select class="form-control" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
+                            <label style="width:100%">Service:
+                                <select class="form-control-sm" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Service &mdash;</option>
                                     <?php
                                     if($services=Service::getAllServices()) {
@@ -390,17 +385,10 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     ?>
                                 </select>
                             </label>
-                            <label style="width:49%" id="urgency-input">Urgency:
-                                <?php
-                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
-                                    include(STAFFINC_DIR .  'templates/dynamic-form-urgency.tmpl.php');
-                                }
-                                ?>
-                            </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">Category:
-                                <select class="form-control" disabled name="serviceCatId" type="text" id="serviceCatId" style="width:100%">
+                            <label style="width:100%">Category:
+                                <select class="form-control-sm" disabled name="serviceCatId" type="text" id="serviceCatId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Category &mdash;</option>
                                     <?php
                                     if($serviceCats=ServiceCat::getAllServiceCategories()) {
@@ -412,17 +400,10 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     ?>
                                 </select>
                             </label>
-                            <label style="width:49%" id="priority-input">Priority:
-                                <?php
-                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
-                                    include(STAFFINC_DIR .  'templates/dynamic-form-priority.tmpl.php');
-                                }
-                                ?>
-                            </label>
                         </div>
                         <div class="row">
-                            <label style="width:49%">Sub Category:
-                                <select class="form-control" disabled name="serviceSubCatId" type="text" id="serviceSubCatId" style="width:100%">
+                            <label style="width:100%">Sub Category:
+                                <select class="form-control-sm" disabled name="serviceSubCatId" type="text" id="serviceSubCatId" style="width:100%">
                                     <option value="0" selected="selected">&mdash; Select Sub Category &mdash;</option>
                                     <?php
                                     if($serviceSubCats=ServiceSubCat::getAllServiceCategories()) {
@@ -434,8 +415,37 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     ?>
                                 </select>
                             </label>
-                            <label style="width:49%">
-                                <input class="form-control" name="item-input" type="text" id="item-input" placeholder="Configuration Item">
+<!--                            <label style="width:49%">-->
+<!--                                <input class="form-control" name="item-input" type="text" id="item-input" placeholder="Configuration Item">-->
+<!--                            </label>-->
+                        </div>
+                        <div class="has_bottom_border" style="margin-left: -15px; margin-right: -15px;"></div>
+                        <div class="spacer"></div>
+                        <div class="row">
+                            <label style="width:100%" id="impact-input">Impact:
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-impact.tmpl.php');
+                                }
+                                ?>
+                            </label>
+                        </div>
+                        <div class="row">
+                            <label style="width:100%" id="urgency-input">Urgency:
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-urgency.tmpl.php');
+                                }
+                                ?>
+                            </label>
+                        </div>
+                        <div class="row">
+                            <label style="width:100%" id="priority-input">Priority:
+                                <?php
+                                foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+                                    include(STAFFINC_DIR .  'templates/dynamic-form-priority.tmpl.php');
+                                }
+                                ?>
                             </label>
                         </div>
                     </div>
@@ -473,8 +483,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <div class="error"><?php echo $errors['resolve']; ?></div>
                         </div>
                         <div class="row">
-                            <label style="width:49%">Resolution Code:
-                                <select class="form-control" name="resolution_code_id" id="resolution_code_id">
+                            <label style="width:100%;">Resolution Code:
+                                <select class="form-control-sm" name="resolution_code_id" style="width:100%;" id="resolution_code_id">
                                     <option value="0" selected="selected">&mdash; Select Resolution Code &mdash;</option>
                                     <?php
                                     if($resCodes=ResolutionCode::getResolutionCodes()) {
@@ -486,8 +496,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     ?>
                                 </select>
                             </label>
-                            <label style="width:49%">Auto Close Plan:
-                                <select class="form-control" name="auto_close_plan_id" id="auto_close_plan_id">
+                            <label style="width:100%;">Auto Close Plan:
+                                <select class="form-control-sm" name="auto_close_plan_id" style="width:100%;" id="auto_close_plan_id">
                                     <option value="0" selected="selected">&mdash; Select Auto Close Plan &mdash;</option>
                                     <?php
                                     if($autoClosures=AutoClosure::getAutoClosures()) {
@@ -641,7 +651,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             <div class="tab-pane card-block" id="ticket-thread" role="tabpanel">
                 <div>
                     <div class="dropdown btn-group">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Filter Thread
                         </button>
                         <div class="dropdown-menu">
@@ -697,7 +707,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                 <div class="error"><?php echo $errors['reply'] ?></div>
                             </div>
                             <div class="row">
-                                <label class="required">To:
+                                <label class="required" style="width:100%;">To:
                                     <?php
                                     # XXX: Add user-to-name and user-to-email HTML ID#s
                                     $to =sprintf('%s &lt;%s&gt;',
@@ -705,7 +715,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                         $ticket->getReplyToEmail());
                                     $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
                                     ?>
-                                    <select id="emailreply" name="emailreply" class="form-control">
+                                    <select id="emailreply" name="emailreply" class="form-control-sm" style="width:100%;">
                                         <option value="1" <?php echo $emailReply ?  'selected="selected"' : ''; ?>><?php echo $to; ?></option>
                                         <option value="0" <?php echo !$emailReply ? 'selected="selected"' : ''; ?>
                                         > <?php echo __('Do Not Email Reply'); ?> </option>
@@ -738,9 +748,9 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                 <div class="error"><?php echo $errors['response']; ?></div>
                             </div>
                             <div class="row">
-                                <label class="required">Response:
+                                <label class="required" style="width:100%;">Response:
                                     <?php if ($cfg->isCannedResponseEnabled()) { ?>
-                                        <select id="cannedResp" name="cannedResp" class="form-control">
+                                        <select id="cannedResp" name="cannedResp" class="form-control-sm" style="width:100%;">
                                             <option value="0" selected="selected"><?php echo __('Select a canned response');?></option>
                                             <option value='original'><?php echo __('Original Message'); ?></option>
                                             <option value='lastmessage'><?php echo __('Last Message'); ?></option>
@@ -824,7 +834,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                         $outstanding =  true;
                                         echo sprintf('<div class="warning-banner">%s</div>', $warning);
                                     } ?>
-                                    <select name="reply_status_id" class="form-control">
+                                    <select name="reply_status_id" class="form-control-sm">
                                         <?php
                                         $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
                                         $states = array('open', 'progress', 'resolved');
@@ -868,8 +878,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             <input type="hidden" name="a" value="postnote">
                             <input type="hidden" name="lockCode" value="<?php echo $mylock ? $mylock->getCode() : ''; ?>">
                             <div class="row">
-                                <label>
-                                    <input type="text" class="form-control" name="title" id="title" size="60" value="<?php echo $info['title']; ?>"
+                                <label style="width:100%;">
+                                    <input type="text" class="form-control-sm" style="width:100%;" name="title" id="title" size="60" value="<?php echo $info['title']; ?>"
                                         placeholder="<?php echo __('Note title - summary of the note (optional)'); ?>">
                                 </label>
                                 <br/>
@@ -896,7 +906,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                             </div>
                             <div class="row">
                                 <label class="required"><?php echo __('Ticket Status');?>:
-                                    <select name="note_status_id" class="form-control">
+                                    <select name="note_status_id" class="form-control-sm">
                                         <?php
                                         $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
                                         $states = array('open', 'progress', 'resolved');

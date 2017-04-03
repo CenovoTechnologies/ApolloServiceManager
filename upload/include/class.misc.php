@@ -187,7 +187,7 @@ class Misc {
 
         $time = Misc::user2gmtime(mktime(0,0,0));
         ob_start();
-        echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto">',$name,$name);
+        echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto" class="form-control-sm">',$name,$name);
         echo '<option value="" selected>'.__('Time').'</option>';
         for($i=23; $i>=0; $i--) {
             for ($minute=45; $minute>=0; $minute-=15) {
