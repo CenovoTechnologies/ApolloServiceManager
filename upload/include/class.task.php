@@ -1490,8 +1490,7 @@ class TaskForm extends DynamicForm {
     }
 }
 
-class TaskInternalForm
-extends AbstractForm {
+class TaskInternalForm extends AbstractForm {
     static $layout = 'GridFormLayout';
 
     function buildFields() {

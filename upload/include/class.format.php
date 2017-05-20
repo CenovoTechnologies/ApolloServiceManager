@@ -476,7 +476,7 @@ class Format {
      * @param array $array The array to implode
      * @return string The imploded array
     */
-    function array_implode( $glue, $separator, $array ) {
+    static function array_implode( $glue, $separator, $array ) {
 
         if ( !is_array( $array ) ) return $array;
 

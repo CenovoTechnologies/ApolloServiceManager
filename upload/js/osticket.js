@@ -31,7 +31,6 @@ $(document).ready(function(){
              });
         }
     });
-
     $("form :input[type=reset]").click(function() {
         var fObj = $(this).closest('form');
         if(fObj.data('changed')){

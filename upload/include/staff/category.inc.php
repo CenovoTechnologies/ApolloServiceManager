@@ -48,8 +48,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
     </h2>
 
 
-    <div style="margin:8px 0"><strong><?php echo __('Category Type');?>:</strong>
-        <span class="error">*</span></div>
+    <div style="margin:8px 0"><?php echo __('Category Type');?>:
     <div class="btn-group" style="margin-left:20px">
         <label class="form-check-inline">
     <input type="radio" class="form-check-input" name="ispublic" value="2" <?php echo $info['ispublic']?'checked="checked"':''; ?>><b><?php echo __('Featured');?></b> <?php echo __('(on front-page sidebar)');?>
@@ -102,29 +101,29 @@ if (count($langs) > 1) { ?>
         $cname = "trans[$code][$cname]";
         $dname = "trans[$code][$dname]";
     } ?>
-    <div class="tab-pane active" id="info" role="tabpanel">
-        <div style="padding-top: 12px; padding-bottom:8px;">
-            <b><?php echo __('Category Name');?></b>:
-            <span class="error">*</span>
-            <div class="faded"><em><?php echo __('Short descriptive name.');?></em></div>
-        </div>
-        <input type="text" class="form-control" size="70" style="font-size:110%;width:100%;box-sizing:border-box"
+    <div class="tab-pane card-block active" id="info" role="tabpanel">
+        <div class="row">
+        <label style="width:100%;"><?php echo __('Category Name');?>:
+            <span class="faded font-italic"><?php echo __('Short descriptive name.');?></span>
+        <input type="text" class="form-control-sm required" size="70" style="width:100%;" id="catName" onchange="validateField(this);"
             name="<?php echo $cname; ?>" value="<?php echo $category; ?>">
+        </label>
         <div class="error"><?php echo $errors['name']; ?></div>
-
-        <div style="padding:8px 0;">
-            <b><?php echo __('Category Description');?></b>:
-            <span class="error">*</span>
-            <div class="faded"><em><?php echo __('Summary of the category.');?></em></div>
+        </div>
+        <div class="row">
+            <label style="width:100%;"><?php echo __('Category Description');?>:
+                <span class="faded font-italic"><?php echo __('Summary of the category.');?></span>
+                <textarea class="richtext no-bar form-control required" name="<?php echo $dname; ?>" cols="21" rows="12"
+                          style="width:100%;"><?php
+                    echo $desc; ?>
+                </textarea>
+            </label>
             <div class="error"><?php echo $errors['description']; ?></div>
         </div>
-        <textarea class="richtext no-bar form-control" name="<?php echo $dname; ?>" cols="21" rows="12"
-            style="width:100%;"><?php
-            echo $desc; ?></textarea>
     </div>
 <?php } ?>
 
-    <div class="tab-pane" id="notes" role="tabpanel" style="padding-top:12px;">
+    <div class="tab-pane card-block" id="notes" role="tabpanel" style="padding-top:12px;">
         <b><?php echo __('Internal Notes');?></b>:
         <span class="faded"><em><?php echo __("Be liberal, they're internal");?></em></span>
         <textarea class="richtext no-bar form-control" name="notes" cols="21"

@@ -302,11 +302,11 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         <div id="dynamic-form">
                             <label>
                             <?php
-                            foreach ($forms as $form) {
+/*                            foreach ($forms as $form) {
                                 print $form->getForm()->getMedia();
                                 include(STAFFINC_DIR .  'templates/dynamic-form.tmpl.php');
                             }
-                            ?>
+                            */?>
                             </label>
                         </div>
                     </div>
@@ -358,8 +358,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <div class="col-md-8">
                         <div class="row">
                             <label style="width:100%">Service Type:
-                                <select class="form-control-sm" name="servTypeId" type="text" id="servTypeId" style="width:100%">
-                                    <option value="0" selected="selected">&mdash; Select Service Type &mdash;</option>
+                                <select class="form-control-sm required" name="servTypeId" type="text" id="servTypeId" style="width:100%" onchange="validateField(this);">
+                                    <option value="" selected="selected">&mdash; Select Service Type &mdash;</option>
                                     <?php
                                     if($servTypes=ServiceType::getAllServiceTypes()) {
                                         foreach($servTypes as $id =>$name) {
@@ -373,8 +373,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="row">
                             <label style="width:100%">Service:
-                                <select class="form-control-sm" disabled name="serviceId" type="text" id="serviceId" style="width:100%">
-                                    <option value="0" selected="selected">&mdash; Select Service &mdash;</option>
+                                <select class="form-control-sm required" disabled name="serviceId" type="text" id="serviceId" style="width:100%" onchange="validateField(this);">
+                                    <option value="" selected="selected">&mdash; Select Service &mdash;</option>
                                     <?php
                                     if($services=Service::getAllServices()) {
                                         foreach($services as $id =>$name) {
@@ -415,9 +415,6 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                                     ?>
                                 </select>
                             </label>
-<!--                            <label style="width:49%">-->
-<!--                                <input class="form-control" name="item-input" type="text" id="item-input" placeholder="Configuration Item">-->
-<!--                            </label>-->
                         </div>
                         <div class="has_bottom_border" style="margin-left: -15px; margin-right: -15px;"></div>
                         <div class="spacer"></div>
@@ -484,8 +481,8 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="row">
                             <label style="width:100%;">Resolution Code:
-                                <select class="form-control-sm" name="resolution_code_id" style="width:100%;" id="resolution_code_id">
-                                    <option value="0" selected="selected">&mdash; Select Resolution Code &mdash;</option>
+                                <select class="form-control-sm required" name="resolution_code_id" style="width:100%;" id="resolution_code_id" onchange="validateField(this);">
+                                    <option value="" selected="selected">&mdash; Select Resolution Code &mdash;</option>
                                     <?php
                                     if($resCodes=ResolutionCode::getResolutionCodes()) {
                                         foreach($resCodes as $id =>$name) {

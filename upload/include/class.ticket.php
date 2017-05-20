@@ -4143,18 +4143,6 @@ implements RestrictedAccess, Threadable {
     }
 
     static function checkOverdue() {
-        /*
-        $overdue = static::objects()
-            ->filter(array(
-                'isoverdue' => 0,
-                Q::any(array(
-                    Q::all(array(
-                        'reopened__isnull' => true,
-                        'duedate__isnull' => true,
-
-         Punt for now
-         */
-
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state IN ("open","progress")) '

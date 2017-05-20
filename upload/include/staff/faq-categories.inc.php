@@ -62,10 +62,10 @@ foreach ($categories as $C) {
                 if ($active) echo 'icon-hand-right'; ?>"></i>
                 <?php echo sprintf('%s (%d)',
                     Format::htmlchars($C->getLocalName()),
-                    $C->faq_count); ?></a>
+                    $C->faq_count); ?>
+            </a>
         </li> <?php
-} ?>
-            </ul>
+} ?></ul>
         </div>
 
         <div id="topic-dropdown" class="action-dropdown anchor-right"
@@ -145,13 +145,12 @@ if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.
         ->all();
 
     if (count($categories)) {
-        $categories->sort(function($a) { return $a->getLocalName(); });
         echo '<div>'.__('Click on the category to browse FAQs or manage its existing FAQs.').'</div>
                 <ul id="kb">';
         foreach ($categories as $C) {
             echo sprintf('
                 <li>
-                    <h4><a class="truncate" style="max-width:600px" href="kb.php?cid=%d">%s (%d)</a> - <span>%s</span></h4>
+                    <h3><span class="icon-folder-open"></span> <a class="truncate" style="max-width:600px" href="kb.php?cid=%d">%s (%d) - %s</a></h3>
                     %s
                 </li>',$C->getId(),$C->getLocalName(),$C->faq_count,
                 $C->getVisibilityDescription(),

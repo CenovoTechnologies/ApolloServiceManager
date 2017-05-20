@@ -386,9 +386,7 @@ abstract class FormLayout {
     }
 }
 
-class GridFluidLayout
-extends FormLayout
-implements FormRenderer {
+class GridFluidLayout extends FormLayout implements FormRenderer {
     function asTable($form) {
       ob_start();
 ?>
@@ -405,8 +403,10 @@ implements FormRenderer {
       //Layout and rendering options
       $options = $this->options;
 
-      foreach ($form->getFields() as $f) {
-          $layout = $this->getLayout($f);
+
+    /** @var Form $form */
+    foreach ($form->getFields() as $f) {
+        $layout = $this->getLayout($f);
           $size = $layout->getWidth() ?: 12;
           if ($offs = $layout->getOffset()) {
               $size += $offs;
@@ -431,10 +431,6 @@ implements FormRenderer {
               <label class="<?php if ($f->isRequired()) echo 'required'; ?>"
                   for="<?php echo $f->getWidget()->id; ?>">
                   <?php echo Format::htmlchars($label); ?>:
-                <?php if ($f->isRequired()) { ?>
-                <span class="error">*</span>
-                <?php
-                }?>
               </label>
 <?php         }
               if ($f->get('hint')) { ?>
@@ -480,8 +476,7 @@ class Cell {
  * each cell along with an offset from the previous cell. A height of columns
  * along with an optional break is supported.
  */
-class GridFluidCell
-extends Cell {
+class GridFluidCell extends Cell {
     var $span;
     var $options;
 
@@ -3291,9 +3286,9 @@ class TextboxWidget extends Widget {
             $config['placeholder']));
         ?>
         <div class="row">
-            <label style="width:100%;">
+            <label style="width:100%;" for="<?php echo $this->id; ?>">
                 <input type="<?php echo $type; ?>" class="form-control-sm required"
-                    id="<?php echo $this->id; ?>"
+                    id="<?php echo $this->id; ?>" style="width:100%;" onchange="validateField(this);"
                     <?php echo implode(' ', array_filter(array(
                         $size, $maxlength, $classes, $autocomplete, $disabled,
                         $translatable, $autofocus))); ?>
@@ -3367,7 +3362,7 @@ class TextareaWidget extends Widget {
         if (isset($config['context']))
             $attrs['data-root-context'] = '"'.$config['context'].'"';
         ?>
-        <!--<div class="row">-->
+        <div class="row">
             <label style="width:100%">
                 <textarea <?php echo $rows." ".$cols." ".$maxlength." ".$class
                         .' '.Format::array_implode('=', ' ', $attrs)
@@ -3378,7 +3373,7 @@ class TextareaWidget extends Widget {
                     ?>
                 </textarea>
             </label>
-        <!--</div>-->
+        </div>
         <?php
     }
 
@@ -3403,7 +3398,7 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-          <!--<div class="row">-->
+          <div class="row">
               <label style="width:100%">
                 <input id="<?php echo $this->id; ?>" class="form-control-sm" style="width:67%" type="tel" name="<?php echo $this->name; ?>" value="<?php
                 echo $phone; ?>"/><?php
@@ -3414,7 +3409,7 @@ class PhoneNumberWidget extends Widget {
                     echo $this->name; ?>-ext" class="form-control-sm" style="width:20%" value="<?php echo $ext;
                         ?>" size="5"/>
               </label>
-                  <!--  </div>-->
+                    </div>
         <?php }
     }
 
@@ -3431,7 +3426,10 @@ class PhoneNumberWidget extends Widget {
 }
 
 class ChoicesWidget extends Widget {
-    function render($options=array()) {
+    /**
+     * @param array $options
+     */
+function render($options=array()) {
 
         $mode = null;
         if (isset($options['mode']))
@@ -3487,9 +3485,8 @@ class ChoicesWidget extends Widget {
         ?>
         <label style="width:100%">
             <select name="<?php echo $this->name; ?>[]"
-                <?php //echo implode(' ', array_filter(array($classes))); ?>
-                class="form-control-sm" style="width:100%;"
-                id="<?php echo $this->id; ?>"
+                class="form-control-sm <?php if ($this->field->isRequired()) {echo 'required';} ?>" style="width:100%;"
+                id="<?php echo $this->id; ?>" <?php if($this->field->isRequired()) {echo 'onchange="validateField(this);"';} ?>
                 <?php if (isset($config['data']))
                   foreach ($config['data'] as $D=>$V)
                     echo ' data-'.$D.'="'.Format::htmlchars($V).'"';
@@ -3844,12 +3841,12 @@ class ThreadEntryWidget extends Widget {
         list($draft, $attrs) = Draft::getDraftAndDataAttrs($namespace, $object_id, $this->value);
         ?>
           <div class="row">
-              <label style="width:100%">
+              <label style="width:100%;">
                 <textarea name="<?php echo $this->field->get('name'); ?>"
                     placeholder="<?php echo $this->field->get('placeholder'); ?>"
                     class="<?php if ($config['html']) echo 'richtext';
-                        ?> draft draft-delete" <?php echo $attrs; ?>
-                    cols="21" rows="8"><?php echo
+                        ?> draft draft-delete" <?php echo $attrs; if($this->field->isRequired()) { echo 'required';}?>
+                          style="width:100%;" cols="21" rows="8"><?php echo
                     $this->value ?: $draft; ?>
                 </textarea>
               </label>
