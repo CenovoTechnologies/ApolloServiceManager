@@ -564,7 +564,7 @@ table.dashboard-stats tbody:first-child th {
     padding:0 4px 8px;
 }
 table.dashboard-stats tbody:nth-child(2) tr:nth-child(odd) {
-    background-color:#f0faff;
+    background-color:#f1f1f1;
 }
 
 table.dashboard-stats tbody:nth-child(2) th {

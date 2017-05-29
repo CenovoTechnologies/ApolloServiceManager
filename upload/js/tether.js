@@ -5,17 +5,17 @@ if (typeof TetherBase === 'undefined') {
 }
 
 const {
-  //getScrollParents,
-  //getBounds,
-  //getOffsetParent,
-  //extend,
-  //addClass,
-  //removeClass,
-  //updateClasses,
-  //defer,
-  //flush,
-  //getScrollBarSize,
-  //removeUtilElements
+  getScrollParents,
+  getBounds,
+  getOffsetParent,
+  extend,
+  addClass,
+  removeClass,
+  updateClasses,
+  defer,
+  flush,
+  getScrollBarSize,
+  removeUtilElements
 } = TetherBase.Utils;
 
 function within(a, b, diff=1) {

@@ -23,8 +23,8 @@ if ($lang) {
         .tip_shadow { display:block !important; }
     </style>
     <![endif]-->
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/tether/utils.js?907ec36"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/tether/tether.js?907ec36"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/utils.js?907ec36"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/tether.js?907ec36"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-1.11.2.min.js?907ec36"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/bootstrap.js?907ec36"></script>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/bootstrap.css?907ec36" media="all"/>
@@ -34,10 +34,7 @@ if ($lang) {
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/typeahead.css?907ec36" media="screen"/>
     <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?907ec36"
          rel="stylesheet" media="screen" />
-     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?907ec36"/>
-    <!--[if IE 7]>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome-ie7.min.css?907ec36"/>
-    <![endif]-->
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?907ec36"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/dropdown.css?907ec36"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/loadingbar.css?907ec36"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?907ec36"/>
