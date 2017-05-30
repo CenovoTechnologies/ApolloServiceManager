@@ -30,7 +30,7 @@ $plots = $report->getPlotData();
     <div class="row">
         <div class="col-sm-4">
             <a href="tickets.php?status=assigned" style="width:100%;">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-inbox"></i> Incidents Assigned to Me</h4>
                     </div>
@@ -39,7 +39,7 @@ $plots = $report->getPlotData();
         </div>
         <div class="col-sm-4">
             <a href="tickets.php?status=progress" style="width:100%;">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-tasks"></i> Incidents In Progress</h4>
                     </div>
@@ -48,7 +48,7 @@ $plots = $report->getPlotData();
         </div>
         <div class="col-sm-4">
             <a href="tickets.php?status=unassigned" style="width:100%;">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-ticket"></i> Unclaimed Incidents</h4>
                     </div>
@@ -59,7 +59,7 @@ $plots = $report->getPlotData();
     <div class="row">
         <div class="col-sm-4">
             <a href="tasks.php?status=assigned" style="width:100%;">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-pencil-square-o"></i> Tasks Assigned to Me</h4>
                     </div>
@@ -68,7 +68,7 @@ $plots = $report->getPlotData();
         </div>
         <div class="col-sm-4">
             <a href="tickets.php?status=overdue" style="width:100%;">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-exclamation-circle"></i> Past Due Incidents</h4>
                     </div>
@@ -78,7 +78,7 @@ $plots = $report->getPlotData();
         <div class="col-sm-4">
             <a href="#" style="width:100%;">
                 <div class="card card-outline-info">
-                    <div class="card-block">
+                    <div class="card-block dash">
                         <h4 class="card-title">
                             <i class="fa fa-clone"></i> Open Incidents By Category
                         </h4>
@@ -90,7 +90,7 @@ $plots = $report->getPlotData();
     <div class="row">
         <div class="col-sm-4">
             <a href="tickets.php?status=open" style="width:100%;">
-                <div class="card card-outline-info" href="#">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-ticket"></i> New Incidents</h4>
                     </div>
@@ -98,8 +98,8 @@ $plots = $report->getPlotData();
             </a>
         </div>
         <div class="col-sm-4">
-            <a href="task.php" style="width:100%;">
-                <div class="card card-outline-info">
+            <a href="tasks.php" style="width:100%;">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-pencil-square"></i> New Tasks</h4>
                     </div>
@@ -108,7 +108,7 @@ $plots = $report->getPlotData();
         </div>
         <div class="col-sm-4">
             <a href="#" style="width:100%;">
-                <div class="card card-outline-info" href="#">
+                <div class="card card-outline-info dash">
                     <div class="card-block">
                         <h4 class="card-title"><i class="fa fa-tags"></i> Open Incidents By Type</h4>
                     </div>

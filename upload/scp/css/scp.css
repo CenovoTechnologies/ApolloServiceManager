@@ -2973,6 +2973,10 @@ a.attachment {
     margin-bottom: 0.3em;
 }
 
+.dash:hover {
+    background-color: #cacaca;
+}
+
 /* FIXME: Drop this with select2 4.0.1
  * Fixes a rendering issue on Safari
  */
