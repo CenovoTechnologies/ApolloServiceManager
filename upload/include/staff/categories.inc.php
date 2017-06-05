@@ -36,22 +36,22 @@ $pageNav->paginate($categories);
     <div class="sticky bar opaque ">
         <div class="content">
             <div class="pull-left">
-                <h2><?php echo __('FAQ Categories');?></h2>
+                <h2><?php echo __('Knowledgebase Categories');?></h2>
             </div>
             <div class="pull-right">
                 <a href="categories.php?a=add" class="green button">
-                    <i class="icon-plus-sign"></i>
+                    <i class="fa fa-plus"></i>
                     <?php echo __( 'Add New Category');?>
                 </a>
                 <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle action-button" data-toggle="dropdown" title="<?php echo __('More') ?>" aria-haspopup="true" aria-expanded="false">
-                            <i class="icon-cog"></i> <?php echo __('More');?>
+                            <i class="fa fa-cog"></i> <?php echo __('More');?>
                         </button>
                         <ul id="action-dropdown-more" class="dropdown-menu">
                             <li class="danger">
                                 <a class="confirm" data-form-id="mass-actions" data-name="delete" href="categories.php?a=delete">
-                                    <i class="icon-trash icon-fixed-width"></i>
+                                    <i class="fa fa-trash"></i>
                                     <?php echo __( 'Delete'); ?>
                                 </a>
                             </li>
@@ -71,7 +71,7 @@ $pageNav->paginate($categories);
             <th width="4%">&nbsp;</th>
             <th width="46%"><a <?php echo $name_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
             <th width="20%"><a  <?php echo $type_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=type"><?php echo __('Type');?></a></th>
-            <th width="10%"><a  <?php echo $faqs_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=faqs"><?php echo __('FAQs');?></a></th>
+            <th width="10%"><a  <?php echo $faqs_sort; ?> href="categories.php?<?php echo $qstr; ?>&sort=faqs"><?php echo __('Articles');?></a></th>
             <th width="20%" nowrap><a  <?php echo $updated_sort; ?>href="categories.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
         </tr>
     </thead>

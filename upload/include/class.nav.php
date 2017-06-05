@@ -223,7 +223,7 @@ class StaffNav {
                     $subnav[] = array('desc' => __('Organizations'), 'href' => 'orgs.php');
                     break;
                 case 'kbase':
-                    $subnav[]=array('desc'=>__('FAQs'),'href'=>'kb.php', 'urls'=>array('faq.php'));
+                    $subnav[]=array('desc'=>__('Knowledgebase Articles'),'href'=>'kb.php', 'urls'=>array('faq.php'));
                     if($staff) {
                         if ($staff->hasPerm(FAQ::PERM_MANAGE))
                             $subnav[]=array('desc'=>__('Categories'),'href'=>'categories.php');

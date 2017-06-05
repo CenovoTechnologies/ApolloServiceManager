@@ -2,36 +2,28 @@
 if(!defined('OSTSTAFFINC') || !$thisstaff) die('Access Denied');
 
 ?>
+<div class="col-sm-12">
 <form id="kbSearch" action="kb.php" method="get">
     <input type="hidden" name="a" value="search">
     <input type="hidden" name="cid" value="<?php echo Format::htmlchars($_REQUEST['cid']); ?>"/>
     <input type="hidden" name="topicId" value="<?php echo Format::htmlchars($_REQUEST['topicId']); ?>"/>
 
-<!--    <div id="basic_search">-->
-<!--        <div class="attached input">-->
-<!--            <input id="query" type="text" size="20" name="q" autofocus-->
-<!--                value="--><?php //echo Format::htmlchars($_REQUEST['q']); ?><!--">-->
-<!--            <button class="attached button" id="searchSubmit" type="submit">-->
-<!--                <i class="icon icon-search"></i>-->
-<!--            </button>-->
-<!--        </div>-->
-
     <div class="has_bottom_border" style="margin-bottom:5px; padding-top:5px;">
         <div class="pull-left">
-            <h2><?php echo __('Frequently Asked Questions');?></h2>
+            <h2><?php echo __('Knowledgebase Articles');?></h2>
         </div>
         <div class="pull-right">
             <span class="action-button muted" data-dropdown="#category-dropdown">
                 <i class="icon-caret-down pull-right"></i>
                 <span>
-                    <i class="icon-filter"></i>
+                    <i class="fa fa-filter"></i>
                     <?php echo __('Category'); ?>
                 </span>
             </span>
             <span class="action-button muted" data-dropdown="#topic-dropdown">
                 <i class="icon-caret-down pull-right"></i>
                 <span>
-                    <i class="icon-filter"></i>
+                    <i class="fa fa-filter"></i>
                     <?php echo __('Service Template'); ?>
                 </span>
             </span>
@@ -97,10 +89,20 @@ foreach ($topics as $T) {
             </ul>
         </div>
 
-<!--    </div>-->
-</form>
+    <div id="basic_search">
+        <label>Search for a knowledgebase article.</label>
+        <div class="attached input">
+            <input id="query" type="text" size="20" name="q" autofocus
+                   value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
+            <button class="attached button" id="searchSubmit" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
 
-<div>
+</form>
+</div>
+<div class="col-sm-12">
 <?php
 if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.
     $faqs = FAQ::objects()
@@ -145,13 +147,14 @@ if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.
         ->all();
 
     if (count($categories)) {
-        echo '<div>'.__('Click on the category to browse FAQs or manage its existing FAQs.').'</div>
-                <ul id="kb">';
+        echo '<ul id="kb">';
         foreach ($categories as $C) {
             echo sprintf('
                 <li>
-                    <h3><span class="icon-folder-open"></span> <a class="truncate" style="max-width:600px" href="kb.php?cid=%d">%s (%d) - %s</a></h3>
-                    %s
+                    <a class="btn btn-block text-md-left" href="kb.php?cid=%d">
+                        <h3><i class="fa fa-folder-open"></i> %s (%d) - <span class="faded">%s</span></h3>
+                        %s
+                    </a>
                 </li>',$C->getId(),$C->getLocalName(),$C->faq_count,
                 $C->getVisibilityDescription(),
                 Format::safe_html($C->getLocalDescriptionWithImages())
@@ -159,7 +162,7 @@ if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.
         }
         echo '</ul>';
     } else {
-        echo __('NO Article found');
+        echo __('No Article found');
     }
 }
 ?>

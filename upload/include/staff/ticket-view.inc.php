@@ -285,8 +285,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         <div class="row">
                             <label style="width:100%;">
                                 <select class="form-control-sm required" name="source" type="text" id="source">
-                                    <option value="" selected >&mdash; <?php
-                                        echo __('Select Source');?> &mdash;</option>
+                                    <option value="" selected >&mdash; <?php echo __('Select Source');?> &mdash;</option>
                                     <?php
                                     $source = $info['source'] ?: 'Phone';
                                     foreach (Ticket::getSources() as $k => $v) {

@@ -89,7 +89,7 @@ if ($lang) {
                   <input type="text" class="basic-search" data-url="scp/ajax.php/tickets/lookup" name="query"
                     size="30" value="<?php echo Format::htmlchars($_REQUEST['query'], true); ?>"
                     autocomplete="off" autocorrect="off" autocapitalize="off"/>
-                  <button type="submit" id="nav-button" class="attached button"><i class="icon-search"></i></button>
+                  <button type="submit" id="nav-button" class="attached button"><i class="fa fa-search"></i></button>
                 </div>
                 <a href="#" onclick="javascript:
                     $.dialog('ajax.php/tickets/search', 201);"
